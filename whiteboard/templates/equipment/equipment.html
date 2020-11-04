@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<ul class="list-group list-group-flush">
+{% for equip in equipment %}
+  <li class="list-group-item list-group-item-action">{{ equip.equipment }}</li>
+{% endfor %}
+</ul>
+{% endblock %}
+
+{% block bottombar %}
+<ul class="navbar-nav">
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('index') }}workout">Workouts</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('index') }}movement">Movements</a>
+  </li>
+  <li class="nav-item active">
+    <a class="nav-link" href="{{ url_for('index') }}equipment">Equipment</a>
+  </li>
+</ul>
+{% endblock %}

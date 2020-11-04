@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content">
+...
+</div>
+{% endblock %}
+
+{% block bottombar %}
+<ul class="navbar-nav active">
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('index') }}workout">Workouts</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('index') }}movement">Movements</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('index') }}equipment">Equipment</a>
+  </li>
+</ul>
+{% endblock %}

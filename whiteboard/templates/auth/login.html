@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Login</h5>
+      </div>
+      <form method="post">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" name="username" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" name="password" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block bottombar %}{% endblock %}
+
+{% block script %}
+$('.modal').modal({
+  show: true,
+  keyboard: false,
+  backdrop: 'static'
+})
+{% endblock %}

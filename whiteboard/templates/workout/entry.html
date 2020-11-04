@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block topbar %}
+<div class="btn-group" role="group">
+  <button id="openDelWorkoutDialog" class="btn btn-secondary my-2 my-sm-0" type="button">
+    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+    </svg>
+  </button>
+</div>
+<div class="flex-grow-1"></div>
+<div class="btn-group" role="group">
+  <button id="openEditWorkoutDialog" class="btn btn-secondary my-2 my-sm-0" type="button">
+    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-pencil-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+    </svg>
+  </button>
+  <button id="openAddWorkoutScoreDialog" class="btn btn-secondary my-2 my-sm-0" type="button">
+    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-plus-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+    </svg>
+  </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="editWorkoutDialog" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Workout</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/update">
+        <div class="modal-body">
+          <div class="form-group">
+            <input name="name" type="text" class="form-control" placeholder="Workout name" value="{{ workout.name }}" required>
+          </div>
+          <div class="form-group">
+            <textarea name="description" type="text" class="form-control" rows="7" placeholder="Workout description" required>{{ workout.description }}</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="addWorkoutScoreDialog" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Workout Score</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/add">
+        <div class="modal-body">
+          <div class="form-group">
+            <input name="score" type="text" class="form-control" placeholder="Score">
+          </div>
+          <div class="form-group">
+            <input name="datetime" type="text" class="form-control" placeholder="dd.mm.YYYY HH:MM" value="{{ cur_format_time }}">
+          </div>
+          <div class="form-group">
+            <textarea name="note" rows="3" class="form-control" placeholder="Note"></textarea>
+          </div>
+          <div class="btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-primary">
+              <input name="rx" type="checkbox" checked> Rx
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <h1>{{ workout.name }}</h1>
+  {% autoescape false %}
+    <p>{{ workout.description | replace("\n", "<br />") }}</p>
+  {% endautoescape %}
+</div>
+{% if scores | length > 0 %}
+  <canvas id="chart"></canvas>
+  <table class="table table-hover">
+    {% for score in scores %}
+    <tr>
+      <td>
+        {% if score.rx == 1 %}
+        <span class="badge badge-light badge-pill">Rx</span>
+        {% endif %}
+      </td>
+      <td>{{ get_format_timestamp(score.datetime) }}</td>
+      <td>{{ score.score }}</td>
+      <td>{{ score.note }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endif %}
+{% endblock %}
+
+{% block bottombar %}
+<ul class="navbar-nav active">
+  <li class="nav-item active">
+    <a class="nav-link" href="{{ url_for('index') }}workout">Workouts</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('index') }}movement">Movements</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('index') }}equipment">Equipment</a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block script %}
+$('.modal').modal({
+  show: false,
+  keyboard: false,
+  backdrop: 'static'
+})
+$('#openEditWorkoutDialog').click(function() {
+  $('#editWorkoutDialog').modal('show');
+});
+$('#openAddWorkoutScoreDialog').click(function() {
+  $('#addWorkoutScoreDialog').modal('show');
+});
+
+var ctx = document.getElementById('chart').getContext('2d');
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [
+          {% for score in scores %}
+            "{{ get_format_timestamp(score.datetime) }}",
+          {% endfor %}
+        ],
+        datasets: [{
+            data: [
+              {% for score in scores %}
+                "{{ timestamp_to_sec(score.score) }}",
+              {% endfor %}
+            ]
+        }]
+    },
+    options: {
+      layout: {
+        padding: {
+          left: 0,
+          right: 0,
+          top: 10,
+          bottom: 0,
+        },
+      },
+      tooltips: {
+        cornerRadius: 0,
+        backgroundColor: 'rgba(96, 96, 96, 0.25)',
+        titleFontColor: 'gray',
+        bodyFontColor: 'gray',
+        footerFontColor: 'gray',
+        borderWidth: 1,
+        borderColor: 'rgba(96, 96, 96, 0.5)',
+        displayColors: false,
+        footerMarginTop: 0,
+      },
+      elements: {
+        point: {
+          radius: 5,
+          hoverRadius: 6,
+          hitRadius: 1,
+          hoverBorderWidth: 2,
+          borderColor: 'rgba(12, 58, 95, 0.1)',
+          backgroundColor: 'rgba(12, 58, 95, 0.1)',
+        },
+        line: {
+          borderWidth: 3,
+          borderColor: 'rgba(12, 58, 95, 0.1)',
+          backgroundColor: 'rgba(12, 58, 95, 0.1)',
+        },
+      },
+      scales: {
+        yAxes: [{
+          display: false,
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: true,
+          },
+        }],
+        xAxes: [{
+          display: false,
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+          },
+        }],
+      },
+      legend: {
+        display: false,
+      },
+      showLine: true,
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 3
+    },
+});
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block topbar %}
+<div class="flex-grow-1"></div>
+<div class="btn-group" role="group">
+  <button id="openNewWorkoutDialog" class="btn btn-secondary my-2 my-sm-0" type="button">
+    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-plus-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+    </svg>
+  </button>
+</div>
+
+{% endblock %}
+
+{% block content %}
+<div class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New Workout</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" action="{{ url_for(request.endpoint) }}add">
+        <div class="modal-body">
+          <div class="form-group">
+            <input name="name" type="text" class="form-control" placeholder="Workout name" required>
+          </div>
+          <div class="form-group">
+            <textarea name="description" type="text" class="form-control" rows="7" placeholder="Workout description" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<ul class="list-group list-group-flush">
+{% for workout in workouts %}
+  <li onclick="location.href='{{ workout.id }}';" class="list-group-item list-group-item-action">{{ workout.name }}</li>
+{% endfor %}
+</ul>
+{% endblock %}
+
+{% block bottombar %}
+<ul class="navbar-nav active">
+  <li class="nav-item active">
+    <a class="nav-link" href="{{ url_for('index') }}workout">Workouts</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('index') }}movement">Movements</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('index') }}equipment">Equipment</a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block script %}
+$('.modal').modal({
+  show: false,
+  keyboard: false,
+  backdrop: 'static'
+})
+$('#openNewWorkoutDialog').click(function() {
+  $('.modal').modal('show');
+});
+{% endblock %}

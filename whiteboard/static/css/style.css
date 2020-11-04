@@ -1,0 +1,26 @@
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+}
+h1 { font-size: 150%; }
+h2 { font-size: 14%; }
+h3 { font-size: 130%; }
+h4 { font-size: 120%; }
+h5 { font-size: 115%; }
+h6 { font-size: 110%; }
+
+.content {
+  padding: 0;
+  margin: 24px;
+}
+
+.container-fluid {
+  padding: 0 0 60px 0;
+}
+.list-group-item-action {
+  cursor: pointer;
+}
+.alert {
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+}
