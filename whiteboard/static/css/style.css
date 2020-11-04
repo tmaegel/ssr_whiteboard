@@ -13,7 +13,7 @@ h6 { font-size: 110%; }
   margin: 24px;
 }
 .navbar {
-  box-shadow: 0 1px 13px rgba(0,0,0,0.24);
+  box-shadow: 0 0 10px rgba(0,0,0,0.75);
 }
 .container-fluid {
   padding: 0 0 60px 0;
