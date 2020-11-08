@@ -33,17 +33,12 @@ def list():
 @login_required
 def info(workout_id):
     error = None
-    db = get_db()
-    workout = db.execute(
-        'SELECT id, userId, name, description, datetime'
-        ' FROM table_workout WHERE id = ? AND (userId = 1 OR userId = ?)',
-        (workout_id, g.user['id'],)
-    ).fetchone()
+    workout = get_workout(workout_id)
 
     if workout is None:
-        error = 'Workout ID is invalid.'
+        error = 'User or Workout ID is invalid.'
     else:
-        scores = db.execute(
+        scores = get_db().execute(
             'SELECT id, workoutId, score, rx, datetime, note'
             ' FROM table_workout_score WHERE workoutId = ? AND (userId = 1 OR userId = ?)'
             ' ORDER BY datetime ASC',
@@ -70,9 +65,9 @@ def add():
 
         # @todo: Regex check
         if not name:
-            error = 'Title is required.'
+            error = 'Name is required.'
         if not description:
-            error = 'description is required.'
+            error = 'Description is required.'
 
         if error is not None:
             flash(error)
@@ -98,9 +93,9 @@ def update(workout_id):
         error = None
 
         if not name:
-            error = 'Title is required.'
+            error = 'Name is required.'
         if not description:
-            error = 'description is required.'
+            error = 'Description is required.'
 
         if error is not None:
             flash(error)
@@ -151,3 +146,19 @@ def add_score(workout_id):
             db.commit()
 
     return redirect(url_for('workout.info', workout_id=workout_id))
+
+
+def get_workout(workout_id):
+    workout = get_db().execute(
+        'SELECT id, userId, name, description, datetime'
+        ' FROM table_workout WHERE id = ?',
+        (workout_id,)
+    ).fetchone()
+
+    # @todo Raise custom exception here
+    if workout is None:
+        return None
+    if workout['userId'] != 1 and workout['userId'] != g.user['id']:
+        return None
+
+    return workout
