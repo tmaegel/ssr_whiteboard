@@ -111,43 +111,6 @@ def update(workout_id):
     return redirect(url_for('workout.info', workout_id=workout_id))
 
 
-# Add workout score
-@bp.route('/<int:workout_id>/add', methods=('GET', 'POST'))
-@login_required
-def add_score(workout_id):
-    if request.method == 'POST':
-        score = request.form['score']
-        datetime = request.form['datetime']
-        note = request.form['note']
-        error = None
-
-        if not score:
-            error = 'Score is required.'
-        if not datetime:
-            error = 'Datetime is required.'
-
-        if is_datetime(datetime) is False:
-            error = 'Datetime is invalid.'
-
-        if 'rx' in request.form:
-            rx = 1
-        else:
-            rx = 0
-
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                'INSERT INTO table_workout_score(userId, workoutId, score, rx, datetime, note)'
-                ' VALUES (?, ?, ?, ?, ?, ?)',
-                (g.user['id'], workout_id, score, rx, datetime, note,)
-            )
-            db.commit()
-
-    return redirect(url_for('workout.info', workout_id=workout_id))
-
-
 def get_workout(workout_id):
     workout = get_db().execute(
         'SELECT id, userId, name, description, datetime'

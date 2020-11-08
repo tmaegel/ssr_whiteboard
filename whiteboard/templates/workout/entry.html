@@ -63,7 +63,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form method="post" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/add">
+      <form method="post" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/score/add">
         <div class="modal-body">
           <div class="form-group">
             <input name="score" type="text" class="form-control" placeholder="Score">
