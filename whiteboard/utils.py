@@ -1,6 +1,5 @@
-import time
+import time, datetime
 import re
-
 
 # Datetime regex check (dd.mm.YYY HH:MM)
 # e.g. 17.5.2019 19:21
@@ -25,13 +24,14 @@ def is_timestamp(value):
 # Get timestamp in specific format
 # e.g. 01.12.1990 12:00
 def get_format_timestamp(datetime=None):
+    print(datetime)
     if datetime is None:
         return time.strftime("%d.%m.%Y %H:%M", time.gmtime(time.time()))
     else:
         return time.strftime("%d.%m.%Y %H:%M", time.gmtime(datetime))
 
 
-# Convert timestamp to seconds
+# Convert timestamp (HH:MM:SS) to seconds
 def timestamp_to_sec(timestamp):
     if is_timestamp(timestamp) is True:
         sec = 0
@@ -46,4 +46,35 @@ def timestamp_to_sec(timestamp):
 
         return sec
     else:
-        return timestamp
+        return -1
+
+
+# Convert datetime (DD.MM:YYYY HH:MM:SS) to seconds
+def datetime_to_sec(date):
+    if is_datetime(date) is True:
+        dt_split = date.split(" ")
+        if len(dt_split) > 2:
+            return -1
+
+        d_split = dt_split[0].split(".")
+        t_split = dt_split[1].split(":")
+        if len(d_split) > 3:
+            return -1
+
+        if len(t_split) > 3:
+            return -1
+
+        day = int(d_split[0])
+        month = int(d_split[1])
+        year = int(d_split[2])
+        hour = int(t_split[0])
+        minutes = int(t_split[1])
+        seconds = 0
+
+        if len(t_split) == 3:
+            seconds = int(t_split[2])
+        sec = time.mktime(datetime.datetime(year, month, day, hour, minutes, seconds).timetuple())
+
+        return sec
+    else:
+        return -1
