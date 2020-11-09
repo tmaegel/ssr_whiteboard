@@ -14,18 +14,10 @@ from whiteboard.utils import (
 bp = Blueprint('score', __name__, url_prefix='/workout/<int:workout_id>/score')
 
 
-@bp.route('/test', methods=('GET', 'POST'))
-@login_required
-def test(workout_id):
-    print("x")
-    return redirect(url_for('workout.list'))
-
-
 # Add workout score
 @bp.route('/add', methods=('GET', 'POST'))
 @login_required
 def add(workout_id):
-    print(workout_id)
     if request.method == 'POST':
         score = request.form['score']
         datetime = request.form['datetime']
@@ -36,13 +28,10 @@ def add(workout_id):
             error = 'Score is required.'
         if not datetime:
             error = 'Datetime is required.'
-
-        if is_datetime(datetime) is False:
-            error = 'Datetime is invalid.'
-
-        timestamp_in_sec = datetime_to_sec(datetime)
-        if timestamp_in_sec == -1:
-            error = 'Could not parse timestamp.'
+        else:
+            timestamp_in_sec = datetime_to_sec(datetime)
+            if is_datetime(datetime) is False or timestamp_in_sec == -1:
+                error = 'Datetime is invalid.'
 
         if 'rx' in request.form:
             rx = 1

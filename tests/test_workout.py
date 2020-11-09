@@ -57,7 +57,10 @@ def test_info(client, auth):
     assert response.status_code == 200
     assert b'Workout A from test1' in response.data
     assert b'Workout A description from test1' in response.data
+    # Check if delete/edit button is bot hidden when userId > 1
     assert b'id="openDelWorkoutDialog"' in response.data
+    assert b'id="openEditWorkoutDialog"' in response.data
+    # Check if canvas/table is not hidden when there is more than 1 score available
     assert b'canvas' in response.data
     assert b'table' in response.data
 
