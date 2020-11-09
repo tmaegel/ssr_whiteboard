@@ -16,9 +16,10 @@ VALUES
 
 INSERT INTO table_workout_score(userId, workoutId, score, rx, datetime, note)
 VALUES
+  (1, 1, 80, 1, 1604825807, 'note for workout A from admin'),
   (2, 3, 100, 1, 1604825807, 'note for workout A from test1'),
   (2, 3, 120, 1, 1604925807, 'note for workout A from test1'),
-  (2, 4, 120, 0, 1604925807, 'note for workout B from test1');
+  (2, 4, 140, 0, 1604925807, 'note for workout B from test1');
 
 INSERT INTO table_equipment(equipment)
 VALUES

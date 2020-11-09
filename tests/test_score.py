@@ -14,7 +14,7 @@ def test_add(client, auth, app):
     with app.app_context():
         db = get_db()
         count = db.execute('SELECT COUNT(id) FROM table_workout_score').fetchone()[0]
-        assert count == 4
+        assert count == 5
 
     response = client.get('/workout/4')
     assert response.status_code == 200

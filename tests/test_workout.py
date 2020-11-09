@@ -2,7 +2,7 @@ import pytest
 from whiteboard.db import get_db
 
 
-def test_list(client, auth):
+def test_list_nologin(client, auth):
     # No Login
     response = client.get('/workout/', follow_redirects=True)
     assert response.status_code == 200
@@ -10,6 +10,8 @@ def test_list(client, auth):
     assert b'Username' in response.data
     assert b'Password' in response.data
 
+
+def test_list_adminlogin(client, auth):
     # Admin Login
     auth.login_admin()
     response = client.get('/workout/')
@@ -21,6 +23,8 @@ def test_list(client, auth):
     assert b'Workout A from test2' not in response.data
     assert b'Workout B from test2' not in response.data
 
+
+def test_list_userlogin(client, auth):
     # User Login
     auth.login()
     response = client.get('/workout/')
@@ -32,7 +36,7 @@ def test_list(client, auth):
     assert b'Workout B from test2' not in response.data
 
 
-def test_info(client, auth):
+def test_info_nologin(client, auth):
     # No Login
     response = client.get('/workout/3', follow_redirects=True)
     assert response.status_code == 200
@@ -40,12 +44,14 @@ def test_info(client, auth):
     assert b'Username' in response.data
     assert b'Password' in response.data
 
+
+def test_info_login(client, auth):
     # User Login
     auth.login()
-    response = client.get('/workout/1')
+    response = client.get('/workout/2')
     assert response.status_code == 200
-    assert b'Workout A from admin' in response.data
-    assert b'Workout A description from admin' in response.data
+    assert b'Workout B from admin' in response.data
+    assert b'Workout B description from admin' in response.data
     # Check if delete/edit button is hidden when userId = 1
     assert b'id="openDelWorkoutDialog"' not in response.data
     assert b'id="openEditWorkoutDialog"' not in response.data
@@ -146,3 +152,49 @@ def test_update_validate_input(client, auth, name, description, message):
         data={'name': name, 'description': description}
     )
     assert message in response.data
+
+
+def test_delete(client, auth, app):
+    auth.login()
+    assert client.get('/workout/3/delete', follow_redirects=True).status_code == 200
+
+    with app.app_context():
+        db = get_db()
+        count = db.execute('SELECT COUNT(id) FROM table_workout').fetchone()[0]
+        assert count == 5
+        count = db.execute('SELECT COUNT(id) FROM table_workout WHERE id=3').fetchone()[0]
+        assert count == 0
+        count = db.execute('SELECT COUNT(id) from table_workout_score WHERE workoutId=3').fetchone()[0]
+        assert count == 0
+
+    response = client.get('/workout/3', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'User or Workout ID is invalid.' in response.data
+    response = client.get('/workout/')
+    assert response.status_code == 200
+    assert b'Workout A from test1' not in response.data
+
+
+def test_delete_unauthorized(client, auth, app):
+    auth.login()
+    response = client.get('/workout/1/delete', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'User or Workout ID is invalid.' in response.data
+
+    with app.app_context():
+        db = get_db()
+        count = db.execute('SELECT COUNT(id) FROM table_workout').fetchone()[0]
+        assert count == 6
+        count = db.execute('SELECT COUNT(id) FROM table_workout WHERE id=1').fetchone()[0]
+        assert count == 1
+        count = db.execute('SELECT COUNT(id) from table_workout_score WHERE workoutId=1').fetchone()[0]
+        assert count == 1
+
+    response = client.get('/workout/1', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'User or Workout ID is invalid.' not in response.data
+    assert b'Workout A from admin' in response.data
+    assert b'Workout A description from admin' in response.data
+    response = client.get('/workout/')
+    assert response.status_code == 200
+    assert b'Workout A from admin' in response.data

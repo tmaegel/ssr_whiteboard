@@ -40,7 +40,7 @@ def info(workout_id):
     else:
         scores = get_db().execute(
             'SELECT id, workoutId, score, rx, datetime, note'
-            ' FROM table_workout_score WHERE workoutId = ? AND (userId = 1 OR userId = ?)'
+            ' FROM table_workout_score WHERE workoutId = ? AND userId = ?'
             ' ORDER BY datetime ASC',
             (workout_id, g.user['id'],)
         ).fetchall()
@@ -79,6 +79,14 @@ def add():
                 (g.user['id'], name, description, time.time(),)
             )
             db.commit()
+            inserted_workout = db.execute(
+                'SELECT last_insert_rowid()'
+                ' FROM table_workout WHERE userId = ? LIMIT 1',
+                (g.user['id'],)
+            ).fetchone()
+
+            if inserted_workout['last_insert_rowid()']:
+                return redirect(url_for('workout.info', workout_id=inserted_workout['last_insert_rowid()']))
 
     return redirect(url_for('workout.list'))
 
@@ -111,7 +119,37 @@ def update(workout_id):
     return redirect(url_for('workout.info', workout_id=workout_id))
 
 
-def get_workout(workout_id):
+# Delete workout
+@bp.route('/<int:workout_id>/delete')
+@login_required
+def delete(workout_id):
+    workout = get_workout(workout_id, True)
+    error = None
+
+    if workout is None:
+        error = 'User or Workout ID is invalid.'
+    else:
+        db = get_db()
+        db.execute(
+            'DELETE FROM table_workout'
+            ' WHERE id = ? AND userId = ?',
+            (workout_id, g.user['id'],)
+        )
+        db.commit()
+        db.execute(
+            'DELETE FROM table_workout_score'
+            ' WHERE workoutId = ? AND userId = ?',
+            (workout_id, g.user['id'],)
+        )
+        db.commit()
+
+    if error is not None:
+        flash(error)
+
+    return redirect(url_for('workout.list'))
+
+
+def get_workout(workout_id, force_user_id=False):
     workout = get_db().execute(
         'SELECT id, userId, name, description, datetime'
         ' FROM table_workout WHERE id = ?',
@@ -121,7 +159,11 @@ def get_workout(workout_id):
     # @todo Raise custom exception here
     if workout is None:
         return None
-    if workout['userId'] != 1 and workout['userId'] != g.user['id']:
-        return None
+    if force_user_id:
+        if workout['userId'] != g.user['id']:
+            return None
+    else:
+        if workout['userId'] != 1 and workout['userId'] != g.user['id']:
+            return None
 
     return workout
