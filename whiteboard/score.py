@@ -1,14 +1,11 @@
-import time
-
-
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, request, url_for
 )
 
 from whiteboard.auth import login_required
 from whiteboard.db import get_db
 from whiteboard.utils import (
-    is_datetime, get_format_timestamp, timestamp_to_sec, datetime_to_sec
+    is_datetime, datetime_to_sec
 )
 
 bp = Blueprint('score', __name__, url_prefix='/workout/<int:workout_id>/score')
