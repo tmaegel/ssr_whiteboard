@@ -1,5 +1,17 @@
-import time, datetime
+import time
+import datetime
 import re
+
+
+# Number regex check
+# e.g. 1234
+def is_digit(value):
+    pattern = re.compile(r'\d+')
+    if pattern.fullmatch(value) is None:
+        return False
+    else:
+        return True
+
 
 # Datetime regex check (dd.mm.YYY HH:MM)
 # e.g. 17.5.2019 19:21
@@ -24,18 +36,18 @@ def is_timestamp(value):
 # Get timestamp in specific format
 # e.g. 01.12.1990 12:00
 def get_format_timestamp(datetime=None):
-    print(datetime)
     if datetime is None:
-        return time.strftime("%d.%m.%Y %H:%M", time.gmtime(time.time()))
+        return time.strftime("%d.%m.%Y %H:%M", time.localtime(time.time()))
     else:
-        return time.strftime("%d.%m.%Y %H:%M", time.gmtime(datetime))
+        return time.strftime("%d.%m.%Y %H:%M", time.localtime(datetime))
 
 
 # Convert timestamp (HH:MM:SS) to seconds
-def timestamp_to_sec(timestamp):
-    if is_timestamp(timestamp) is True:
+# @todo Check the timezone
+def timestamp_to_sec(value):
+    if is_timestamp(value) is True:
         sec = 0
-        ts_split = timestamp.split(":")
+        ts_split = value.split(":")
         if len(ts_split) > 3:
             return -1
 
@@ -45,14 +57,17 @@ def timestamp_to_sec(timestamp):
             sec = int(ts_split[0])*3600 + int(ts_split[1])*60 + int(ts_split[2])
 
         return sec
+    elif is_digit(value) is True:
+        return value
     else:
         return -1
 
 
 # Convert datetime (DD.MM:YYYY HH:MM:SS) to seconds
-def datetime_to_sec(date):
-    if is_datetime(date) is True:
-        dt_split = date.split(" ")
+# @todo Check the timezone
+def datetime_to_sec(value):
+    if is_datetime(value) is True:
+        dt_split = value.split(" ")
         if len(dt_split) > 2:
             return -1
 
@@ -74,7 +89,8 @@ def datetime_to_sec(date):
         if len(t_split) == 3:
             seconds = int(t_split[2])
         sec = time.mktime(datetime.datetime(year, month, day, hour, minutes, seconds).timetuple())
-
-        return sec
+        return int(sec)
+    elif is_digit(value) is True:
+        return value
     else:
         return -1
