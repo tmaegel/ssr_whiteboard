@@ -13,6 +13,16 @@ def is_digit(value):
         return True
 
 
+# Floating number regex check
+# e.g. 123.45
+def is_float(value):
+    pattern = re.compile(r'[0-9]+[.]?[0-9]+')
+    if pattern.fullmatch(value) is None:
+        return False
+    else:
+        return True
+
+
 # Datetime regex check (dd.mm.YYY HH:MM)
 # e.g. 17.5.2019 19:21
 def is_datetime(value):
@@ -57,7 +67,7 @@ def timestamp_to_sec(value):
             sec = int(ts_split[0])*3600 + int(ts_split[1])*60 + int(ts_split[2])
 
         return sec
-    elif is_digit(value) is True:
+    elif is_digit(value) is True or is_float(value) is True:
         return value
     else:
         return -1
@@ -90,7 +100,7 @@ def datetime_to_sec(value):
             seconds = int(t_split[2])
         sec = time.mktime(datetime.datetime(year, month, day, hour, minutes, seconds).timetuple())
         return int(sec)
-    elif is_digit(value) is True:
+    elif is_digit(value) is True or is_float(value) is True:
         return value
     else:
         return -1
