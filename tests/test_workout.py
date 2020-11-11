@@ -95,18 +95,14 @@ def test_info_login_custom(client, auth):
     assert b'<span class="badge badge-light badge-pill">Rx</span>' not in response.data
 
 
-# Test redirection if workoutId is invalid
-def test_info_login_invalid(client, auth):
+# Invalid workoutID
+@pytest.mark.parametrize(('workoutId'), (
+    ('5'),
+    ('99'),
+))
+def test_info_login_invalid(client, auth, workoutId):
     auth.login()
-    response = client.get('/workout/5', follow_redirects=True)
-    assert response.status_code == 200
-    assert b'User or Workout ID is invalid.' in response.data
-
-
-# Test redirection if workoutId doesn't exist
-def test_info_login_notexist(client, auth):
-    auth.login()
-    response = client.get('/workout/99', follow_redirects=True)
+    response = client.get('/workout/' + workoutId, follow_redirects=True)
     assert response.status_code == 200
     assert b'User or Workout ID is invalid.' in response.data
 
@@ -197,23 +193,17 @@ def test_update_validate_input(client, auth, name, description, message):
     assert message in response.data
 
 
-def test_update_invalid(client, auth):
+# Invalid workoutID
+@pytest.mark.parametrize(('workoutId'), (
+    ('5'),
+    ('99'),
+))
+def test_update_invalid(client, auth, workoutId):
     auth.login()
     response = client.post(
-        '/workout/5/update',
+        '/workout/' + workoutId + '/update',
         follow_redirects=True,
         data={'name': 'Update Workout A from test2', 'description': 'Update Workout A description from test2'}
-    )
-    assert response.status_code == 200
-    assert b'User or Workout ID is invalid.' in response.data
-
-
-def test_update_notexist(client, auth):
-    auth.login()
-    response = client.post(
-        '/workout/99/update',
-        follow_redirects=True,
-        data={'name': 'Update Workout that not exist', 'description': 'Update Workout description that not exist'}
     )
     assert response.status_code == 200
     assert b'User or Workout ID is invalid.' in response.data
@@ -249,7 +239,7 @@ def test_delete_invalid(client, auth, app):
         count = db.execute('SELECT COUNT(id) FROM table_workout WHERE id=1').fetchone()[0]
         assert count == 1
         count = db.execute('SELECT COUNT(id) from table_workout_score WHERE workoutId=1').fetchone()[0]
-        assert count == 1
+        assert count == 2
 
 
 def test_delete_notexist(client, auth, app):

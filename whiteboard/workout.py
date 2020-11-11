@@ -46,7 +46,8 @@ def info(workout_id):
 
     if error is not None:
         flash(error)
-        return redirect(url_for('workout.list'))
+        if workout is None:
+            return redirect(url_for('workout.list'))
     else:
         return render_template('workout/entry.html', workout=workout, scores=scores,
                                cur_format_time=get_format_timestamp(), get_format_timestamp=get_format_timestamp,
@@ -95,6 +96,7 @@ def add():
 @login_required
 def update(workout_id):
     if request.method == 'POST':
+        workout = get_workout(workout_id, True)
         name = request.form['name']
         description = request.form['description']
         error = None
@@ -103,11 +105,13 @@ def update(workout_id):
             error = 'Name is required.'
         if not description:
             error = 'Description is required.'
-        if get_workout(workout_id, True) is None:
+        if workout is None:
             error = 'User or Workout ID is invalid.'
 
         if error is not None:
             flash(error)
+            if workout is None:
+                return redirect(url_for('workout.list'))
         else:
             db = get_db()
             db.execute(
