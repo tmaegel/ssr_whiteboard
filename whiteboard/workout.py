@@ -103,6 +103,8 @@ def update(workout_id):
             error = 'Name is required.'
         if not description:
             error = 'Description is required.'
+        if get_workout(workout_id, True) is None:
+            error = 'User or Workout ID is invalid.'
 
         if error is not None:
             flash(error)
@@ -122,10 +124,9 @@ def update(workout_id):
 @bp.route('/<int:workout_id>/delete')
 @login_required
 def delete(workout_id):
-    workout = get_workout(workout_id, True)
     error = None
 
-    if workout is None:
+    if get_workout(workout_id, True) is None:
         error = 'User or Workout ID is invalid.'
     else:
         db = get_db()
@@ -135,6 +136,7 @@ def delete(workout_id):
             (workout_id, g.user['id'],)
         )
         db.commit()
+        # @todo: use current delete_score function
         db.execute(
             'DELETE FROM table_workout_score'
             ' WHERE workoutId = ? AND userId = ?',
