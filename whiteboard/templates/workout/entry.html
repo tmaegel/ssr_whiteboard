@@ -20,7 +20,7 @@
       </svg>
     </button>
     {% endif %}
-    <button id="openAddWorkoutScoreDialog" class="btn btn-secondary my-2 my-sm-0" type="button">
+    <button id="openAddScoreDialog" class="btn btn-secondary my-2 my-sm-0" type="button">
       <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-plus-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
       </svg>
@@ -77,7 +77,7 @@
   </div>
 </div>
 
-<div id="addWorkoutScoreDialog" class="modal" tabindex="-1">
+<div id="addScoreDialog" class="modal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -97,9 +97,43 @@
           <div class="form-group">
             <textarea name="note" rows="3" class="form-control" placeholder="Note"></textarea>
           </div>
-          <div class="btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-primary">
-              <input name="rx" type="checkbox" checked> Rx
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="rx" checked>
+              <label class="form-check-label" for="rx"> Rx
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="editScoreDialog" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Workout Score</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="editScoreForm" method="post">
+        <div class="modal-body">
+          <div class="form-group">
+            <input id="editScoreValue" name="score" type="text" class="form-control" placeholder="Score" required>
+          </div>
+          <div class="form-group">
+            <input id="editScoreDatetime" name="datetime" type="text" class="form-control" placeholder="dd.mm.YYYY HH:MM" required>
+          </div>
+          <div class="form-group">
+            <textarea id="editScoreNote" name="note" rows="3" class="form-control" placeholder="Note"></textarea>
+          </div>
+          <div class="form-check">
+            <input id="editScoreRx" class="form-check-input" type="checkbox" name="rx" checked>
+              <label class="form-check-label" for="rx"> Rx
             </label>
           </div>
         </div>
@@ -123,15 +157,15 @@
 {% if scores | length > 0 %}
   <table class="table table-hover">
     {% for score in scores %}
-    <tr>
-      <td>
+    <tr id="{{ score.id }}" class="openEditScoreDialog">
+      <td class="scoreRx">
         {% if score.rx == 1 %}
         <span class="badge badge-light badge-pill">Rx</span>
         {% endif %}
       </td>
-      <td>{{ get_format_timestamp(score.datetime) }}</td>
-      <td>{{ score.score }}</td>
-      <td>{{ score.note }}</td>
+      <td class="scoreDatetime">{{ get_format_timestamp(score.datetime) }}</td>
+      <td class="scoreValue">{{ score.score }}</td>
+      <td class="scoreNote">{{ score.note }}</td>
     </tr>
     {% endfor %}
   </table>
@@ -150,8 +184,21 @@ $('#openEditWorkoutDialog').click(function() {
 $('#openDelWorkoutDialog').click(function() {
   $('#deleteWorkoutDialog').modal('show');
 });
-$('#openAddWorkoutScoreDialog').click(function() {
-  $('#addWorkoutScoreDialog').modal('show');
+$('#openAddScoreDialog').click(function() {
+  $('#addScoreDialog').modal('show');
+});
+$('.openEditScoreDialog').click(function() {
+  let scoreId = $(this).attr('id');
+  $('#editScoreDialog').modal('show');
+  $('#editScoreValue').val($(this).find('.scoreValue').text());
+  $('#editScoreDatetime').val($(this).find('.scoreDatetime').text());
+  $('#editScoreNote').val($(this).find('.scoreNote').text());
+  if($(this).find('.scoreRx').children().length > 0) {
+    $("#editScoreRx").prop('checked', true);
+  } else {
+    $("#editScoreRx").prop('checked', false);
+  }
+  $('#editScoreForm').attr('action', '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/update');
 });
 
 var ctx = document.getElementById('chart').getContext('2d');
