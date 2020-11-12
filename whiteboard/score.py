@@ -5,7 +5,7 @@ from flask import (
 from whiteboard.auth import login_required
 from whiteboard.db import get_db
 from whiteboard.utils import (
-    is_datetime, datetime_to_sec
+    is_digit, is_float, is_timestamp, is_datetime, datetime_to_sec
 )
 from whiteboard.workout import (
     get_workout
@@ -27,12 +27,16 @@ def add(workout_id):
 
         if not score:
             error = 'Score is required.'
+        elif not is_digit(score) and not is_float(score) and not is_timestamp(score):
+            error = 'Score is invalid.'
+
         if not datetime:
             error = 'Datetime is required.'
         else:
             timestamp_in_sec = datetime_to_sec(datetime)
             if is_datetime(datetime) is False or timestamp_in_sec == -1:
                 error = 'Datetime is invalid.'
+
         if workout is None:
             error = 'User or Workout ID is invalid.'
 
@@ -70,12 +74,16 @@ def update(workout_id, score_id):
 
         if not score:
             error = 'Score is required.'
+        elif not is_digit(score) and not is_float(score) and not is_timestamp(score):
+            error = 'Score is invalid.'
+
         if not datetime:
             error = 'Datetime is required.'
         else:
             timestamp_in_sec = datetime_to_sec(datetime)
             if is_datetime(datetime) is False or timestamp_in_sec == -1:
                 error = 'Datetime is invalid.'
+
         if workout is None:
             error = 'User or Workout ID is invalid.'
         elif get_score(score_id) is None:

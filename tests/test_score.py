@@ -4,6 +4,7 @@ from whiteboard.db import get_db
 
 @pytest.mark.parametrize(('score'), (
     (b'999'),
+    (b'999.99'),
     (b'2:30'),
     (b'2:30:45'),
 ))
@@ -42,6 +43,8 @@ def test_add(client, auth, app, score):
 
 @pytest.mark.parametrize(('score', 'datetime', 'rx', 'note', 'message'), (
     ('', '14.02.2009 00:31', 1, 'note', b'Score is required.'),
+    ('abc', '14.02.2009 00:31', 1, 'note', b'Score is invalid.'),
+    ('123abc', '14.02.2009 00:31', 1, 'note', b'Score is invalid.'),
     ('1234567890', '', 1, 'note', b'Datetime is required.'),
     ('1234567890', '14.02.2009', 1, 'note', b'Datetime is invalid.'),
     ('1234567890', '14.02.2009 00:', 1, 'note', b'Datetime is invalid.'),
@@ -81,6 +84,7 @@ def test_add_invalid(client, auth, workoutId):
 
 @pytest.mark.parametrize(('score'), (
     (b'999'),
+    (b'999.99'),
     (b'2:30'),
     (b'2:30:45'),
 ))
@@ -117,6 +121,26 @@ def test_update(client, auth, app, score):
         assert result['rx'] == 0
         assert result['datetime'] == 1234567860
         assert result['note'] == 'Update note to Workout B from test1'
+
+
+@pytest.mark.parametrize(('score', 'datetime', 'rx', 'note', 'message'), (
+    ('', '14.02.2009 00:31', 1, 'note', b'Score is required.'),
+    ('abc', '14.02.2009 00:31', 1, 'note', b'Score is invalid.'),
+    ('123abc', '14.02.2009 00:31', 1, 'note', b'Score is invalid.'),
+    ('1234567890', '', 1, 'note', b'Datetime is required.'),
+    ('1234567890', '14.02.2009', 1, 'note', b'Datetime is invalid.'),
+    ('1234567890', '14.02.2009 00:', 1, 'note', b'Datetime is invalid.'),
+    ('1234567890', 'abc', 1, 'note', b'Datetime is invalid.'),
+    ('1234567890', '123', 1, 'note', b'Datetime is invalid.'),
+))
+def test_update_validate_input(client, auth, score, datetime, rx, note, message):
+    auth.login()
+    response = client.post(
+        '/workout/3/score/2/update',
+        follow_redirects=True,
+        data={'score': score, 'datetime': datetime, 'rx': rx, 'note': note}
+    )
+    assert message in response.data
 
 
 # Invalid workoutID
