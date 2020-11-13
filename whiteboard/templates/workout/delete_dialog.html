@@ -1,0 +1,20 @@
+<div id="deleteWorkoutDialog" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Workout</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="get" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/delete">
+        <div class="modal-body">
+          Do you really want to delete the workout and all associated scores?
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
