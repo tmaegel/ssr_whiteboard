@@ -7,9 +7,13 @@
 {% endblock %}
 
 {% block content %}
-<ul class="list-group list-group-flush">
+<ul id="searchable" class="list-group list-group-flush">
 {% for equip in equipment %}
   <li class="list-group-item list-group-item-action">{{ equip.equipment }}</li>
 {% endfor %}
 </ul>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
 {% endblock %}
