@@ -13,11 +13,13 @@ h6 { font-size: 110%; }
 }
 
 .content {
-  padding: 0;
   margin: 24px;
 }
 .navbar {
   box-shadow: 0 0 10px rgba(0,0,0,0.75);
+}
+.border-2 {
+    border-width: 2px !important;
 }
 .container-fluid {
   padding: 0 0 60px 0;
