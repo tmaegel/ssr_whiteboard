@@ -8,6 +8,9 @@ h4 { font-size: 120%; }
 h5 { font-size: 115%; }
 h6 { font-size: 110%; }
 
+#searchInput {
+  margin: 3px 0 3px 0;
+}
 .openEditScoreDialog {
   cursor: pointer;
 }

@@ -1,3 +1,5 @@
+document.getElementById('searchInput').style.display = 'none';
+
 function doSearch() {
   // Declare variables
   var input, filter, ul, li, i, value;
@@ -11,7 +13,22 @@ function doSearch() {
     if (value.toUpperCase().indexOf(filter) > -1) {
       li[i].style.display = '';
     } else {
-      li[i].style.display = "none";
+      li[i].style.display = 'none';
     }
   }
+}
+
+function toggleSearch() {
+  input = document.getElementById('searchInput');
+  title = document.getElementById('pageTitle');
+  if(input.style.display == 'none') {
+    input.style.display = '';
+    title.style.display = 'none';
+  } else {
+    input.style.display = 'none';
+    title.style.display = '';
+    input.value = '';
+    doSearch();
+  }
+
 }
