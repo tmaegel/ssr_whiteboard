@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS table_users;
+DROP TABLE IF EXISTS table_user_prefs;
 DROP TABLE IF EXISTS table_tags;
 DROP TABLE IF EXISTS table_equipment;
 DROP TABLE IF EXISTS table_movements;
@@ -10,6 +11,12 @@ CREATE TABLE table_users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   password TEXT
+);
+CREATE TABLE table_user_prefs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  userId INTEGER,
+  sortType INTEGER,
+  filterType INTEGER
 );
 CREATE TABLE table_tags (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

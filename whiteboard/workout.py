@@ -9,6 +9,9 @@ from whiteboard.db import get_db
 from whiteboard.utils import (
     get_format_timestamp, timestamp_to_sec
 )
+from whiteboard.user import (
+    get_user_prefs
+)
 
 bp = Blueprint('workout', __name__, url_prefix='/workout')
 
@@ -17,14 +20,39 @@ bp = Blueprint('workout', __name__, url_prefix='/workout')
 @bp.route('/')
 @login_required
 def list():
+    prefs = get_user_prefs()
+    sort_pref = ('ASC' if prefs['sortType'] == 0 else 'DESC')
+
     db = get_db()
-    workouts = db.execute(
-        'SELECT id, userId, name, description, datetime'
-        ' FROM table_workout WHERE (userId = 1 OR userId = ?)'
-        ' ORDER BY name ASC',
-        (g.user['id'],)
-    ).fetchall()
-    return render_template('workout/workout.html', workouts=workouts)
+    if prefs['filterType'] == 0:  # No Filter
+        workouts = db.execute(
+            'SELECT id, userId, name, description, datetime'
+            ' FROM table_workout WHERE (userId = 1 OR userId = ?)'
+            ' ORDER BY name ' + sort_pref,
+            (g.user['id'],)
+        ).fetchall()
+    elif prefs['filterType'] == 1:  # Default only
+        workouts = db.execute(
+            'SELECT id, userId, name, description, datetime'
+            ' FROM table_workout WHERE (userId = 1)'
+            ' ORDER BY name ' + sort_pref
+        ).fetchall()
+    elif prefs['filterType'] == 2:  # Custom only
+        workouts = db.execute(
+            'SELECT id, userId, name, description, datetime'
+            ' FROM table_workout WHERE (userId = ?)'
+            ' ORDER BY name ' + sort_pref,
+            (g.user['id'],)
+        ).fetchall()
+    else:  # Fallback
+        workouts = db.execute(
+            'SELECT id, userId, name, description, datetime'
+            ' FROM table_workout WHERE (userId = 1 OR userId = ?)'
+            ' ORDER BY name ' + sort_pref,
+            (g.user['id'],)
+        ).fetchall()
+
+    return render_template('workout/workout.html', prefs=prefs, workouts=workouts)
 
 
 # Get workout info

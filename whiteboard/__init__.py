@@ -29,6 +29,7 @@ def create_app(test_config=None):
 
     from . import auth
     from . import dashboard
+    from . import user
     from . import workout
     from . import score
     from . import movement
@@ -36,6 +37,7 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     app.register_blueprint(dashboard.bp)
     app.add_url_rule('/', endpoint='index')
+    app.register_blueprint(user.bp)
     app.register_blueprint(workout.bp)
     app.register_blueprint(score.bp)
     app.register_blueprint(movement.bp)

@@ -1,0 +1,60 @@
+<div id="prefsDialog" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Preferences</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" action="{{ url_for('index') }}user/prefs/update{{ request.path }}">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="inputSort">Sort items</label>
+            <select id="inputSort" class="form-control" name="inputSort">
+              {% if prefs.sortType == 0 %}
+              <option value="0" selected>Ascending</option>
+              <option value="1">Descending</option>
+              {% elif prefs.sortType == 1 %}
+              <option value="0">Ascending</option>
+              <option value="1" selected>Descending</option>
+              {% else %}
+              <option value="0" selected>Ascending</option>
+              <option value="1" >Descending</option>
+              {% endif %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="inputFiler">Filter items</label>
+            <select id="inputFiler" class="form-control" name="inputFilter">
+              {% if prefs.filterType == 0 %}
+              <option value="0" selected>No Filter</option>
+              <option value="1">Default only</option>
+              <option value="2">Custom only</option>
+              {% elif prefs.filterType == 1 %}
+              <option value="0">No Filter</option>
+              <option value="1" selected>Default only</option>
+              <option value="2">Custom only</option>
+              {% elif prefs.filterType == 2 %}
+              <option value="0">No Filter</option>
+              <option value="1">Default only</option>
+              <option value="1" selected>Custom only</option>
+              {% else %}
+              <option value="0" selected>No Filter</option>
+              <option value="1">Default only</option>
+              <option value="1">Custom only</option>
+              {% endif %}
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">
+            <svg width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-check-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
