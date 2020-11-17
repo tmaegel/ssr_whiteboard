@@ -3,7 +3,7 @@ from whiteboard.db import get_db
 
 
 # List with No Login
-def test_list_nologin(client, auth):
+def test_list_nologin(client):
     response = client.get('/workout/', follow_redirects=True)
     assert response.status_code == 200
     assert b'Login' in response.data
