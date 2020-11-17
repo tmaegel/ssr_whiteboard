@@ -69,3 +69,29 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for('auth.login'))
+
+
+# Update user password
+@bp.route('/passwd/update', methods=('GET', 'POST'))
+@login_required
+def prefs_update():
+    if request.method == 'POST':
+        pw1 = request.form['password1']
+        pw2 = request.form['password2']
+        error = None
+
+        if not pw1 or not pw2 or pw1 != pw2:
+            error = 'Passwords are not equal.'
+
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+            db.execute(
+                'UPDATE table_users SET password = ?'
+                ' WHERE id = ?',
+                (bcrypt.generate_password_hash(sha256(pw1.encode('utf-8')).hexdigest()), g.user['id'],)
+            )
+            db.commit()
+
+    return redirect(url_for('index'))

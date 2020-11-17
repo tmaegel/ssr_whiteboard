@@ -1,6 +1,5 @@
 import pytest
 from flask import g, session
-from whiteboard.db import get_db
 
 
 def test_login(client, auth):
@@ -38,3 +37,50 @@ def test_logout(client, auth):
     with client:
         auth.logout()
         assert 'user_id' not in session
+
+
+def test_passwd_update_nologin(client):
+    response = client.post(
+        '/auth/passwd/update',
+        follow_redirects=True,
+        data={'password1': '123456', 'password2': '123456'}
+    )
+    assert response.status_code == 200
+    assert b'Login' in response.data
+    assert b'Username' in response.data
+    assert b'Password' in response.data
+
+
+def test_passwd_update_userlogin(client, auth):
+    auth.login()
+    response = client.post(
+        '/auth/passwd/update',
+        follow_redirects=True,
+        data={'password1': '123456', 'password2': '123456'}
+    )
+    assert response.status_code == 200
+    assert b'Dashboard' in response.data
+
+    response = client.post(
+        '/auth/login',
+        follow_redirects=True,
+        data={'username': 'test1', 'password': '123456'}
+    )
+    assert response.status_code == 200
+    assert b'Dashboard' in response.data
+
+
+@pytest.mark.parametrize(('password1', 'password2', 'message'), (
+    ('', '', b'Passwords are not equal.'),
+    ('123456', '', b'Passwords are not equal.'),
+    ('', '123456', b'Passwords are not equal.'),
+    ('123', '456', b'Passwords are not equal.'),
+))
+def test_passwd_udpate_validate_input(client, auth, password1, password2, message):
+    auth.login()
+    response = client.post(
+        '/auth/passwd/update',
+        follow_redirects=True,
+        data={'password1': password1, 'password2': password2}
+    )
+    assert message in response.data

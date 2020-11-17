@@ -48,7 +48,7 @@ def prefs_update(route):
     elif 'equipment/' in escape(route):
         return redirect(url_for('equipment.list'))
     else:
-        return redirect(url_for('dashboard.index'))
+        return redirect(url_for('index'))
 
 
 def get_user_prefs():
