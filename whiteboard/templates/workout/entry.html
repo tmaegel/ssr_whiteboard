@@ -92,6 +92,7 @@ $('.openEditScoreDialog').click(function() {
     $("#editScoreRx").prop('checked', false);
   }
   $('#editScoreForm').attr('action', '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/update');
+  $('#deleteScoreBtn').attr('formaction', '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/delete');
 });
 
 var ctx = document.getElementById('chart').getContext('2d');
