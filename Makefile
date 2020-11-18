@@ -22,7 +22,7 @@ build:
 	@docker build -t $(APP) .
 
 run:
-	@docker run --rm --name $(APP) -p 127.0.0.1:8003:8003 -d $(APP)
+	@docker run --rm --name $(APP) -p 127.0.0.1:8080:8080 -d $(APP)
 
 clean:
 	@docker stop $(APP) || true
