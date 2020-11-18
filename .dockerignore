@@ -1,6 +1,7 @@
 venv/
 *.pyc
 __pycache__/
+instance/
 tests/
 Dockerfile
 Makefile
