@@ -2,9 +2,9 @@ from flask import (
     Blueprint, render_template
 )
 
-from whiteboard.auth import login_required
-from whiteboard.db import get_db
-from whiteboard.user import (
+from .auth import login_required
+from .db import get_db
+from .user import (
     get_user_prefs
 )
 

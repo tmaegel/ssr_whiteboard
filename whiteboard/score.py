@@ -2,12 +2,12 @@ from flask import (
     Blueprint, flash, g, redirect, request, url_for
 )
 
-from whiteboard.auth import login_required
-from whiteboard.db import get_db
-from whiteboard.utils import (
+from .auth import login_required
+from .db import get_db
+from .utils import (
     is_digit, is_float, is_timestamp, is_datetime, datetime_to_sec
 )
-from whiteboard.workout import (
+from .workout import (
     get_workout
 )
 

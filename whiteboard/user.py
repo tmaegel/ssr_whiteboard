@@ -3,9 +3,9 @@ from flask import (
 )
 from markupsafe import escape
 
-from whiteboard.auth import login_required
-from whiteboard.db import get_db
-from whiteboard.utils import (
+from .auth import login_required
+from .db import get_db
+from .utils import (
     is_digit
 )
 
