@@ -30,5 +30,4 @@ function toggleSearch() {
     input.value = '';
     doSearch();
   }
-
 }
