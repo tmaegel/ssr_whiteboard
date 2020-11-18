@@ -27,7 +27,8 @@ def add(workout_id):
 
         if not score:
             error = 'Score is required.'
-        elif not is_digit(score) and not is_float(score) and not is_timestamp(score):
+        elif (not is_digit(score) and not is_float(score)
+              and not is_timestamp(score)):
             error = 'Score is invalid.'
 
         if not datetime:
@@ -52,7 +53,8 @@ def add(workout_id):
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO table_workout_score(userId, workoutId, score, rx, datetime, note)'
+                'INSERT INTO table_workout_score'
+                '(userId, workoutId, score, rx, datetime, note)'
                 ' VALUES (?, ?, ?, ?, ?, ?)',
                 (g.user['id'], workout_id, score, rx, timestamp_in_sec, note,)
             )
@@ -74,7 +76,8 @@ def update(workout_id, score_id):
 
         if not score:
             error = 'Score is required.'
-        elif not is_digit(score) and not is_float(score) and not is_timestamp(score):
+        elif (not is_digit(score) and not is_float(score)
+              and not is_timestamp(score)):
             error = 'Score is invalid.'
 
         if not datetime:
@@ -101,9 +104,11 @@ def update(workout_id, score_id):
         else:
             db = get_db()
             db.execute(
-                'UPDATE table_workout_score SET workoutId = ?, score = ?, rx = ?, datetime = ?, note = ?'
+                'UPDATE table_workout_score'
+                ' SET workoutId = ?, score = ?, rx = ?, datetime = ?, note = ?'
                 ' WHERE id = ? AND userId = ?',
-                (workout_id, score, rx, timestamp_in_sec, note, score_id, g.user['id'],)
+                (workout_id, score, rx, timestamp_in_sec, note, score_id,
+                 g.user['id'],)
             )
             db.commit()
 

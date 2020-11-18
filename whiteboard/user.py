@@ -1,5 +1,5 @@
 from flask import (
-    Flask, Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, request, url_for
 )
 from markupsafe import escape
 
@@ -67,7 +67,8 @@ def get_user_prefs():
         db.execute(
             'INSERT INTO table_user_prefs(userId, sortType, filterType)'
             ' VALUES (?, ?, ?)',
-            (g.user['id'], prefs_default['sortType'], prefs_default['filterType'])
+            (g.user['id'], prefs_default['sortType'],
+             prefs_default['filterType'])
         )
         db.commit()
         return prefs_default

@@ -52,7 +52,10 @@ def list():
             (g.user['id'],)
         ).fetchall()
 
-    return render_template('workout/workout.html', prefs=prefs, workouts=workouts)
+    return render_template(
+        'workout/workout.html',
+        prefs=prefs,
+        workouts=workouts)
 
 
 # Get workout info
@@ -77,9 +80,13 @@ def info(workout_id):
         if workout is None:
             return redirect(url_for('workout.list'))
     else:
-        return render_template('workout/entry.html', workout=workout, scores=scores,
-                               cur_format_time=get_format_timestamp(), get_format_timestamp=get_format_timestamp,
-                               timestamp_to_sec=timestamp_to_sec)
+        return render_template(
+            'workout/entry.html',
+            workout=workout,
+            scores=scores,
+            cur_format_time=get_format_timestamp(),
+            get_format_timestamp=get_format_timestamp,
+            timestamp_to_sec=timestamp_to_sec)
 
 
 # Add new workout
@@ -102,7 +109,8 @@ def add():
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO table_workout(userId, name, description, datetime)'
+                'INSERT INTO table_workout'
+                ' (userId, name, description, datetime)'
                 ' VALUES (?, ?, ?, ?)',
                 (g.user['id'], name, description, time.time(),)
             )
@@ -114,7 +122,9 @@ def add():
             ).fetchone()
 
             if inserted_workout['last_insert_rowid()']:
-                return redirect(url_for('workout.info', workout_id=inserted_workout['last_insert_rowid()']))
+                return redirect(url_for(
+                    'workout.info',
+                    workout_id=inserted_workout['last_insert_rowid()']))
 
     return redirect(url_for('workout.list'))
 
@@ -143,9 +153,11 @@ def update(workout_id):
         else:
             db = get_db()
             db.execute(
-                'UPDATE table_workout SET name = ?, description = ?, datetime = ?'
+                'UPDATE table_workout'
+                ' SET name = ?, description = ?, datetime = ?'
                 ' WHERE id = ? AND userId = ?',
-                (name, description, int(time.time()), workout_id, g.user['id'],)
+                (name, description, int(time.time()), workout_id,
+                 g.user['id'],)
             )
             db.commit()
 

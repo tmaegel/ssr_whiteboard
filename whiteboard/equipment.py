@@ -23,4 +23,7 @@ def list():
         ' FROM table_equipment'
         ' ORDER BY equipment ' + sort_pref
     ).fetchall()
-    return render_template('equipment/equipment.html', prefs=prefs, equipment=equipment)
+    return render_template(
+        'equipment/equipment.html',
+        prefs=prefs,
+        equipment=equipment)

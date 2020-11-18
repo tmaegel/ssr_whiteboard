@@ -62,9 +62,9 @@ def timestamp_to_sec(value):
             return -1
 
         if len(ts_split) == 2:
-            sec = int(ts_split[0])*60*60 + int(ts_split[1])*60
+            sec = int(ts_split[0])*60*60+int(ts_split[1])*60
         if len(ts_split) == 3:
-            sec = int(ts_split[0])*3600 + int(ts_split[1])*60 + int(ts_split[2])
+            sec = int(ts_split[0])*3600+int(ts_split[1])*60+int(ts_split[2])
 
         return sec
     elif is_digit(value) is True or is_float(value) is True:
@@ -98,7 +98,8 @@ def datetime_to_sec(value):
 
         if len(t_split) == 3:
             seconds = int(t_split[2])
-        sec = time.mktime(datetime.datetime(year, month, day, hour, minutes, seconds).timetuple())
+        sec = time.mktime(datetime.datetime(
+            year, month, day, hour, minutes, seconds).timetuple())
         return int(sec)
     elif is_digit(value) is True or is_float(value) is True:
         return value

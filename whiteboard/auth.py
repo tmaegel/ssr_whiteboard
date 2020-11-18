@@ -1,7 +1,8 @@
 import functools
 
 from flask import (
-    Flask, Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Flask, Blueprint, flash, g, redirect, render_template, request, session,
+    url_for
 )
 
 from hashlib import sha256
@@ -47,12 +48,15 @@ def login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT id, name, password FROM table_users WHERE name = ?', (username,)
+            'SELECT id, name, password FROM table_users WHERE name = ?',
+            (username,)
         ).fetchone()
 
         if user is None:
             error = 'Incorrect username.'
-        elif not bcrypt.check_password_hash(user['password'], sha256(password.encode('utf-8')).hexdigest()):
+        elif not bcrypt.check_password_hash(
+                user['password'],
+                sha256(password.encode('utf-8')).hexdigest()):
             error = 'Incorrect password.'
 
         if error is None:
@@ -90,7 +94,9 @@ def prefs_update():
             db.execute(
                 'UPDATE table_users SET password = ?'
                 ' WHERE id = ?',
-                (bcrypt.generate_password_hash(sha256(pw1.encode('utf-8')).hexdigest()), g.user['id'],)
+                (bcrypt.generate_password_hash(
+                    sha256(pw1.encode('utf-8')).hexdigest()),
+                    g.user['id'],)
             )
             db.commit()
 

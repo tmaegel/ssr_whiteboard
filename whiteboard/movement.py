@@ -23,4 +23,7 @@ def list():
         ' FROM table_movements'
         ' ORDER BY movement ' + sort_pref
     ).fetchall()
-    return render_template('movement/movement.html', prefs=prefs, movements=movements)
+    return render_template(
+        'movement/movement.html',
+        prefs=prefs,
+        movements=movements)
