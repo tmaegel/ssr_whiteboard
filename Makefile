@@ -3,10 +3,7 @@
 APP="whiteboard"
 DIR="whiteboard/"
 
-default: run
-
-run:
-	FLASK_APP=$(APP) FLASK_ENV=production flask run
+default: debug
 
 debug:
 	FLASK_APP=$(APP) FLASK_ENV=development flask run
@@ -20,3 +17,13 @@ coverage:
 
 lint:
 	flake8 $(DIR)
+
+build:
+	@docker build -t $(APP) .
+
+run:
+	@docker run --rm --name $(APP) -p 127.0.0.1:8003:8003 -d $(APP)
+
+clean:
+	@docker stop $(APP) || true
+	@docker rm $(APP) || true

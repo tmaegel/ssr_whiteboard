@@ -1,0 +1,7 @@
+venv/
+*.pyc
+__pycache__/
+tests/
+Dockerfile
+Makefile
+setup.cfg
