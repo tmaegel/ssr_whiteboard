@@ -4,7 +4,7 @@
 <div class="w3-top w3-dark-grey">
   <div class="w3-bar">
     {% include 'title.html' %}
-    <a id="showFilterDialog" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right">
+    <a onclick="document.getElementById('prefsDialog').style.display='block'" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right">
       <i class="icon fa fa-gear"></i>
     </a>
     <a id="toggleSearchbar" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right" onClick="toggleSearch()">
