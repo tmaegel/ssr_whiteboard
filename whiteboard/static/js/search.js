@@ -1,5 +1,3 @@
-document.getElementById('searchInput').style.display = 'none';
-
 function doSearch() {
   // Declare variables
   var input, filter, ul, li, i, value;
@@ -19,15 +17,13 @@ function doSearch() {
 }
 
 function toggleSearch() {
-  input = document.getElementById('searchInput');
-  title = document.getElementById('pageTitle');
-  if(input.style.display == 'none') {
-    input.style.display = '';
-    title.style.display = 'none';
+  element = document.getElementById('searchbar');
+  if(element.classList.contains('w3-hide')) {
+    element.classList.remove("w3-hide");
   } else {
-    input.style.display = 'none';
-    title.style.display = '';
-    input.value = '';
+    element.classList.add("w3-hide");
+    search = document.getElementById('searchInput');
+    search.value = '';
     doSearch();
   }
 }

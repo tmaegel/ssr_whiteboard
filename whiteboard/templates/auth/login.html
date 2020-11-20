@@ -1,45 +1,28 @@
 {% extends 'base.html' %}
 
+{% block navbar %}{% endblock %}
+
 {% block content %}
-<div class="modal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Login</h5>
-      </div>
-      <form method="post">
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" name="username" required>
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" name="password" required>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">
-            <svg width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-check-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-            </svg>
-          </button>
-        </div>
-      </form>
+<div id="loginDialog" class="w3-modal">
+  <div class="w3-modal-content w3-card-4" style="max-width:600px">
+    <div class="w3-container w3-border-bottom">
+      <h3>Login</h3>
     </div>
+    <form method="post">
+      <div class="w3-container w3-section">
+        <input name="username" class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Username" required>
+        <input name="password" class="w3-input w3-border" type="password" placeholder="Password" required>
+      </div>
+      <div class="w3-container w3-border-top">
+        <button class="w3-button w3-blue w3-section w3-padding w3-right" type="submit">Login</button>
+      </div>
+    </form>
   </div>
 </div>
-
 {% endblock %}
-
-{% block bottombar %}{% endblock %}
 
 {% block script %}
 <script>
-$('.modal').modal({
-  show: true,
-  keyboard: false,
-  backdrop: 'static'
-})
+document.getElementById('loginDialog').style.display='block';
 </script>
 {% endblock %}

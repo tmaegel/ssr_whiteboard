@@ -1,20 +1,16 @@
-<div id="deleteWorkoutDialog" class="modal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Delete Workout</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form method="get" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/delete">
-        <div class="modal-body">
-          Do you really want to delete the workout and all associated scores?
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-danger">Delete</button>
-        </div>
-      </form>
+<div id="deleteWorkoutDialog" class="w3-modal">
+  <div class="w3-modal-content w3-card-4" style="max-width:600px">
+    <div class="w3-container w3-border-bottom">
+      <h3>Delete workout</h3>
     </div>
+    <span onclick="document.getElementById('deleteWorkoutDialog').style.display='none'" class="w3-button w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
+    <form method="get" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/delete">
+      <div class="w3-container w3-section">
+        <p>Do you really want to delete the workout and all associated scores?</p>
+      </div>
+      <div class="w3-container w3-border-top">
+        <button class="w3-button w3-red w3-section w3-padding w3-right" type="submit">Delete</button>
+      </div>
+    </form>
   </div>
 </div>

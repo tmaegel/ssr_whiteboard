@@ -1,33 +1,22 @@
 {% extends 'base.html' %}
 
 {% block topbar %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-  {% if workout.userId != 1 %}
-  <div class="btn-group" role="group">
-    <button id="openDelWorkoutDialog" class="btn btn-danger my-2 my-sm-0" type="button">
-      <svg width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
-      </svg>
-    </button>
-  </div>
-  {% endif %}
-  <div class="flex-grow-1"></div>
-  <div class="btn-group" role="group">
+<div class="w3-top w3-dark-grey">
+  <div class="w3-bar">
+    {% include 'title.html' %}
+    <a onclick="document.getElementById('addScoreDialog').style.display='block'" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right">
+      <i class="icon fa fa-plus-circle"></i>
+    </a>
     {% if workout.userId != 1 %}
-    <button id="openEditWorkoutDialog" class="btn btn-secondary my-2 my-sm-0" type="button">
-      <svg width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-      </svg>
-    </button>
+    <a onclick="document.getElementById('editWorkoutDialog').style.display='block'" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right">
+      <i class="icon fa fa-pencil"></i>
+    </a>
+    <a onclick="document.getElementById('deleteWorkoutDialog').style.display='block'" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right">
+      <i class="icon fa fa-trash"></i>
+    </a>
     {% endif %}
-    <button id="openAddScoreDialog" class="btn btn-secondary my-2 my-sm-0" type="button">
-      <svg width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-plus-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-        <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-      </svg>
-    </button>
   </div>
-</nav>
+</div>
 {% endblock %}
 
 {% block content %}
@@ -38,7 +27,7 @@
 {% include 'score/edit_dialog.html' %}
 
 <div class="content">
-  <h1>{{ workout.name }}</h1>
+  <h2>{{ workout.name }}</h2>
   {% autoescape false %}
     <p>{{ workout.description | replace("\n", "<br />") }}</p>
   {% endautoescape %}
@@ -47,17 +36,17 @@
   <canvas id="chart"></canvas>
 {% endif %}
 {% if scores | length > 0 %}
-  <table class="table table-hover">
+  <table class="w3-table w3-bordered w3-hoverable">
     {% for score in scores %}
-    <tr id="{{ score.id }}" class="openEditScoreDialog">
-      <td class="scoreRx">
+    <tr id="{{ score.id }}" class="openEditScoreDialog w3-hover-light-gray">
+      <td class="scoreRx w3-padding-16">
         {% if score.rx == 1 %}
-        <span class="badge badge-light badge-pill">Rx</span>
+        <span class="w3-badge w3-gray w3-small">Rx</span>
         {% endif %}
       </td>
-      <td class="scoreDatetime">{{ get_format_timestamp(score.datetime) }}</td>
-      <td class="scoreValue">{{ score.score }}</td>
-      <td class="scoreNote">{{ score.note }}</td>
+      <td class="scoreDatetime w3-padding-16">{{ get_format_timestamp(score.datetime) }}</td>
+      <td class="scoreValue w3-padding-16">{{ score.score }}</td>
+      <td class="scoreNote w3-padding-16">{{ score.note }}</td>
     </tr>
     {% endfor %}
   </table>
@@ -66,23 +55,9 @@
 
 {% block script %}
 <script>
-$('.modal').modal({
-  show: false,
-  keyboard: false,
-  backdrop: 'static'
-})
-$('#openEditWorkoutDialog').click(function() {
-  $('#editWorkoutDialog').modal('show');
-});
-$('#openDelWorkoutDialog').click(function() {
-  $('#deleteWorkoutDialog').modal('show');
-});
-$('#openAddScoreDialog').click(function() {
-  $('#addScoreDialog').modal('show');
-});
 $('.openEditScoreDialog').click(function() {
   let scoreId = $(this).attr('id');
-  $('#editScoreDialog').modal('show');
+  document.getElementById('editScoreDialog').style.display='block';
   $('#editScoreValue').val($(this).find('.scoreValue').text());
   $('#editScoreDatetime').val($(this).find('.scoreDatetime').text());
   $('#editScoreNote').val($(this).find('.scoreNote').text());
@@ -122,13 +97,13 @@ var chart = new Chart(ctx, {
         },
       },
       tooltips: {
-        cornerRadius: 0,
-        backgroundColor: 'rgba(96, 96, 96, 0.25)',
-        titleFontColor: 'gray',
-        bodyFontColor: 'gray',
-        footerFontColor: 'gray',
-        borderWidth: 1,
-        borderColor: 'rgba(96, 96, 96, 0.5)',
+        cornerRadius: 5,
+        backgroundColor: 'rgba(33, 150, 243, 0.25)',
+        titleFontColor: '#343a40',
+        bodyFontColor: '#343a40',
+        footerFontColor: '#343a40',
+        borderWidth: 2,
+        borderColor: 'rgba(33, 150, 243, 0.5)',
         displayColors: false,
         footerMarginTop: 0,
       },
@@ -143,8 +118,8 @@ var chart = new Chart(ctx, {
         },
         line: {
           borderWidth: 3,
-          borderColor: 'rgba(12, 58, 95, 0.1)',
-          backgroundColor: 'rgba(12, 58, 95, 0.1)',
+          borderColor: 'rgba(33, 150, 243, 1.0)',
+          backgroundColor: 'rgba(33, 150, 243, 0.10)',
         },
       },
       scales: {

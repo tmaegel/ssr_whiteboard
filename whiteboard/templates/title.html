@@ -1,9 +1,9 @@
 {% if '/workout/' in request.path %}
-<span id="pageTitle" class="navbar-brand">Workouts</span>
+<h1 id="pagetitle">Workouts</h1>
 {% elif '/movement/' in request.path %}
-<span id="pageTitle" class="navbar-brand">Movements</span>
+<h1 id="pagetitle">Movements</h1>
 {% elif '/equipment/' in request.path %}
-<span id="pageTitle" class="navbar-brand">Equipment</span>
+<h1 id="pagetitle">Equipment</h1>
 {% else %}
-<span id="pageTitle" class="navbar-brand">Dashboard</span>
+<h1 id="pagetitle">Dashboard</h1>
 {% endif %}
