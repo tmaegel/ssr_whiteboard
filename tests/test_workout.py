@@ -65,8 +65,8 @@ def test_info_login_default(client, auth):
     assert b'Workout B from admin' in response.data
     assert b'Workout B description from admin' in response.data
     # Check if delete/edit button is hidden when userId = 1
-    assert b'id="openDelWorkoutDialog"' not in response.data
-    assert b'id="openEditWorkoutDialog"' not in response.data
+    assert b'fa-trash' not in response.data
+    assert b'fa-pencil' not in response.data
     # Check if canvas and score table is hidden when there is no score available
     assert b'canvas' not in response.data
     assert b'table' not in response.data
@@ -80,8 +80,8 @@ def test_info_login_custom(client, auth):
     assert b'Workout A from test1' in response.data
     assert b'Workout A description from test1' in response.data
     # Check if delete/edit button is bot hidden when userId > 1
-    assert b'id="openDelWorkoutDialog"' in response.data
-    assert b'id="openEditWorkoutDialog"' in response.data
+    assert b'fa-trash' in response.data
+    assert b'fa-pencil' in response.data
     # Check if canvas/table is not hidden when there is more than 1 score available
     assert b'canvas' in response.data
     assert b'table' in response.data
