@@ -4,25 +4,24 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-weight: normal;
 }
-h1{font-size:24px;}
-h2{font-size:22px;}
-h3{font-size:20px;}
-h4{font-size:18px;}
-h5{font-size:16px;}
-h6{font-size:14px;}
+h1{ font-size: 24px; }
+h2{ font-size: 22px; }
+h3{ font-size: 20px; }
+h4{ font-size: 18px; }
+h5{ font-size: 16px; }
+h6{ font-size: 14px; }
 .main {
-  padding-top: 45px;
+  padding-top: 40px;
   padding-bottom: 55px;
 }
 .content {
   margin: 16px;
 }
-.icon {
-  font-size: 1.75em;
-}
+.icon { font-size: 1.5em; }
 #pagetitle {
   display:inline-block;
   margin: 4px 16px 4px 16px;
+  font-size: 22px;
 }
 #searchbar {
   position: fixed; /* Stay in place */
@@ -33,6 +32,11 @@ h6{font-size:14px;}
   margin: 0;
   padding: 0 8px;
 }
+#search-input {
+  margin: 3px 0 3px 0;
+}
+.padding-0 { padding: 0 !important; }
+.padding-16 { padding: 16px !important; }
 .w3-leftbar, .w3-bottombar, .w3-rightbar, .w3-topbar {
   border-width: 3px !important;
 }
@@ -45,7 +49,7 @@ h6{font-size:14px;}
 .w3-hover-dark-gray:hover {
   background-color: #343a40 !important;
 }
-.w3-ul li, .w3-table tr {
+.w3-ul div:first-child, .w3-table tr {
   cursor: pointer;
 }
 .w3-panel {
@@ -64,17 +68,4 @@ a:visited {
 }
 a:hover {
   text-decoration: none;
-}
-
-
-
-
-
-#searchInput {
-  margin: 3px 0 3px 0;
-}
-.alert {
-  border: 0;
-  border-radius: 0;
-  margin: 0;
 }

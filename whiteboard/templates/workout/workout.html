@@ -21,13 +21,32 @@
 {% include 'prefs_dialog.html' %}
 {% include 'workout/add_dialog.html' %}
 
-<ul id="searchable" class="w3-ul w3-hoverable">
+<ul id="searchable" class="w3-ul">
 {% for workout in workouts %}
-  <li onclick="location.href='{{ workout.id }}';" class="w3-hover-light-gray w3-padding-16">{{ workout.name }}</li>
+<!-- onclick="location.href='{{ workout.id }}';" -->
+  <li onclick="collapseEntry(this)" class="padding-0">
+    <div class="workout-name w3-hover-light-gray padding-16">
+      {{ workout.name }}
+      <i class="icon fa fa fa-angle-down w3-right"></i>
+    </div>
+    <div class="collapsable w3-hide w3-border-top w3-border-light-gray">
+      <div class="workout-description padding-16">
+      {% autoescape false %}
+        {{ workout.description | replace("\n", "<br />") }}
+      {% endautoescape %}
+      </div>
+      <div class="w3-bar">
+        <a onclick="location.href='{{ workout.id }}';" href="#" class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right">
+          <i class="icon fa fa fa-eye"></i>
+        </a>
+      </div>
+    </div>
+  </li>
 {% endfor %}
 </ul>
 {% endblock %}
 
 {% block script %}
 <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+<script src="{{ url_for('static', filename='js/collapse.js') }}"></script>
 {% endblock %}

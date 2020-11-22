@@ -17,23 +17,18 @@
 {% block content %}
 {% include 'prefs_dialog.html' %}
 
-<ul id="searchable" class="w3-ul w3-hoverable">
+<ul id="searchable" class="w3-ul">
 {% for equip in equipment %}
-  <li class="w3-hover-light-gray w3-padding-16">{{ equip.equipment }}</li>
+  <li class="padding-0">
+    <div class="equipment-name w3-hover-light-gray padding-16">
+      {{ equip.equipment }}
+    </div>
+  </li>
 {% endfor %}
 </ul>
 {% endblock %}
 
 {% block script %}
 <script src="{{ url_for('static', filename='js/search.js') }}"></script>
-<script>
-$('.modal').modal({
-  show: false,
-  keyboard: false,
-  backdrop: 'static'
-})
-$('#showFilterDialog').click(function() {
-  $('#prefsDialog').modal('show');
-});
-</script>
+<script src="{{ url_for('static', filename='js/collapse.js') }}"></script>
 {% endblock %}

@@ -1,7 +1,7 @@
 function doSearch() {
   // Declare variables
   var input, filter, ul, li, i, value;
-  input = document.getElementById('searchInput');
+  input = document.getElementById('search-input');
   filter = input.value.toUpperCase();
   ul = document.getElementById('searchable');
   li = ul.getElementsByTagName('li');
@@ -22,7 +22,7 @@ function toggleSearch() {
     element.classList.remove("w3-hide");
   } else {
     element.classList.add("w3-hide");
-    search = document.getElementById('searchInput');
+    search = document.getElementById('search-input');
     search.value = '';
     doSearch();
   }
