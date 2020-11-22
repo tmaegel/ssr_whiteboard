@@ -23,7 +23,6 @@
 
 <ul id="searchable" class="w3-ul">
 {% for workout in workouts %}
-<!-- onclick="location.href='{{ workout.id }}';" -->
   <li onclick="collapseEntry(this)" class="padding-0">
     <div class="workout-name w3-hover-light-gray padding-16">
       {{ workout.name }}
