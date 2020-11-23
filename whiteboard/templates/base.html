@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="manifest" href="{{ url_for('static', filename='manifest.webmanifest') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/lib/w3.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/Chart.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/lib/Chart.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <title>Whiteboard :: {% block title %}{% endblock %}</title>
 </head>
@@ -35,6 +35,6 @@
 
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/lib/Chart.min.js') }}"></script>
 {% block script %}{% endblock %}
 </html>
