@@ -5,12 +5,12 @@
   <div class="w3-bar">
     {% include 'title.html' %}
     <div class="w3-dropdown-hover w3-right">
-      <button class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue">
+      <button class="w3-button w3-text-white w3-dark-gray w3-hover-dark-gray w3-hover-text-blue">
         <i class="icon fa fa-user-circle"></i>
       </button>
       <div class="w3-dropdown-content w3-bar-block w3-hover-text-blue w3-border" style="right:0">
-        <a onclick="document.getElementById('updatePwDialog').style.display='block'" class="w3-bar-item w3-button" href="#">Change password</a>
-        <a href="{{ url_for(request.endpoint) }}auth/logout" class="w3-bar-item w3-button">Logout</a>
+        <a onclick="document.getElementById('updatePwDialog').style.display='block'" class="w3-bar-item w3-button w3-text-dark-gray w3-hover-text-blue" href="#">Change password</a>
+        <a href="{{ url_for(request.endpoint) }}auth/logout" class="w3-bar-item w3-button w3-text-dark-gray w3-hover-text-blue">Logout</a>
       </div>
     </div>
   </div>

@@ -1,24 +1,24 @@
-body { color: #343a40; }
-h1, h2, h3, h4, h5, h6 { font-weight: normal; }
-h1{ font-size: 24px; }
-h2{ font-size: 22px; }
-h3{ font-size: 20px; }
-h4{ font-size: 18px; }
-h5{ font-size: 16px; }
-h6{ font-size: 14px; }
-a:link { text-decoration: none; }
-a:visited { text-decoration: none; }
-a:hover { text-decoration: none; }
-.main { padding-top: 60px; padding-bottom: 55px; }
-.bar { box-shadow: 0px 0px 4px 2px rgba(0,0,0,0.25); }
-.icon { font-size: 1.5em; }
-.padding-0 { padding: 0 !important; }
-.padding-8 { padding: 8px !important; }
-.padding-8-x { padding-left: 8px !important; padding-right: 8px !important; }
-.padding-8-y { padding-top: 8px !important; padding-bottom: 8px !important; }
-.padding-16 { padding: 16px !important; }
-.padding-16-x { padding-left: 16px !important; padding-right: 16px !important; }
-.padding-16-y { padding-top: 16px !important; padding-bottom: 16px !important; }
+body{color:#343a40;}
+h1,h2,h3,h4,h5,h6{font-weight:normal;}
+h1{font-size:24px;}
+h2{font-size:22px;}
+h3{font-size:20px;}
+h4{font-size:18px;}
+h5{font-size:16px;}
+h6{font-size:14px;}
+a:link{text-decoration:none;}
+a:visited{text-decoration:none;}
+a:hover{text-decoration:none;}
+.main{padding-top:60px;padding-bottom:55px;}
+.bar{box-shadow:0px 0px 4px 2px rgba(0,0,0,0.25);}
+.icon{font-size:1.5em;}
+.padding-0{padding:0 !important;}
+.padding-8{padding:8px !important;}
+.padding-8-x{padding-left:8px !important;padding-right:8px !important;}
+.padding-8-y{padding-top:8px !important;padding-bottom:8px !important;}
+.padding-16{padding:16px !important;}
+.padding-16-x{padding-left:16px !important;padding-right:16px !important;}
+.padding-16-y{padding-top:16px !important;padding-bottom:16px !important;}
 #pagetitle {
   display:inline-block;
   margin: 4px 16px 4px 16px;
@@ -33,11 +33,25 @@ a:hover { text-decoration: none; }
   margin: 0;
   padding: 0 8px;
 }
-.w3-leftbar, .w3-bottombar, .w3-rightbar, .w3-topbar { border-width: 3px !important; }
-.w3-border-dark-grey { border-color: #343a40 !important; }
-.w3-dark-grey, .w3-hover-dark-gray { background-color: #343a40 !important; }
-.w3-hover-dark-gray:hover { background-color: #343a40 !important; }
-.w3-ul div:first-child, .w3-table tr { cursor: pointer; }
+.w3-leftbar,.w3-bottombar,.w3-rightbar,.w3-topbar{border-width:3px!important;}
+.w3-text-white,.w3-hover-text-white:hover{color:#fff!important}
+.w3-white,.w3-hover-white:hover{background-color:#fff!important}
+.w3-border-white,.w3-hover-border-white:hover{border-color:#fff!important}
+.w3-text-blue,.w3-hover-text-blue:hover{color:#2196F3!important}
+.w3-blue,.w3-hover-blue:hover{background-color:#2196F3!important}
+.w3-border-blue,.w3-hover-border-blue:hover{border-color:#2196F3!important}
+.w3-text-light-grey,.w3-hover-text-light-grey:hover,.w3-text-light-gray,.w3-hover-text-light-grayp:hover{color:#f1f1f1!important}
+.w3-light-grey,.w3-hover-light-grey:hover,.w3-light-gray,.w3-hover-light-gray:hover{color:#000!important;background-color:#f1f1f1!important}
+.w3-border-light-grey,.w3-hover-border-light-grey:hover,.w3-border-light-gray,.w3-hover-border-light-gray:hover{border-color:#f1f1f1!important}
+.w3-text-dark-grey,.w3-hover-text-dark-grey:hover,.w3-text-dark-gray,.w3-hover-text-dark-gray:hover{color:#343a40!important}
+.w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{background-color:#343a40!important}
+.w3-border-dark-grey,.w3-hover-border-dark-grey:hover,.w3-border-dark-gray,.w3-hover-border-dark-gray:hover{border-color:#343a40!important}
+.w3-pale-red,.w3-hover-pale-red:hover{color:#000!important;background-color:#ffdddd!important}
+.w3-border-pale-red,.w3-hover-border-pale-red:hover{border-color:#ffe7e7!important}.w3-border-pale-green,.w3-hover-border-pale-green:hover{border-color:#e7ffe7!important}
+.w3-red,.w3-hover-red:hover{color:#fff!important;background-color:#f44336!important}
+.w3-text-red,.w3-hover-text-red:hover{color:#f44336!important}
+.w3-border-red,.w3-hover-border-red:hover{border-color:#f44336!important}
+.w3-ul div:first-child,.w3-table tr{cursor:pointer;}
 .w3-panel {
   position: fixed; /* Stay in place */
   z-index: 2; /* Sit on top */
