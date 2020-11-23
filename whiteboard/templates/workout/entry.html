@@ -97,15 +97,18 @@ var chart = new Chart(ctx, {
         },
       },
       tooltips: {
+        xPadding: 10,
+        yPadding: 10,
         cornerRadius: 5,
-        backgroundColor: 'rgba(33, 150, 243, 0.25)',
+        backgroundColor: 'rgba(33, 150, 243, 0.20)',
         titleFontColor: '#343a40',
         bodyFontColor: '#343a40',
         footerFontColor: '#343a40',
-        borderWidth: 2,
+        borderWidth: 0,
         borderColor: 'rgba(33, 150, 243, 0.5)',
         displayColors: false,
-        footerMarginTop: 0,
+        caretPadding: 10,
+        caretSize: 5,
       },
       elements: {
         point: {
