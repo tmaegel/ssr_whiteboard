@@ -38,7 +38,7 @@
 {% if scores | length > 0 %}
   <table class="w3-table w3-bordered w3-hoverable">
     {% for score in scores %}
-    <tr id="{{ score.id }}" class="openEditScoreDialog w3-hover-light-gray">
+    <tr id="{{ score.id }}" class="w3-hover-light-gray" onclick="openEditScoreDialog(this)">
       <td class="scoreRx w3-padding-16">
         {% if score.rx == 1 %}
         <span class="w3-badge w3-gray w3-small">Rx</span>
@@ -55,20 +55,26 @@
 
 {% block script %}
 <script>
-$('.openEditScoreDialog').click(function() {
-  let scoreId = $(this).attr('id');
-  document.getElementById('editScoreDialog').style.display='block';
-  $('#editScoreValue').val($(this).find('.scoreValue').text());
-  $('#editScoreDatetime').val($(this).find('.scoreDatetime').text());
-  $('#editScoreNote').val($(this).find('.scoreNote').text());
-  if($(this).find('.scoreRx').children().length > 0) {
-    $("#editScoreRx").prop('checked', true);
+function openEditScoreDialog(element) {
+  let scoreId, scoreValue, scoreDatetime, scoreNote, scoreRx;
+  scoreId = element.id;
+  scoreValue = element.getElementsByClassName('scoreValue')[0].innerText;
+  scoreDatetime = element.getElementsByClassName('scoreDatetime')[0].innerText;
+  scoreNote = element.getElementsByClassName('scoreNote')[0].innerText;
+  scoreRx = element.getElementsByClassName('scoreRx')[0].innerText;
+  document.getElementById('editScoreValue').value = scoreValue;
+  document.getElementById('editScoreDatetime').value = scoreDatetime;
+  document.getElementById('editScoreNote').value = scoreNote;
+  document.getElementById('editScoreValue').value = scoreValue;
+  if(scoreRx == "Rx") {
+    document.getElementById('editScoreRx').checked = true;
   } else {
-    $("#editScoreRx").prop('checked', false);
+    document.getElementById('editScoreRx').checked = false;
   }
-  $('#editScoreForm').attr('action', '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/update');
-  $('#deleteScoreBtn').attr('formaction', '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/delete');
-});
+  document.getElementById('editScoreForm').action = '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/update';
+  document.getElementById('deleteScoreBtn').formAction = '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/delete';
+  document.getElementById('editScoreDialog').style.display='block'
+}
 
 var ctx = document.getElementById('chart').getContext('2d');
 var chart = new Chart(ctx, {

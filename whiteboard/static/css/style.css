@@ -25,11 +25,11 @@ a:hover{text-decoration:none;}
   font-size: 20px;
 }
 #searchbar {
-  position: fixed; /* Stay in place */
-  z-index: 2; /* Sit on top */
+  position: fixed;
+  z-index: 2;
   top: 0;
   left: 0;
-  width: 100%; /* Full width */
+  width: 100%;
   margin: 0;
   padding: 0 8px;
 }
@@ -53,10 +53,10 @@ a:hover{text-decoration:none;}
 .w3-border-red,.w3-hover-border-red:hover{border-color:#f44336!important}
 .w3-ul div:first-child,.w3-table tr{cursor:pointer;}
 .w3-panel {
-  position: fixed; /* Stay in place */
-  z-index: 2; /* Sit on top */
+  position: fixed;
+  z-index: 2;
   bottom: 0;
   left: 0;
-  width: 100%; /* Full width */
+  width: 100%;
   margin: 0;
 }
