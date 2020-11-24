@@ -43,7 +43,7 @@
     <tr id="{{ score.id }}" class="w3-hover-light-gray" onclick="openEditScoreDialog(this)">
       <td class="scoreRx w3-padding-16">
         {% if score.rx == 1 %}
-        <span class="w3-badge w3-gray w3-small">Rx</span>
+        <span class="w3-badge w3-light-gray w3-small">Rx</span>
         {% endif %}
       </td>
       <td class="scoreDatetime w3-padding-16">{{ get_format_timestamp(score.datetime) }}</td>
@@ -135,23 +135,32 @@ var chart = new Chart(ctx, {
       },
       scales: {
         yAxes: [{
-          display: false,
+          display: true,
+          position: 'right',
           ticks: {
-            display: false,
-            beginAtZero: true,
+            display: true,
+            mirror: true,
+            padding: -10,
+            maxTicksLimit: 5,
+            labelOffset: 0,
           },
           gridLines: {
             display: true,
+            color: '#f1f1f1',
+            zeroLineColor: '#ddd',
+            tickMarkLength: 0,
           },
         }],
         xAxes: [{
-          display: false,
+          display: true,
           ticks: {
             display: false,
-            beginAtZero: true,
           },
           gridLines: {
-            display: false,
+            display: true,
+            color: '#f1f1f1',
+            zeroLineColor: '#ddd',
+            tickMarkLength: 1,
           },
         }],
       },
