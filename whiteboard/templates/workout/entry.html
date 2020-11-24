@@ -37,7 +37,7 @@
 {% endif %}
 {% if scores | length > 0 %}
   <table class="w3-table w3-bordered w3-hoverable">
-    {% for score in scores %}
+    {% for score in scores | reverse %}
     <tr id="{{ score.id }}" class="w3-hover-light-gray" onclick="openEditScoreDialog(this)">
       <td class="scoreRx w3-padding-16">
         {% if score.rx == 1 %}
