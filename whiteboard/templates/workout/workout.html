@@ -30,9 +30,9 @@
     </div>
     <div class="collapsable w3-hide w3-border-top w3-border-light-gray">
       <div class="workout-description padding-16">
-      {% autoescape false %}
-        {{ workout.description | replace("\n", "<br />") }}
-      {% endautoescape %}
+        {% for item in workout.description.split('\n') %}
+          {{ item }}<br />
+        {% endfor %}
       </div>
       <div class="w3-bar">
         <a onclick="location.href='{{ workout.id }}';" href="#" class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right">

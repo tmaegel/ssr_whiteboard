@@ -28,9 +28,11 @@
 
 <div class="w3-margin">
   <h2>{{ workout.name }}</h2>
-  {% autoescape false %}
-    <p>{{ workout.description | replace("\n", "<br />") }}</p>
-  {% endautoescape %}
+    <p>
+      {% for item in workout.description.split('\n') %}
+        {{ item }}<br />
+      {% endfor %}
+    </p>
 </div>
 {% if scores | length > 1 %}
   <canvas id="chart"></canvas>
