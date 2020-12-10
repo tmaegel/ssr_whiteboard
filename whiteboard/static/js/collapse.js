@@ -1,5 +1,5 @@
 function collapseEntry(element) {
-  target = element.getElementsByClassName('collapsable')[0];
+  target = element.parentNode.getElementsByClassName('collapsable')[0];
   elements = document.getElementsByClassName('collapsable');
   for(elem of elements) {
     if(!elem.classList.contains('w3-hide') && elem != target) {
