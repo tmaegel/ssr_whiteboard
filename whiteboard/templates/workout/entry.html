@@ -33,6 +33,11 @@
         {{ item }}<br />
       {% endfor %}
     </p>
+    <div class="w3-margin-top">
+      {% for tag in workout.tags %}
+        <span class="w3-badge w3-blue w3-round-small padding-4-y padding-8-x">{{ tag.tag }}</span>
+      {% endfor %}
+    </div>
 </div>
 {% if scores | length > 1 %}
   <canvas id="chart"></canvas>

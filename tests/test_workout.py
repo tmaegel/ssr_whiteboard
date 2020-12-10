@@ -17,17 +17,30 @@ def test_list_adminlogin(client, auth):
     response = client.get('/workout/')
     assert response.status_code == 200
     assert b'Workout A from admin' in response.data
+    assert b'Workout A description from admin' in response.data
     assert b'onclick="location.href=\'1\';"' in response.data
     assert b'Workout B from admin' in response.data
+    assert b'Workout B description from admin' in response.data
     assert b'onclick="location.href=\'2\';"' in response.data
     assert b'Workout A from test1' not in response.data
+    assert b'Workout A description from test1' not in response.data
     assert b'onclick="location.href=\'3\';"' not in response.data
     assert b'Workout B from test1' not in response.data
+    assert b'Workout B description from test1' not in response.data
     assert b'onclick="location.href=\'4\';"' not in response.data
     assert b'Workout A from test2' not in response.data
+    assert b'Workout A description from test2' not in response.data
     assert b'onclick="location.href=\'5\';"' not in response.data
     assert b'Workout B from test2' not in response.data
+    assert b'Workout B description from test2' not in response.data
     assert b'onclick="location.href=\'6\';"' not in response.data
+
+    # Check the tags
+    assert b'TagABC' in response.data
+    assert b'TagXYZ' in response.data
+    assert b'Tag123' not in response.data
+    assert b'Tag789' not in response.data
+    assert b'Tag###' not in response.data
 
 
 # List with User Login
@@ -35,17 +48,30 @@ def test_list_userlogin(client, auth):
     auth.login()
     response = client.get('/workout/')
     assert b'Workout A from admin' in response.data
+    assert b'Workout A description from admin' in response.data
     assert b'onclick="location.href=\'1\';"' in response.data
     assert b'Workout B from admin' in response.data
+    assert b'Workout B description from admin' in response.data
     assert b'onclick="location.href=\'2\';"' in response.data
     assert b'Workout A from test1' in response.data
+    assert b'Workout A description from test1' in response.data
     assert b'onclick="location.href=\'3\';"' in response.data
     assert b'Workout B from test1' in response.data
+    assert b'Workout B description from test1' in response.data
     assert b'onclick="location.href=\'4\';"' in response.data
     assert b'Workout A from test2' not in response.data
+    assert b'Workout A description from test2' not in response.data
     assert b'onclick="location.href=\'5\';"' not in response.data
     assert b'Workout B from test2' not in response.data
+    assert b'Workout B description from test2' not in response.data
     assert b'onclick="location.href=\'6\';"' not in response.data
+
+    # Check the tags
+    assert b'TagABC' in response.data
+    assert b'TagXYZ' in response.data
+    assert b'Tag123' in response.data
+    assert b'Tag789' in response.data
+    assert b'Tag###' not in response.data
 
 
 # Info with No Login
@@ -71,6 +97,13 @@ def test_info_login_default(client, auth):
     assert b'canvas' not in response.data
     assert b'table' not in response.data
 
+    # Check the tags
+    assert b'TagABC' in response.data
+    assert b'TagXYZ' in response.data
+    assert b'Tag123' not in response.data
+    assert b'Tag789' not in response.data
+    assert b'Tag###' not in response.data
+
 
 # Info with User Login and custom workout
 def test_info_login_custom(client, auth):
@@ -93,6 +126,13 @@ def test_info_login_custom(client, auth):
     assert b'table' in response.data
     # Check if rx span element is hidden when the score hasn't the rx switch
     assert b'<span class="badge badge-light badge-pill">Rx</span>' not in response.data
+
+    # Check the tags
+    assert b'TagABC' not in response.data
+    assert b'TagXYZ' not in response.data
+    assert b'Tag123' in response.data
+    assert b'Tag789' in response.data
+    assert b'Tag###' not in response.data
 
 
 # Invalid workoutID

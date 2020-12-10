@@ -33,3 +33,23 @@ VALUES
   ('Movement 1', 1),
   ('Movement 2', 1),
   ('Movement 3', 2);
+
+INSERT INTO table_tags(userId, tag)
+VALUES
+  (1, 'TagABC'),
+  (1, 'TagXYZ'),
+  (1, 'Tag123'),
+  (1, 'Tag789'),
+  (1, 'Tag###');
+
+INSERT INTO table_workout_tags(workoutId, tagId)
+VALUES
+  (1, 15),
+  (1, 16),
+  (2, 15),
+  (2, 16),
+  (3, 17),
+  (3, 18),
+  (4, 17),
+  (4, 18),
+  (5, 19);

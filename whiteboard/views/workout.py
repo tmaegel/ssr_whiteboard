@@ -20,37 +20,45 @@ bp = Blueprint('workout', __name__, url_prefix='/workout')
 @bp.route('/')
 @login_required
 def list():
+    db = get_db()
     prefs = get_user_prefs()
     sort_pref = ('ASC' if prefs['sortType'] == 0 else 'DESC')
 
-    db = get_db()
     if prefs['filterType'] == 0:  # No Filter
-        workouts = db.execute(
+        where_clause = 'userId = 1 OR userId = ?'
+    elif prefs['filterType'] == 1:  # Default only
+        where_clause = 'userId = 1'
+    elif prefs['filterType'] == 2:  # Custom only
+        where_clause = 'userId = ?'
+    else:  # Fallback
+        where_clause = 'userId = 1 OR userId = ?'
+
+    if '?' in where_clause:
+        workouts_res = db.execute(
             'SELECT id, userId, name, description, datetime'
-            ' FROM table_workout WHERE (userId = 1 OR userId = ?)'
+            ' FROM table_workout'
+            ' WHERE (' + where_clause + ')'
             ' ORDER BY name ' + sort_pref,
             (g.user['id'],)
         ).fetchall()
-    elif prefs['filterType'] == 1:  # Default only
-        workouts = db.execute(
+    else:
+        workouts_res = db.execute(
             'SELECT id, userId, name, description, datetime'
-            ' FROM table_workout WHERE (userId = 1)'
+            ' FROM table_workout'
+            ' WHERE (' + where_clause + ')'
             ' ORDER BY name ' + sort_pref
         ).fetchall()
-    elif prefs['filterType'] == 2:  # Custom only
-        workouts = db.execute(
-            'SELECT id, userId, name, description, datetime'
-            ' FROM table_workout WHERE (userId = ?)'
-            ' ORDER BY name ' + sort_pref,
-            (g.user['id'],)
-        ).fetchall()
-    else:  # Fallback
-        workouts = db.execute(
-            'SELECT id, userId, name, description, datetime'
-            ' FROM table_workout WHERE (userId = 1 OR userId = ?)'
-            ' ORDER BY name ' + sort_pref,
-            (g.user['id'],)
-        ).fetchall()
+
+    tags = db.execute(
+        'SELECT w.id AS workoutId, t.id AS tagId, t.tag'
+        ' FROM table_workout w, table_tags t'
+        ' INNER JOIN table_workout_tags on table_workout_tags.tagId = t.id'
+        ' AND table_workout_tags.workoutId = w.id'
+        ' WHERE (w.userId = 1 OR w.userId = ?)',
+        (g.user['id'],)
+    ).fetchall()
+
+    workouts = link_workouts_to_tags(workouts_res, tags)
 
     return render_template(
         'workout/workout.html',
@@ -194,16 +202,29 @@ def delete(workout_id):
     return redirect(url_for('workout.list'))
 
 
+# Get the workout and tag list from db
 def get_workout(workout_id, force_user_id=False):
-    workout = get_db().execute(
+    db = get_db()
+    workouts_res = db.execute(
         'SELECT id, userId, name, description, datetime'
         ' FROM table_workout WHERE id = ?',
         (workout_id,)
     ).fetchone()
 
     # @todo Raise custom exception here
-    if workout is None:
+    if workouts_res is None:
         return None
+
+    tags = db.execute(
+        'SELECT w.id AS workoutId, t.id AS tagId, t.tag'
+        ' FROM table_workout w, table_tags t'
+        ' INNER JOIN table_workout_tags on table_workout_tags.tagId = t.id'
+        ' AND table_workout_tags.workoutId = w.id'
+        ' WHERE w.id = ?',
+        (workout_id,)
+    ).fetchall()
+
+    workout = link_workout_to_tags(workouts_res, tags)
     if force_user_id:
         if workout['userId'] != g.user['id']:
             return None
@@ -212,3 +233,26 @@ def get_workout(workout_id, force_user_id=False):
             return None
 
     return workout
+
+
+# Add tags to all  workouts
+def link_workouts_to_tags(workouts, tags):
+    workouts_res = []
+    for workout in workouts:
+        workouts_res.append(link_workout_to_tags(workout, tags))
+
+    return workouts_res
+
+
+# Add tags to the workout entry
+def link_workout_to_tags(workout, tags):
+    workout_tags = []
+    for tag in tags:
+        if tag['workoutId'] == workout['id']:
+            workout_tags.append(
+                {'tagId': tag['tagId'], 'tag': tag['tag']}
+            )
+    workout_res = dict(workout)
+    workout_res['tags'] = workout_tags
+
+    return workout_res

@@ -1,10 +1,10 @@
-DROP TABLE IF EXISTS table_users;
+/*DROP TABLE IF EXISTS table_users;
 DROP TABLE IF EXISTS table_user_prefs;
 DROP TABLE IF EXISTS table_tags;
 DROP TABLE IF EXISTS table_equipment;
 DROP TABLE IF EXISTS table_movements;
 DROP TABLE IF EXISTS table_workout;
-DROP TABLE IF EXISTS table_workout_score;
+DROP TABLE IF EXISTS table_workout_score;*/
 DROP TABLE IF EXISTS table_workout_tags;
 
 CREATE TABLE IF NOT EXISTS table_users (
@@ -827,14 +827,8 @@ VALUES
 (753, 1),
 (754, 1),
 (755, 1),
-(756, 1),
+(756, 3),
 (757, 1),
-(758, 1),
-(759, 1),
-(760, 1),
-(761, 1),
-(762, 1),
-(763, 1),
 (23, 2),
 (30, 2),
 (33, 2),
@@ -856,6 +850,12 @@ VALUES
 (434, 2),
 (484, 2),
 (492, 2),
+(758, 3),
+(759, 3),
+(760, 3),
+(761, 3),
+(762, 3),
+(763, 3),
 (764, 3),
 (765, 3),
 (766, 3),
