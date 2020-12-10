@@ -20,8 +20,21 @@
 <ul id="searchable" class="w3-ul">
 {% for movement in movements %}
   <li class="padding-0">
-    <div class="w3-hover-light-gray padding-16 pointer">
+    <div onclick="collapseEntry(this)" class="w3-hover-light-gray padding-16 pointer">
       {{ movement.movement }}
+    </div>
+    <div class="collapsable w3-hide w3-border-top w3-border-light-gray">
+      <div class="padding-16">
+        {{ movement.movement }}
+      </div>
+      <div class="w3-bar">
+        <a class="w3-disabled w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right" href="#">
+          <i class="icon fa fa fa-pencil"></i>
+        </a>
+        <a class="w3-disabled w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right" href="#">
+          <i class="icon fa fa fa-trash"></i>
+        </a>
+      </div>
     </div>
   </li>
 {% endfor %}
