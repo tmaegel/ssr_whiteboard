@@ -27,7 +27,7 @@ def test_add(client, auth, app, score):
     assert score in response.data
     assert b'14.02.2009 00:31' in response.data
     assert b'Add note to Workout B from test1' in response.data
-    assert b'<span class="w3-badge w3-gray w3-small">Rx</span>' in response.data
+    assert b'<span class="w3-badge w3-light-gray w3-small">Rx</span>' in response.data
 
     with app.app_context():
         db = get_db()
