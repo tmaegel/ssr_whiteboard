@@ -8,7 +8,7 @@ from flask import (
 from hashlib import sha256
 from flask_bcrypt import Bcrypt
 
-from .db import get_db
+from ..db import get_db
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)

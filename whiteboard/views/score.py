@@ -2,11 +2,11 @@ from flask import (
     Blueprint, flash, g, redirect, request, url_for
 )
 
-from .auth import login_required
-from .db import get_db
-from .utils import (
+from ..db import get_db
+from ..utils import (
     is_digit, is_float, is_timestamp, is_datetime, datetime_to_sec
 )
+from .auth import login_required
 from .workout import (
     get_workout
 )

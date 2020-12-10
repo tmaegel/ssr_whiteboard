@@ -3,11 +3,11 @@ from flask import (
 )
 from markupsafe import escape
 
-from .auth import login_required
-from .db import get_db
-from .utils import (
+from ..db import get_db
+from ..utils import (
     is_digit
 )
+from .auth import login_required
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 

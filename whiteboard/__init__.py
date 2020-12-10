@@ -25,13 +25,13 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from . import auth
-    from . import dashboard
-    from . import user
-    from . import workout
-    from . import score
-    from . import movement
-    from . import equipment
+    from .views import auth
+    from .views import dashboard
+    from .views import user
+    from .views import workout
+    from .views import score
+    from .views import movement
+    from .views import equipment
     app.register_blueprint(auth.bp)
     app.register_blueprint(dashboard.bp)
     app.add_url_rule('/', endpoint='index')

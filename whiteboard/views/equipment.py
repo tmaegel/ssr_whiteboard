@@ -2,8 +2,8 @@ from flask import (
     Blueprint, render_template
 )
 
+from ..db import get_db
 from .auth import login_required
-from .db import get_db
 from .user import (
     get_user_prefs
 )
