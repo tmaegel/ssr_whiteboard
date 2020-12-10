@@ -13,12 +13,12 @@
 </head>
 <body>
 
-  {% include 'searchbar.html' %}
+  {% include 'general/searchbar.html' %}
 
   {% block topbar %}{% endblock %}
 
   {% block navbar %}
-    {% include 'navbar.html' %}
+    {% include 'general/navbar.html' %}
   {% endblock %}
 
   {% for message in get_flashed_messages() %}
