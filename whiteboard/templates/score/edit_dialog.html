@@ -3,18 +3,18 @@
     <div class="w3-container w3-border-bottom">
       <h3>Edit workout score</h3>
     </div>
-    <span onclick="document.getElementById('editScoreDialog').style.display='none'" class="w3-button w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
+    <span onclick="document.getElementById('editScoreDialog').style.display='none'" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
     <form id="editScoreForm" method="post">
       <div class="w3-container w3-section">
-        <input id="editScoreValue"  name="score" class="w3-input w3-border w3-margin-bottom" type="text" pplaceholder="Score" required>
-        <input id="editScoreDatetime" name="datetime" class="w3-input w3-border w3-margin-bottom" type="text" placeholder="dd.mm.YYYY HH:MM" value="{{ cur_format_time }}" required>
-        <textarea id="editScoreNote" name="note" class="w3-input w3-border w3-margin-bottom" type="text" rows="3" placeholder="Note"></textarea>
+        <input id="editScoreValue"  name="score" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" pplaceholder="Score" required>
+        <input id="editScoreDatetime" name="datetime" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="dd.mm.YYYY HH:MM" value="{{ cur_format_time }}" required>
+        <textarea id="editScoreNote" name="note" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" rows="3" placeholder="Note"></textarea>
         <input id="editScoreRx" name="rx" class="w3-check" type="checkbox" checked="checked">
         <label>Rx</label>
       </div>
       <div class="w3-container w3-border-top">
         <button id="deleteScoreBtn" class="w3-button w3-red w3-section w3-padding w3-left" type="submit" formmethod="get">Delete</button>
-        <button class="w3-button w3-blue w3-section w3-padding w3-right" type="submit">Save</button>
+        <button class="w3-button w3-round w3-blue w3-section w3-padding w3-right" type="submit">Save</button>
       </div>
     </form>
   </div>

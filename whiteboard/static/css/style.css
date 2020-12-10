@@ -42,7 +42,7 @@ a:hover{text-decoration:none;}
 .w3-text-blue,.w3-hover-text-blue:hover{color:#2196F3!important}
 .w3-blue,.w3-hover-blue:hover{background-color:#2196F3!important}
 .w3-border-blue,.w3-hover-border-blue:hover{border-color:#2196F3!important}
-.w3-text-light-grey,.w3-hover-text-light-grey:hover,.w3-text-light-gray,.w3-hover-text-light-grayp:hover{color:#f1f1f1!important}
+.w3-text-light-grey,.w3-hover-text-light-grey:hover,.w3-text-light-gray,.w3-hover-text-light-gray:hover{color:#f1f1f1!important}
 .w3-light-grey,.w3-hover-light-grey:hover,.w3-light-gray,.w3-hover-light-gray:hover{color:#000!important;background-color:#f1f1f1!important}
 .w3-border-light-grey,.w3-hover-border-light-grey:hover,.w3-border-light-gray,.w3-hover-border-light-gray:hover{border-color:#f1f1f1!important}
 .w3-text-dark-grey,.w3-hover-text-dark-grey:hover,.w3-text-dark-gray,.w3-hover-text-dark-gray:hover{color:#343a40!important}
@@ -61,4 +61,8 @@ a:hover{text-decoration:none;}
   left: 0;
   width: 100%;
   margin: 0;
+}
+.w3-modal-content {
+  border-radius: .3rem !important;
+  box-shadow:0px 0px 8px 4px rgba(0,0,0,0.15);
 }
