@@ -47,6 +47,8 @@ def prefs_update(route):
         return redirect(url_for('movement.list'))
     elif 'equipment/' in escape(route):
         return redirect(url_for('equipment.list'))
+    elif 'tag/' in escape(route):
+        return redirect(url_for('tag.list'))
     else:
         return redirect(url_for('index'))
 

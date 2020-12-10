@@ -18,10 +18,10 @@
 {% include 'general/prefs_dialog.html' %}
 
 <ul id="searchable" class="w3-ul">
-{% for equip in equipment %}
+{% for tag in tags %}
   <li class="padding-0">
     <div class="w3-hover-light-gray padding-16">
-      {{ equip.equipment }}
+      {{ tag.tag }}
     </div>
   </li>
 {% endfor %}

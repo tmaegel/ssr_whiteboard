@@ -1,10 +1,10 @@
-/*DROP TABLE IF EXISTS table_users;
+DROP TABLE IF EXISTS table_users;
 DROP TABLE IF EXISTS table_user_prefs;
 DROP TABLE IF EXISTS table_tags;
 DROP TABLE IF EXISTS table_equipment;
 DROP TABLE IF EXISTS table_movements;
 DROP TABLE IF EXISTS table_workout;
-DROP TABLE IF EXISTS table_workout_score;*/
+DROP TABLE IF EXISTS table_workout_score;
 DROP TABLE IF EXISTS table_workout_tags;
 
 CREATE TABLE IF NOT EXISTS table_users (

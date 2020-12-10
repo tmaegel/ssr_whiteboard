@@ -32,6 +32,7 @@ def create_app(test_config=None):
     from .views import score
     from .views import movement
     from .views import equipment
+    from .views import tag
     app.register_blueprint(auth.bp)
     app.register_blueprint(dashboard.bp)
     app.add_url_rule('/', endpoint='index')
@@ -40,5 +41,6 @@ def create_app(test_config=None):
     app.register_blueprint(score.bp)
     app.register_blueprint(movement.bp)
     app.register_blueprint(equipment.bp)
+    app.register_blueprint(tag.bp)
 
     return app
