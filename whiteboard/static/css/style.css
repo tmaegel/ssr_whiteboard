@@ -9,7 +9,7 @@ h6{font-size:14px;}
 a:link{text-decoration:none;}
 a:visited{text-decoration:none;}
 a:hover{text-decoration:none;}
-.main{padding-top:60px;padding-bottom:55px;}
+main{padding-top:60px;padding-bottom:55px;}
 .bar{box-shadow:0px 0px 4px 2px rgba(0,0,0,0.25);}
 .icon{font-size:1.5em;}
 .pointer{cursor:pointer;}

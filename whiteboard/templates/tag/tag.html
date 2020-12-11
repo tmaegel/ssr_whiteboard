@@ -26,9 +26,6 @@
       <i class="collapsable-icon icon fa fa fa-angle-down w3-right"></i>
     </div>
     <div class="collapsable w3-hide w3-border-top w3-border-light-gray">
-      <div class="padding-16">
-        {{ tag.tag }}
-      </div>
       <div class="w3-bar">
         <a {{ "onclick=location.href='{{ tag.id }}';" if tag.userId == 1 }} class="{{ 'w3-disabled' if tag.userId == 1 }} w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right" href="#">
           <i class="icon fa fa fa-pencil"></i>
@@ -36,6 +33,12 @@
         <a {{ "onclick=location.href='{{ tag.id }}';" if tag.userId == 1 }} class="{{ 'w3-disabled' if tag.userId == 1 }} w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right" href="#">
           <i class="icon fa fa fa-trash"></i>
         </a>
+      </div>
+      <div class="padding-16-x">
+        {{ tag.tag }}
+      </div>
+      <div class="w3-margin-top w3-margin-bottom">
+        <!-- placeholder for linked workouts, equipment and movements -->
       </div>
     </div>
   </li>
