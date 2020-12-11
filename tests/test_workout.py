@@ -91,7 +91,7 @@ def test_info_login_default(client, auth):
     assert b'Workout B from admin' in response.data
     assert b'Workout B description from admin' in response.data
     # Check if delete/edit button is hidden when userId = 1
-    assert b'fa-trash' not in response.data
+    assert b'w3-disabled"><i class="icon fa fa-trash"></i>' in response.data
     assert b'fa-pencil' not in response.data
     # Check if canvas and score table is hidden when there is no score available
     assert b'canvas' not in response.data

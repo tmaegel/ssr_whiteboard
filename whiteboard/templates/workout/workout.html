@@ -4,9 +4,6 @@
 <div class="bar w3-top w3-dark-grey padding-8-y">
   <div class="w3-bar">
     {% include 'general/title.html' %}
-    <a onclick="document.getElementById('addWorkoutDialog').style.display='block'" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right">
-      <i class="icon fa fa-plus-circle"></i>
-    </a>
     <a onclick="document.getElementById('prefsDialog').style.display='block'" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right">
       <i class="icon fa fa-gear"></i>
     </a>
@@ -20,6 +17,7 @@
 {% block content %}
 {% include 'general/prefs_dialog.html' %}
 {% include 'workout/add_dialog.html' %}
+{% include 'general/overlay_button_add.html' %}
 
 <ul id="searchable" class="w3-ul">
 {% for workout in workouts %}

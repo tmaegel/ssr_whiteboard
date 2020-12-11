@@ -4,28 +4,21 @@
 <div class="bar w3-top w3-dark-grey padding-8-y">
   <div class="w3-bar">
     {% include 'general/title.html' %}
-    <a onclick="document.getElementById('addScoreDialog').style.display='block'" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right">
-      <i class="icon fa fa-plus-circle"></i>
+    <a {{ "onclick=document.getElementById('deleteWorkoutDialog').style.display='block';" if workout.userId != 1 }} href="#"
+      class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right
+      {{ 'w3-disabled' if workout.userId == 1 }}"><i class="icon fa fa-trash"></i>
     </a>
-    {% if workout.userId != 1 %}
-    <a onclick="document.getElementById('editWorkoutDialog').style.display='block'" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right">
-      <i class="icon fa fa-pencil"></i>
-    </a>
-    <a onclick="document.getElementById('deleteWorkoutDialog').style.display='block'" href="#" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right">
-      <i class="icon fa fa-trash"></i>
-    </a>
-    {% endif %}
   </div>
 </div>
 {% endblock %}
 
 {% block content %}
-{% if workout.userId != 1 %}
-  {% include 'workout/edit_dialog.html' %}
-  {% include 'workout/delete_dialog.html' %}
-{% endif %}
+{% include 'workout/edit_dialog.html' %}
+{% include 'workout/delete_dialog.html' %}
 {% include 'score/add_dialog.html' %}
 {% include 'score/edit_dialog.html' %}
+{% include 'general/overlay_button_add.html' %}
+{% include 'general/overlay_button_edit.html' %}
 
 <div class="w3-margin">
   <h2>{{ workout.name }}</h2>
@@ -49,7 +42,7 @@
     <tr id="{{ score.id }}" class="w3-hover-light-gray pointer" onclick="openEditScoreDialog(this)">
       <td class="scoreRx w3-padding-16">
         {% if score.rx == 1 %}
-        <span class="w3-badge w3-light-gray w3-small">Rx</span>
+        <span class="w3-badge w3-small w3-light-gray w3-round-small padding-4-y padding-8-x">Rx</span>
         {% endif %}
       </td>
       <td class="scoreDatetime w3-padding-16">{{ get_format_timestamp(score.datetime) }}</td>

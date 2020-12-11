@@ -16,6 +16,7 @@
 
 {% block content %}
 {% include 'general/prefs_dialog.html' %}
+{% include 'general/overlay_button_add.html' %}
 
 <ul id="searchable" class="w3-ul">
 {% for tag in tags %}
@@ -29,10 +30,10 @@
         {{ tag.tag }}
       </div>
       <div class="w3-bar">
-        <a {{ 'onclick="location.href=\'{{ tag.id }}\';"' if tag.userId == 1 }} class="{{ 'w3-disabled' if tag.userId == 1 }} w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right" href="#">
+        <a {{ "onclick=location.href='{{ tag.id }}';" if tag.userId == 1 }} class="{{ 'w3-disabled' if tag.userId == 1 }} w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right" href="#">
           <i class="icon fa fa fa-pencil"></i>
         </a>
-        <a {{ 'onclick="location.href=\'{{ tag.id }}\';"' if tag.userId == 1 }} class="{{ 'w3-disabled' if tag.userId == 1 }} w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right" href="#">
+        <a {{ "onclick=location.href='{{ tag.id }}';" if tag.userId == 1 }} class="{{ 'w3-disabled' if tag.userId == 1 }} w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right" href="#">
           <i class="icon fa fa fa-trash"></i>
         </a>
       </div>
