@@ -20,9 +20,10 @@
 {% endblock %}
 
 {% block content %}
-
-{% include 'workout/edit_dialog.html' %}
-{% include 'workout/delete_dialog.html' %}
+{% if workout.userId != 1 %}
+  {% include 'workout/edit_dialog.html' %}
+  {% include 'workout/delete_dialog.html' %}
+{% endif %}
 {% include 'score/add_dialog.html' %}
 {% include 'score/edit_dialog.html' %}
 
