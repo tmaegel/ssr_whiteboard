@@ -4,7 +4,7 @@ from flask import (
 
 from ..db import get_db
 from ..utils import (
-    is_digit, is_float, is_timestamp, is_datetime, datetime_to_sec
+    is_float, is_timestamp, is_datetime, datetime_to_sec
 )
 from .auth import login_required
 from .workout import (
@@ -27,7 +27,7 @@ def add(workout_id):
 
         if not score:
             error = 'Score is required.'
-        elif (not is_digit(score) and not is_float(score)
+        elif (not score.isdigit() and not is_float(score)
               and not is_timestamp(score)):
             error = 'Score is invalid.'
 
@@ -76,7 +76,7 @@ def update(workout_id, score_id):
 
         if not score:
             error = 'Score is required.'
-        elif (not is_digit(score) and not is_float(score)
+        elif (not score.isdigit() and not is_float(score)
               and not is_timestamp(score)):
             error = 'Score is invalid.'
 

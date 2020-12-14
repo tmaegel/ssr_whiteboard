@@ -4,9 +4,6 @@ from flask import (
 from markupsafe import escape
 
 from ..db import get_db
-from ..utils import (
-    is_digit
-)
 from .auth import login_required
 
 bp = Blueprint('user', __name__, url_prefix='/user')
@@ -23,11 +20,11 @@ def prefs_update(route):
 
         if not sort_type:
             error = 'Sort type is required.'
-        elif not is_digit(sort_type):
+        elif not sort_type.isdigit():
             error = 'Sort type is invalid.'
         if not filter_type:
             error = 'Filter type is required.'
-        elif not is_digit(filter_type):
+        elif not filter_type.isdigit():
             error = 'Filter type is invalid.'
 
         if error is not None:

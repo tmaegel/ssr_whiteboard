@@ -3,16 +3,6 @@ import datetime
 import re
 
 
-# Number regex check
-# e.g. 1234
-def is_digit(value):
-    pattern = re.compile(r'\d+')
-    if pattern.fullmatch(value) is None:
-        return False
-    else:
-        return True
-
-
 # Floating number regex check
 # e.g. 123.45
 def is_float(value):
@@ -67,7 +57,7 @@ def timestamp_to_sec(value):
             sec = int(ts_split[0])*3600+int(ts_split[1])*60+int(ts_split[2])
 
         return sec
-    elif is_digit(value) is True or is_float(value) is True:
+    elif value.isdigit() is True or is_float(value) is True:
         return value
     else:
         return -1
@@ -101,7 +91,7 @@ def datetime_to_sec(value):
         sec = time.mktime(datetime.datetime(
             year, month, day, hour, minutes, seconds).timetuple())
         return int(sec)
-    elif is_digit(value) is True or is_float(value) is True:
+    elif value.isdigit() is True or is_float(value) is True:
         return value
     else:
         return -1
