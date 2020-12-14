@@ -102,8 +102,8 @@ def info(workout_id):
 @login_required
 def add():
     if request.method == 'POST':
-        name = request.form['name']
-        description = request.form['description']
+        name = request.form['name'].strip()
+        description = request.form['description'].strip()
         error = None
 
         # @todo: Regex check
@@ -143,8 +143,8 @@ def add():
 def update(workout_id):
     if request.method == 'POST':
         workout = get_workout(workout_id, True)
-        name = request.form['name']
-        description = request.form['description']
+        name = request.form['name'].strip()
+        description = request.form['description'].strip()
         error = None
 
         if not name:

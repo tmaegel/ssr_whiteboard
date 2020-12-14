@@ -20,9 +20,9 @@ bp = Blueprint('score', __name__, url_prefix='/workout/<int:workout_id>/score')
 def add(workout_id):
     if request.method == 'POST':
         workout = get_workout(workout_id, True)
-        score = request.form['score']
-        datetime = request.form['datetime']
-        note = request.form['note']
+        score = request.form['score'].strip()
+        datetime = request.form['datetime'].strip()
+        note = request.form['note'].strip()
         error = None
 
         if not score:
@@ -69,9 +69,9 @@ def add(workout_id):
 def update(workout_id, score_id):
     if request.method == 'POST':
         workout = get_workout(workout_id, True)
-        score = request.form['score']
-        datetime = request.form['datetime']
-        note = request.form['note']
+        score = request.form['score'].strip()
+        datetime = request.form['datetime'].strip()
+        note = request.form['note'].strip()
         error = None
 
         if not score:
