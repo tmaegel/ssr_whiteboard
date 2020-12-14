@@ -23,7 +23,7 @@
 <div class="w3-margin">
   <h2>{{ workout.name }}</h2>
     <p>
-      {% for item in workout.description.split('\n') %}
+      {% for item in workout.description.splitlines() %}
         {{ item }}<br />
       {% endfor %}
     </p>

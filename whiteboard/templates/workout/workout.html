@@ -33,7 +33,7 @@
         </a>
       </div>
       <div class="padding-16-x">
-        {% for item in workout.description.split('\n') %}
+        {% for item in workout.description.splitlines() %}
           {{ item }}<br />
         {% endfor %}
         <div class="w3-margin-top w3-margin-bottom">
