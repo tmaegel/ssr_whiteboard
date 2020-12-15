@@ -93,7 +93,7 @@ def test_info_login_default(client, auth):
     # Check if delete/edit button is hidden when userId = 1
     assert b'w3-disabled"><i class="icon fa fa-trash"></i>' in response.data
     assert b'fa-pencil' not in response.data
-    # Check if canvas and score table is hidden when there is no score available
+    # Check if canvas and score table is hidden if there is no score
     assert b'canvas' not in response.data
     assert b'table' not in response.data
 
@@ -115,17 +115,17 @@ def test_info_login_custom(client, auth):
     # Check if delete/edit button is bot hidden when userId > 1
     assert b'fa-trash' in response.data
     assert b'fa-pencil' in response.data
-    # Check if canvas/table is not hidden when there is more than 1 score available
+    # Check if canvas/table isn't hidden if there is more than 1 score
     assert b'canvas' in response.data
     assert b'table' in response.data
 
     response = client.get('/workout/4')
     assert response.status_code == 200
-    # Check if canvas is hidden when there is only 1 score available
+    # Check if canvas is hidden if there is only 1 score
     assert b'canvas' not in response.data
     assert b'table' in response.data
     # Check if rx span element is hidden when the score hasn't the rx switch
-    assert b'<span class="badge badge-light badge-pill">Rx</span>' not in response.data
+    assert b'scoreRx' not in response.data
 
     # Check the tags
     assert b'Tag A from admin' not in response.data
@@ -168,7 +168,8 @@ def test_add(client, auth, app):
         db = get_db()
         count = db.execute('SELECT COUNT(id) FROM table_workout').fetchone()[0]
         assert count == 7
-        result = db.execute('SELECT * FROM table_workout WHERE id=7').fetchone()
+        result = db.execute(
+            'SELECT * FROM table_workout WHERE id=7').fetchone()
         assert result['name'] == 'Add Workout C from test1'
         assert result['description'] == 'Update Workout C description from test1'
         assert result['datetime'] != 0
@@ -215,7 +216,8 @@ def test_update(client, auth, app):
         db = get_db()
         count = db.execute('SELECT COUNT(id) FROM table_workout').fetchone()[0]
         assert count == 6
-        result = db.execute('SELECT * FROM table_workout WHERE id=3').fetchone()
+        result = db.execute(
+            'SELECT * FROM table_workout WHERE id=3').fetchone()
         assert result['name'] == 'Update Workout A from test1'
         assert result['description'] == 'Update Workout A description from test1'
         assert result['datetime'] != 0
@@ -266,11 +268,15 @@ def test_delete(client, auth, app):
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) FROM table_workout').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) FROM table_workout').fetchone()[0]
         assert count == 5
-        count = db.execute('SELECT COUNT(id) FROM table_workout WHERE id=3').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) FROM table_workout WHERE id=3').fetchone()[0]
         assert count == 0
-        count = db.execute('SELECT COUNT(id) from table_workout_score WHERE workoutId=3').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) from table_workout_score WHERE workoutId=3'
+        ).fetchone()[0]
         assert count == 0
 
 
@@ -283,11 +289,15 @@ def test_delete_invalid(client, auth, app):
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) FROM table_workout').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) FROM table_workout').fetchone()[0]
         assert count == 6
-        count = db.execute('SELECT COUNT(id) FROM table_workout WHERE id=1').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) FROM table_workout WHERE id=1').fetchone()[0]
         assert count == 1
-        count = db.execute('SELECT COUNT(id) from table_workout_score WHERE workoutId=1').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) from table_workout_score WHERE workoutId=1'
+        ).fetchone()[0]
         assert count == 2
 
 

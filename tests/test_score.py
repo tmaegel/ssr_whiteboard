@@ -27,13 +27,15 @@ def test_add(client, auth, app, score):
     assert score in response.data
     assert b'14.02.2009 00:31' in response.data
     assert b'Add note to Workout B from test1' in response.data
-    assert b'<span class="w3-badge w3-small w3-light-gray w3-round-small padding-4-y padding-8-x">Rx</span>' in response.data
+    assert b'scoreRx' in response.data
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) FROM table_workout_score').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) FROM table_workout_score').fetchone()[0]
         assert count == 6
-        result = db.execute('SELECT * FROM table_workout_score WHERE id=6').fetchone()
+        result = db.execute(
+            'SELECT * FROM table_workout_score WHERE id=6').fetchone()
         assert result['workoutId'] == 4
         assert result['score'] == score.decode("utf-8")
         assert result['datetime'] == 1234567860
@@ -112,9 +114,11 @@ def test_update(client, auth, app, score):
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) FROM table_workout_score').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) FROM table_workout_score').fetchone()[0]
         assert count == 5
-        result = db.execute('SELECT * FROM table_workout_score WHERE workoutId=3').fetchone()
+        result = db.execute(
+            'SELECT * FROM table_workout_score WHERE workoutId=3').fetchone()
         assert result['id'] == 2
         assert result['workoutId'] == 3
         assert result['score'] == score.decode("utf-8")
@@ -133,7 +137,8 @@ def test_update(client, auth, app, score):
     ('1234567890', 'abc', 1, 'note', b'Datetime is invalid.'),
     ('1234567890', '123', 1, 'note', b'Datetime is invalid.'),
 ))
-def test_update_validate_input(client, auth, score, datetime, rx, note, message):
+def test_update_validate_input(client, auth, score, datetime, rx, note,
+                               message):
     auth.login()
     response = client.post(
         '/workout/3/score/2/update',
@@ -176,7 +181,9 @@ def test_delete_default(client, auth, app):
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) from table_workout_score WHERE workoutId=1').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) from table_workout_score WHERE workoutId=1'
+        ).fetchone()[0]
         assert count == 1
 
 
@@ -190,7 +197,9 @@ def test_delete_custom(client, auth, app):
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) from table_workout_score WHERE workoutId=3').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) from table_workout_score WHERE workoutId=3'
+        ).fetchone()[0]
         assert count == 1
 
 
@@ -203,6 +212,9 @@ def test_delete_custom(client, auth, app):
 ))
 def test_delete_invalid(client, auth, workoutId, scoreId, message):
     auth.login()
-    response = client.get('/workout/' + workoutId + '/score/' + scoreId + '/delete', follow_redirects=True)
+    response = client.get(
+        '/workout/' + workoutId + '/score/' + scoreId + '/delete',
+        follow_redirects=True
+    )
     assert response.status_code == 200
     assert message in response.data
