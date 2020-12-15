@@ -36,11 +36,14 @@ VALUES
 
 INSERT INTO table_tags(userId, tag)
 VALUES
-  (1, 'TagABC'),
-  (1, 'TagXYZ'),
-  (1, 'Tag123'),
-  (1, 'Tag789'),
-  (1, 'Tag###');
+  (1, 'Tag A from admin'),
+  (1, 'Tag B from admin'),
+  (1, 'Tag C from admin'),
+  (1, 'Tag D from admin'),
+  (1, 'Tag E from admin'),
+  (2, 'Tag A from test1'),
+  (2, 'Tag B from test1'),
+  (3, 'Tag A from test2');
 
 INSERT INTO table_workout_tags(workoutId, tagId)
 VALUES

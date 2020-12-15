@@ -1,0 +1,16 @@
+<div id="editTagDialog" class="w3-modal">
+  <div class="w3-modal-content w3-card-4" style="max-width:600px">
+    <div class="w3-container w3-border-light-gray w3-border-bottom">
+      <h3>Edit tag</h3>
+    </div>
+    <span onclick="document.getElementById('editTagDialog').style.display='none'" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
+    <form id="editTagForm" method="post">
+      <div class="w3-container w3-section">
+        <input id="editTagName" name="tag" class="w3-input w3-border w3-border-light-gray" type="text" placeholder="Tag name" required>
+        </div>
+      <div class="w3-container w3-border-light-gray w3-border-top">
+        <button class="w3-button w3-round w3-blue w3-section w3-padding w3-right" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>

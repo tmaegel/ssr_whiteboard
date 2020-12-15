@@ -102,14 +102,14 @@ def info(workout_id):
 @login_required
 def add():
     if request.method == 'POST':
-        name = request.form['name'].strip()
-        description = request.form['description'].strip()
+        workout_name = request.form['name'].strip()
+        workout_description = request.form['description'].strip()
         error = None
 
         # @todo: Regex check
-        if not name:
+        if not workout_name:
             error = 'Name is required.'
-        if not description:
+        if not workout_description:
             error = 'Description is required.'
 
         if error is not None:
@@ -120,7 +120,7 @@ def add():
                 'INSERT INTO table_workout'
                 ' (userId, name, description, datetime)'
                 ' VALUES (?, ?, ?, ?)',
-                (g.user['id'], name, description, time.time(),)
+                (g.user['id'], workout_name, workout_description, time.time(),)
             )
             db.commit()
             inserted_workout = db.execute(
@@ -143,13 +143,13 @@ def add():
 def update(workout_id):
     if request.method == 'POST':
         workout = get_workout(workout_id, True)
-        name = request.form['name'].strip()
-        description = request.form['description'].strip()
+        workout_name = request.form['name'].strip()
+        workout_description = request.form['description'].strip()
         error = None
 
-        if not name:
+        if not workout_name:
             error = 'Name is required.'
-        if not description:
+        if not workout_description:
             error = 'Description is required.'
         if workout is None:
             error = 'User or Workout ID is invalid.'
@@ -164,8 +164,8 @@ def update(workout_id):
                 'UPDATE table_workout'
                 ' SET name = ?, description = ?, datetime = ?'
                 ' WHERE id = ? AND userId = ?',
-                (name, description, int(time.time()), workout_id,
-                 g.user['id'],)
+                (workout_name, workout_description, int(time.time()),
+                 workout_id, g.user['id'],)
             )
             db.commit()
 
@@ -205,14 +205,14 @@ def delete(workout_id):
 # Get the workout and tag list from db
 def get_workout(workout_id, force_user_id=False):
     db = get_db()
-    workouts_res = db.execute(
+    workout_res = db.execute(
         'SELECT id, userId, name, description, datetime'
         ' FROM table_workout WHERE id = ?',
         (workout_id,)
     ).fetchone()
 
     # @todo Raise custom exception here
-    if workouts_res is None:
+    if workout_res is None:
         return None
 
     tags = db.execute(
@@ -224,7 +224,7 @@ def get_workout(workout_id, force_user_id=False):
         (workout_id,)
     ).fetchall()
 
-    workout = link_workout_to_tags(workouts_res, tags)
+    workout = link_workout_to_tags(workout_res, tags)
     if force_user_id:
         if workout['userId'] != g.user['id']:
             return None

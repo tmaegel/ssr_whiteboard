@@ -20,22 +20,22 @@ bp = Blueprint('score', __name__, url_prefix='/workout/<int:workout_id>/score')
 def add(workout_id):
     if request.method == 'POST':
         workout = get_workout(workout_id, True)
-        score = request.form['score'].strip()
-        datetime = request.form['datetime'].strip()
-        note = request.form['note'].strip()
+        score_value = request.form['score'].strip()
+        score_datetime = request.form['datetime'].strip()
+        score_note = request.form['note'].strip()
         error = None
 
-        if not score:
+        if not score_value:
             error = 'Score is required.'
-        elif (not score.isdigit() and not is_float(score)
-              and not is_timestamp(score)):
+        elif (not score_value.isdigit() and not is_float(score_value)
+              and not is_timestamp(score_value)):
             error = 'Score is invalid.'
 
-        if not datetime:
+        if not score_datetime:
             error = 'Datetime is required.'
         else:
-            timestamp_in_sec = datetime_to_sec(datetime)
-            if is_datetime(datetime) is False or timestamp_in_sec == -1:
+            timestamp_in_sec = datetime_to_sec(score_datetime)
+            if is_datetime(score_datetime) is False or timestamp_in_sec == -1:
                 error = 'Datetime is invalid.'
 
         if workout is None:
@@ -56,7 +56,8 @@ def add(workout_id):
                 'INSERT INTO table_workout_score'
                 '(userId, workoutId, score, rx, datetime, note)'
                 ' VALUES (?, ?, ?, ?, ?, ?)',
-                (g.user['id'], workout_id, score, rx, timestamp_in_sec, note,)
+                (g.user['id'], workout_id, score_value, rx, timestamp_in_sec,
+                 score_note,)
             )
             db.commit()
 
@@ -69,22 +70,22 @@ def add(workout_id):
 def update(workout_id, score_id):
     if request.method == 'POST':
         workout = get_workout(workout_id, True)
-        score = request.form['score'].strip()
-        datetime = request.form['datetime'].strip()
-        note = request.form['note'].strip()
+        score_value = request.form['score'].strip()
+        score_datetime = request.form['datetime'].strip()
+        score_note = request.form['note'].strip()
         error = None
 
-        if not score:
+        if not score_value:
             error = 'Score is required.'
-        elif (not score.isdigit() and not is_float(score)
-              and not is_timestamp(score)):
+        elif (not score_value.isdigit() and not is_float(score_value)
+              and not is_timestamp(score_value)):
             error = 'Score is invalid.'
 
-        if not datetime:
+        if not score_datetime:
             error = 'Datetime is required.'
         else:
-            timestamp_in_sec = datetime_to_sec(datetime)
-            if is_datetime(datetime) is False or timestamp_in_sec == -1:
+            timestamp_in_sec = datetime_to_sec(score_datetime)
+            if is_datetime(score_datetime) is False or timestamp_in_sec == -1:
                 error = 'Datetime is invalid.'
 
         if workout is None:
@@ -107,8 +108,8 @@ def update(workout_id, score_id):
                 'UPDATE table_workout_score'
                 ' SET workoutId = ?, score = ?, rx = ?, datetime = ?, note = ?'
                 ' WHERE id = ? AND userId = ?',
-                (workout_id, score, rx, timestamp_in_sec, note, score_id,
-                 g.user['id'],)
+                (workout_id, score_value, rx, timestamp_in_sec, score_note,
+                 score_id, g.user['id'],)
             )
             db.commit()
 

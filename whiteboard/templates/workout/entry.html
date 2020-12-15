@@ -74,7 +74,7 @@ function openEditScoreDialog(element) {
   }
   document.getElementById('editScoreForm').action = '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/update';
   document.getElementById('deleteScoreBtn').formAction = '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/delete';
-  document.getElementById('editScoreDialog').style.display='block'
+  document.getElementById('editScoreDialog').style.display='block';
 }
 
 var ctx = document.getElementById('chart').getContext('2d');

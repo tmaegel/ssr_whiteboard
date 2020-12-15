@@ -36,11 +36,11 @@ def test_list_adminlogin(client, auth):
     assert b'onclick="location.href=\'6\';"' not in response.data
 
     # Check the tags
-    assert b'TagABC' in response.data
-    assert b'TagXYZ' in response.data
-    assert b'Tag123' not in response.data
-    assert b'Tag789' not in response.data
-    assert b'Tag###' not in response.data
+    assert b'Tag A from admin' in response.data
+    assert b'Tag B from admin' in response.data
+    assert b'Tag C from admin' not in response.data
+    assert b'Tag D from admin' not in response.data
+    assert b'Tag E from admin' not in response.data
 
 
 # List with User Login
@@ -67,11 +67,11 @@ def test_list_userlogin(client, auth):
     assert b'onclick="location.href=\'6\';"' not in response.data
 
     # Check the tags
-    assert b'TagABC' in response.data
-    assert b'TagXYZ' in response.data
-    assert b'Tag123' in response.data
-    assert b'Tag789' in response.data
-    assert b'Tag###' not in response.data
+    assert b'Tag A from admin' in response.data
+    assert b'Tag B from admin' in response.data
+    assert b'Tag C from admin' in response.data
+    assert b'Tag D from admin' in response.data
+    assert b'Tag E from admin' not in response.data
 
 
 # Info with No Login
@@ -98,11 +98,11 @@ def test_info_login_default(client, auth):
     assert b'table' not in response.data
 
     # Check the tags
-    assert b'TagABC' in response.data
-    assert b'TagXYZ' in response.data
-    assert b'Tag123' not in response.data
-    assert b'Tag789' not in response.data
-    assert b'Tag###' not in response.data
+    assert b'Tag A from admin' in response.data
+    assert b'Tag B from admin' in response.data
+    assert b'Tag C from admin' not in response.data
+    assert b'Tag D from admin' not in response.data
+    assert b'Tag E from admin' not in response.data
 
 
 # Info with User Login and custom workout
@@ -128,11 +128,11 @@ def test_info_login_custom(client, auth):
     assert b'<span class="badge badge-light badge-pill">Rx</span>' not in response.data
 
     # Check the tags
-    assert b'TagABC' not in response.data
-    assert b'TagXYZ' not in response.data
-    assert b'Tag123' in response.data
-    assert b'Tag789' in response.data
-    assert b'Tag###' not in response.data
+    assert b'Tag A from admin' not in response.data
+    assert b'Tag B from admin' not in response.data
+    assert b'Tag C from admin' in response.data
+    assert b'Tag D from admin' in response.data
+    assert b'Tag E from admin' not in response.data
 
 
 # Invalid workoutID
@@ -155,7 +155,10 @@ def test_add(client, auth, app):
     response = client.post(
         '/workout/add',
         follow_redirects=True,
-        data={'name': 'Add Workout C from test1', 'description': 'Update Workout C description from test1'}
+        data={
+            'name': 'Add Workout C from test1',
+            'description': 'Update Workout C description from test1'
+        }
     )
     assert response.status_code == 200
     assert b'Add Workout C from test1' in response.data
@@ -199,7 +202,10 @@ def test_update(client, auth, app):
     response = client.post(
         '/workout/3/update',
         follow_redirects=True,
-        data={'name': 'Update Workout A from test1', 'description': 'Update Workout A description from test1'}
+        data={
+            'name': 'Update Workout A from test1',
+            'description': 'Update Workout A description from test1'
+        }
     )
     assert response.status_code == 200
     assert b'Update Workout A from test1' in response.data
@@ -243,7 +249,10 @@ def test_update_invalid(client, auth, workoutId):
     response = client.post(
         '/workout/' + workoutId + '/update',
         follow_redirects=True,
-        data={'name': 'Update Workout A from test2', 'description': 'Update Workout A description from test2'}
+        data={
+            'name': 'Update Workout A from test2',
+            'description': 'Update Workout A description from test2'
+        }
     )
     assert response.status_code == 200
     assert b'User or Workout ID is invalid.' in response.data
