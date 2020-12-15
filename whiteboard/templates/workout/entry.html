@@ -4,7 +4,7 @@
 <div class="bar w3-top w3-dark-grey padding-8-y">
   <div class="w3-bar">
     {% include 'general/title.html' %}
-    <a {{ "onclick=document.getElementById('deleteWorkoutDialog').style.display='block';" if workout.userId != 1 }} href="#"
+    <a {{ "onclick=openDeleteWorkoutDialog()" if workout.userId != 1 }} href="#"
       class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right
       {{ 'w3-disabled' if workout.userId == 1 }}"><i class="icon fa fa-trash"></i>
     </a>
@@ -40,9 +40,9 @@
   <table class="w3-table w3-bordered w3-hoverable">
     {% for score in scores | reverse %}
     <tr id="{{ score.id }}" class="w3-hover-light-gray pointer" onclick="openEditScoreDialog(this)">
-      <td class="scoreRx w3-padding-16">
+      <td class="w3-padding-16">
         {% if score.rx == 1 %}
-        <span class="w3-badge w3-small w3-light-gray w3-round-small padding-4-y padding-8-x">Rx</span>
+        <span class="scoreRx w3-badge w3-small w3-light-gray w3-round-small padding-4-y padding-8-x">Rx</span>
         {% endif %}
       </td>
       <td class="scoreDatetime w3-padding-16">{{ get_format_timestamp(score.datetime) }}</td>
@@ -55,28 +55,9 @@
 {% endblock %}
 
 {% block script %}
+<script src="{{ url_for('static', filename='js/workout/handle_dialog.js') }}"></script>
+<script src="{{ url_for('static', filename='js/score/handle_dialog.js') }}"></script>
 <script>
-function openEditScoreDialog(element) {
-  let scoreId, scoreValue, scoreDatetime, scoreNote, scoreRx;
-  scoreId = element.id;
-  scoreValue = element.getElementsByClassName('scoreValue')[0].innerText;
-  scoreDatetime = element.getElementsByClassName('scoreDatetime')[0].innerText;
-  scoreNote = element.getElementsByClassName('scoreNote')[0].innerText;
-  scoreRx = element.getElementsByClassName('scoreRx')[0].innerText;
-  document.getElementById('editScoreValue').value = scoreValue;
-  document.getElementById('editScoreDatetime').value = scoreDatetime;
-  document.getElementById('editScoreNote').value = scoreNote;
-  document.getElementById('editScoreValue').value = scoreValue;
-  if(scoreRx == "Rx") {
-    document.getElementById('editScoreRx').checked = true;
-  } else {
-    document.getElementById('editScoreRx').checked = false;
-  }
-  document.getElementById('editScoreForm').action = '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/update';
-  document.getElementById('deleteScoreBtn').formAction = '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/delete';
-  document.getElementById('editScoreDialog').style.display='block';
-}
-
 var ctx = document.getElementById('chart').getContext('2d');
 var chart = new Chart(ctx, {
     type: 'line',

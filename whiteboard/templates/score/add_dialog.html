@@ -3,7 +3,7 @@
     <div class="w3-container w3-border-light-gray w3-border-bottom">
       <h3>Add workout score</h3>
     </div>
-    <span onclick="document.getElementById('addScoreDialog').style.display='none'" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
+    <span onclick="closeAddScoreDialog()" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
     <form method="post" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/score/add">
       <div class="w3-container w3-section">
         <input name="score" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Score" required>

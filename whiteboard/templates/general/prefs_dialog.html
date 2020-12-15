@@ -3,7 +3,7 @@
     <div class="w3-container w3-border-light-gray w3-border-bottom">
       <h3>Preferences</h3>
     </div>
-    <span onclick="document.getElementById('prefsDialog').style.display='none'" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
+    <span onclick="closePrefsDialog()" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
     <form method="post" action="{{ url_for('index') }}user/prefs/update{{ request.path }}">
       <div class="w3-container w3-section">
         <label>Sort items</label>

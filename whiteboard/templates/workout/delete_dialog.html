@@ -4,7 +4,7 @@
     <div class="w3-container w3-border-light-gray w3-border-bottom">
       <h3>Delete workout</h3>
     </div>
-    <span onclick="document.getElementById('deleteWorkoutDialog').style.display='none'" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
+    <span onclick="closeDeleteWorkoutDialog()" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
     <form method="get" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/delete">
       <div class="w3-container w3-section">
         <p>Do you really want to delete the workout and all associated scores?</p>

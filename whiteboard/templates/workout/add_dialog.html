@@ -3,7 +3,7 @@
     <div class="w3-container w3-border-light-gray w3-border-bottom">
       <h3>New workout</h3>
     </div>
-    <span onclick="document.getElementById('addWorkoutDialog').style.display='none'" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
+    <span onclick="closeAddWorkoutDialog()" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
     <form method="post" action="{{ url_for(request.endpoint) }}add">
       <div class="w3-container w3-section">
         <input name="name" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Workout name" required>
