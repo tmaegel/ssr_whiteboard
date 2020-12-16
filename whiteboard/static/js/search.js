@@ -17,11 +17,14 @@ function doSearch() {
 }
 
 function toggleSearch() {
-  element = document.getElementById('searchbar');
-  if(element.classList.contains('w3-hide')) {
-    element.classList.remove("w3-hide");
+  let searchbar = document.getElementById('searchbar');
+  let titlebar = document.getElementById('titlebar');
+  if(searchbar.classList.contains('w3-hide')) {
+    titlebar.classList.add("w3-hide");
+    searchbar.classList.remove("w3-hide");
   } else {
-    element.classList.add("w3-hide");
+    titlebar.classList.remove("w3-hide");
+    searchbar.classList.add("w3-hide");
     search = document.getElementById('search-input');
     search.value = '';
     doSearch();

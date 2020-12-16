@@ -7,7 +7,7 @@
     <form method="post" action="{{ url_for('index') }}user/prefs/update{{ request.path }}">
       <div class="w3-container w3-section">
         <label>Sort items</label>
-        <select class="w3-select w3-border w3-border-light-gray w3-margin-bottom" name="inputSort">
+        <select class="w3-select w3-round w3-border w3-border-light-gray w3-margin-bottom" name="inputSort">
           {% if prefs.sortType == 0 %}
           <option value="0" selected>Ascending</option>
           <option value="1">Descending</option>
@@ -20,7 +20,7 @@
           {% endif %}
         </select>
         <label>Filter items</label>
-        <select class="w3-select w3-border-light-gray w3-border" name="inputFilter">
+        <select class="w3-select w3-round w3-border-light-gray w3-border" name="inputFilter">
           {% if prefs.filterType == 0 %}
           <option value="0" selected>No Filter</option>
           <option value="1">Default only</option>

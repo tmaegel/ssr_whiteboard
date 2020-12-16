@@ -7,13 +7,13 @@
     {% if '/workout/' == request.path %}
     <form id="editWorkoutForm" method="post">
       <div class="w3-container w3-section">
-        <input id="editWorkoutName" name="name" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Workout name" required>
-        <textarea id="editWorkoutDescription" name="description" class="w3-input w3-border-light-gray w3-border" rows="7" type="text" placeholder="Workout description" required></textarea>
+        <input id="editWorkoutName" name="name" class="w3-input w3-round w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Workout name" required>
+        <textarea id="editWorkoutDescription" name="description" class="w3-input w3-round w3-border-light-gray w3-border" rows="7" type="text" placeholder="Workout description" required></textarea>
     {% else %}
     <form id="editWorkoutForm" method="post" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/update">
       <div class="w3-container w3-section">
-        <input id="editWorkoutName" name="name" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Workout name" value="{{ workout.name }}" required>
-        <textarea id="editWorkoutDescription" name="description" class="w3-input w3-border-light-gray w3-border" rows="7" type="text" placeholder="Workout description" required>{{ workout.description }}</textarea>
+        <input id="editWorkoutName" name="name" class="w3-input w3-round w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Workout name" value="{{ workout.name }}" required>
+        <textarea id="editWorkoutDescription" name="description" class="w3-input w3-round w3-border-light-gray w3-border" rows="7" type="text" placeholder="Workout description" required>{{ workout.description }}</textarea>
     {% endif %}
         </div>
       <div class="w3-container w3-border-light-gray w3-border-top">

@@ -24,7 +24,7 @@ def test_prefs_update_userlogin(client, auth):
         data={'inputSort': '0', 'inputFilter': '0'}
     )
     assert response.status_code == 200
-    assert b'Dashboard' in response.data
+    assert b'Home' in response.data
 
 
 # Update user prefs with user Login
@@ -36,7 +36,7 @@ def test_prefs_update_paths(client, auth):
         data={'inputSort': '0', 'inputFilter': '0'}
     )
     assert response.status_code == 200
-    assert b'Dashboard' in response.data
+    assert b'Home' in response.data
 
     response = client.post(
         '/user/prefs/update/workout/',

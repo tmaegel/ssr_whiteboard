@@ -1,29 +1,24 @@
 {% extends 'base.html' %}
 
-{% block topbar %}
-<div class="bar w3-top w3-dark-grey padding-8-y">
-  <div class="w3-bar">
-    {% include 'general/title.html' %}
-    <a onclick="openPrefsDialog()"
-      class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
-      href="#">
-      <i class="icon fa fa-gear"></i>
-    </a>
-    <a id="toggleSearchbar" onClick="toggleSearch()"
-      class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
-      href="#" >
-      <i class="icon fa fa-search"></i>
-    </a>
-  </div>
-</div>
+{% block toolbar %}
+  <a onclick="openPrefsDialog()"
+    class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
+    href="#">
+    <i class="icon fa fa-gear"></i>
+  </a>
+  <a id="toggleSearchbar" onClick="toggleSearch()"
+    class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
+    href="#" >
+    <i class="icon fa fa-search"></i>
+  </a>
 {% endblock %}
 
 {% block content %}
+{% include 'general/overlay_button_add.html' %}
 {% include 'general/prefs_dialog.html' %}
 {% include 'tag/add_dialog.html' %}
 {% include 'tag/edit_dialog.html' %}
 {% include 'tag/delete_dialog.html' %}
-{% include 'general/overlay_button_add.html' %}
 
 <ul id="searchable" class="w3-ul">
 {% for tag in tags %}
@@ -70,8 +65,6 @@
 {% endblock %}
 
 {% block script %}
-<script src="{{ url_for('static', filename='js/search.js') }}"></script>
-<script src="{{ url_for('static', filename='js/collapse.js') }}"></script>
 <script src="{{ url_for('static', filename='js/general/handle_dialog.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tag/handle_dialog.js') }}"></script>
 {% endblock %}

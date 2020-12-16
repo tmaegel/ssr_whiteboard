@@ -6,9 +6,9 @@
     <span onclick="closeAddScoreDialog()" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
     <form method="post" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/score/add">
       <div class="w3-container w3-section">
-        <input name="score" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Score" required>
-        <input name="datetime" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="dd.mm.YYYY HH:MM" value="{{ cur_format_time }}" required>
-        <textarea name="note" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" rows="3" placeholder="Note"></textarea>
+        <input name="score" class="w3-input w3-round w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Score" required>
+        <input name="datetime" class="w3-input w3-round w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="dd.mm.YYYY HH:MM" value="{{ cur_format_time }}" required>
+        <textarea name="note" class="w3-input w3-round w3-border w3-border-light-gray w3-margin-bottom" type="text" rows="3" placeholder="Note"></textarea>
         <input  name="rx" class="w3-check" type="checkbox" checked="checked">
         <label>Rx</label>
       </div>

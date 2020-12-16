@@ -1,23 +1,23 @@
 {% if '/workout/' in request.path %}
   {% if '/workout/' == request.path %}
-  <button onclick="openAddWorkoutDialog()" class="w3-button w3-circle w3-blue w3-text-white btn-overlay" style="bottom:75px;right:20px;">
+  <button onclick="openAddWorkoutDialog()" class="w3-button w3-circle w3-blue w3-text-white btn-overlay">
     <i class="icon fa fa fa-plus"></i>
   </button>
   {% else %}
-  <button onclick="openAddScoreDialog()" class="w3-button w3-circle w3-blue w3-text-white btn-overlay" style="bottom:75px;right:20px;">
+  <button onclick="openAddScoreDialog()" class="w3-button w3-circle w3-blue w3-text-white btn-overlay">
     <i class="icon fa fa fa-plus"></i>
   </button>
   {% endif %}
 {% elif '/movement/' in request.path %}
-<button class="w3-button w3-circle w3-blue w3-text-white btn-overlay" style="bottom:75px;right:20px;">
+<button class="w3-button w3-circle w3-blue w3-text-white btn-overlay">
   <i class="icon fa fa fa-plus"></i>
 </button>
 {% elif '/equipment/' in request.path %}
-<button class="w3-button w3-circle w3-blue w3-text-white btn-overlay" style="bottom:75px;right:20px;">
+<button class="w3-button w3-circle w3-blue w3-text-white btn-overlay">
   <i class="icon fa fa fa-plus"></i>
 </button>
 {% elif '/tag/' in request.path %}
-<button onclick="openAddTagDialog()" class="w3-button w3-circle w3-blue w3-text-white btn-overlay" style="bottom:75px;right:20px;">
+<button onclick="openAddTagDialog()" class="w3-button w3-circle w3-blue w3-text-white btn-overlay">
   <i class="icon fa fa fa-plus"></i>
 </button>
 {% endif %}

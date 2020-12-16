@@ -61,7 +61,7 @@ def test_passwd_update_userlogin(client, auth):
         data={'password1': '123456', 'password2': '123456'}
     )
     assert response.status_code == 200
-    assert b'Dashboard' in response.data
+    assert b'Home' in response.data
 
     response = client.post(
         '/auth/login',
@@ -69,7 +69,7 @@ def test_passwd_update_userlogin(client, auth):
         data={'username': 'test1', 'password': '123456'}
     )
     assert response.status_code == 200
-    assert b'Dashboard' in response.data
+    assert b'Home' in response.data
 
 
 @pytest.mark.parametrize(('password1', 'password2', 'message'), (

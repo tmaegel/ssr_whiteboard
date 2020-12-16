@@ -1,42 +1,37 @@
 {% extends 'base.html' %}
 
-{% block topbar %}
-<div class="bar w3-top w3-dark-grey padding-8-y">
-  <div class="w3-bar">
-    {% include 'general/title.html' %}
-    {% if workout.userId == userId %}
-      <a onclick="openEditWorkoutDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}')"
-        class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
-        href="#">
-        <i class="icon fa fa fa-pencil"></i>
-      </a>
-      <a onclick="openDeleteWorkoutDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}')"
-        class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
-        href="#">
-        <i class="icon fa fa fa-trash"></i>
-      </a>
-    {% else %}
-      <a class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right w3-disabled"
-        href="#" id="btn-edit-workout-hide">
-        <i class="icon fa fa fa-pencil"></i>
-      </a>
-      <a class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right w3-disabled"
-        href="#" id="btn-delete-workout-hide">
-        <i class="icon fa fa fa-trash"></i>
-      </a>
-    {% endif %}
-  </div>
-</div>
+{% block toolbar %}
+  {% if workout.userId == userId %}
+    <a onclick="openEditWorkoutDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}')"
+      class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
+      href="#">
+      <i class="icon fa fa fa-pencil"></i>
+    </a>
+    <a onclick="openDeleteWorkoutDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}')"
+      class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
+      href="#">
+      <i class="icon fa fa fa-trash"></i>
+    </a>
+  {% else %}
+    <a class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right w3-disabled"
+      href="#" id="btn-edit-workout-hide">
+      <i class="icon fa fa fa-pencil"></i>
+    </a>
+    <a class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right w3-disabled"
+      href="#" id="btn-delete-workout-hide">
+      <i class="icon fa fa fa-trash"></i>
+    </a>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
+{% include 'general/overlay_button_add.html' %}
 {% include 'score/add_dialog.html' %}
 {% include 'score/edit_dialog.html' %}
 {% include 'score/delete_dialog.html' %}
-{% include 'general/overlay_button_add.html' %}
 {% if workout.userId == userId %}
-{% include 'workout/edit_dialog.html' %}
-{% include 'workout/delete_dialog.html' %}
+  {% include 'workout/edit_dialog.html' %}
+  {% include 'workout/delete_dialog.html' %}
 {% endif %}
 
 
@@ -61,7 +56,7 @@
 {% if scores | length > 0 %}
 <ul class="w3-ul">
   {% for score in scores | reverse %}
-  <li class="padding-0">
+  <li class="padding-0 w3-border-light-gray">
     <div onclick="collapseEntry(this)"
       class="w3-hover-light-gray padding-16 pointer">
       {% if score.rx == 1 %}
@@ -111,7 +106,6 @@
 {% endblock %}
 
 {% block script %}
-<script src="{{ url_for('static', filename='js/collapse.js') }}"></script>
 <script src="{{ url_for('static', filename='js/workout/handle_dialog.js') }}"></script>
 <script src="{{ url_for('static', filename='js/score/handle_dialog.js') }}"></script>
 <script>

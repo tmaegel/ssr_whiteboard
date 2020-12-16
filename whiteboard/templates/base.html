@@ -13,27 +13,58 @@
 </head>
 <body>
 
-  {% include 'general/searchbar.html' %}
-
-  {% block topbar %}{% endblock %}
-
-  {% block navbar %}
-    {% include 'general/navbar.html' %}
-  {% endblock %}
+  {% if '/auth/login' not in request.path %}
+    {% include 'general/sidebar.html' %}
+  {% endif %}
 
   {% for message in get_flashed_messages() %}
     <div class="w3-panel w3-pale-red">
       <h6>ERROR</h6>
       <p>{{ message }}</p>
-      <span onclick="this.parentElement.style.display='none'" class="w3-button w3-hover-pale-red w3-hover-text-red w3-display-topright">&times;</span>
+      <span onclick="this.parentElement.style.display='none'"
+        class="w3-button w3-hover-pale-red w3-hover-text-red w3-display-topright">&times;</span>
     </div>
   {% endfor %}
 
-  <main>
+  <div class="w3-main" style="margin-left:200px">
+
+    {% if '/auth/login' not in request.path %}
+      <div id="titlebar" class="bar w3-dark-grey padding-8-y padding-8-x">
+        {% if '/workout/' in request.path %}
+        <h1 id="pagetitle" class="w3-text-white">Workouts</h1>
+        {% elif '/movement/' in request.path %}
+        <h1 id="pagetitle" class="w3-text-white">Movements</h1>
+        {% elif '/equipment/' in request.path %}
+        <h1 id="pagetitle" class="w3-text-white">Equipment</h1>
+        {% elif '/tag/' in request.path %}
+        <h1 id="pagetitle" class="w3-text-white">Tags</h1>
+        {% else %}
+        <h1 id="pagetitle" class="w3-text-white">Home</h1>
+        {% endif %}
+        <button
+          class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right w3-large w3-right"
+          onclick="toggleSidebar()" style="padding-top:6px;">
+            <i class="fa fa-bars"></i>
+        </button>
+
+        {% block toolbar %}{% endblock %}
+
+      </div>
+
+      {% include 'general/searchbar.html' %}
+
+    {% endif %}
+
     {% block content %}{% endblock %}
-  </main>
+
+  </div>
 
 </body>
 <script src="{{ url_for('static', filename='js/lib/Chart.min.js') }}"></script>
+{% if '/auth/login' not in request.path %}
+  <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/collapse.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+{% endif %}
 {% block script %}{% endblock %}
 </html>

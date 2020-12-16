@@ -1,28 +1,23 @@
 {% extends 'base.html' %}
 
-{% block topbar %}
-<div class="bar w3-top w3-dark-grey padding-8-y">
-  <div class="w3-bar">
-    {% include 'general/title.html' %}
-    <div class="w3-dropdown-hover w3-right">
-      <button class="w3-button w3-text-white w3-dark-gray w3-hover-dark-gray w3-hover-text-blue">
-        <i class="icon fa fa-user-circle"></i>
-      </button>
-      <div class="w3-dropdown-content w3-bar-block w3-hover-text-blue w3-border" style="right:0">
-        <a onclick="openUpdatePwDialog()" class="w3-bar-item w3-button w3-text-dark-gray w3-hover-text-blue" href="#">Change password</a>
-        <a href="{{ url_for(request.endpoint) }}auth/logout" class="w3-bar-item w3-button w3-text-dark-gray w3-hover-text-blue">Logout</a>
-      </div>
+{% block toolbar %}
+  <div class="w3-dropdown-hover w3-right">
+    <button class="w3-button w3-text-white w3-dark-gray w3-hover-dark-gray w3-hover-text-blue">
+      <i class="icon fa fa-user-circle"></i>
+    </button>
+    <div class="w3-dropdown-content w3-bar-block w3-hover-text-blue w3-border" style="right:0">
+      <a onclick="openUpdatePwDialog()" class="w3-bar-item w3-button w3-text-dark-gray w3-hover-text-blue" href="#">Change password</a>
+      <a href="{{ url_for(request.endpoint) }}auth/logout" class="w3-bar-item w3-button w3-text-dark-gray w3-hover-text-blue">Logout</a>
     </div>
   </div>
-</div>
 {% endblock %}
 
 {% block content %}
 {% include 'general/update_pw_dialog.html' %}
 
-<div class="w3-margin">
-tbd
-</div>
+  <div class="w3-container w3-border w3-border-light-grey">
+   <p>card</p>
+  </div>
 {% endblock %}
 
 {% block script %}
