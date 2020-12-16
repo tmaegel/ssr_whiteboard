@@ -4,13 +4,13 @@ function openAddScoreDialog() {
 function closeAddScoreDialog() {
   document.getElementById('addScoreDialog').style.display='none';
 }
-function openEditScoreDialog(element) {
-  let scoreId, scoreValue, scoreDatetime, scoreNote, scoreRx;
-  scoreId = element.id;
-  scoreValue = element.getElementsByClassName('scoreValue')[0].innerText;
-  scoreDatetime = element.getElementsByClassName('scoreDatetime')[0].innerText;
-  scoreNote = element.getElementsByClassName('scoreNote')[0].innerText;
-  scoreRx = element.getElementsByClassName('scoreRx');
+function openEditScoreDialog(route, scoreId, element) {
+  let scoreValue, scoreDatetime, scoreNote, scoreRx, parent;
+  parent = element.parentNode.parentNode.parentNode;
+  scoreValue = parent.getElementsByClassName('scoreValue')[0].innerText;
+  scoreDatetime = parent.getElementsByClassName('scoreDatetime')[0].innerText;
+  scoreNote = parent.getElementsByClassName('scoreNote')[0].innerText;
+  scoreRx = parent.getElementsByClassName('scoreRx');
   document.getElementById('editScoreValue').value = scoreValue;
   document.getElementById('editScoreDatetime').value = scoreDatetime;
   document.getElementById('editScoreNote').value = scoreNote;
@@ -20,10 +20,17 @@ function openEditScoreDialog(element) {
   } else {
     document.getElementById('editScoreRx').checked = false;
   }
-  document.getElementById('editScoreForm').action = '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/update';
-  document.getElementById('deleteScoreBtn').formAction = '{{ url_for(request.endpoint, workout_id=workout.id) }}/score/' + scoreId + '/delete';
+  document.getElementById('editScoreForm').action = route + '/score/' + scoreId + '/update';
+  document.getElementById('deleteScoreBtn').formAction = route + '/score/' + scoreId + '/delete';
   document.getElementById('editScoreDialog').style.display='block';
 }
 function closeEditScoreDialog() {
   document.getElementById('editScoreDialog').style.display='none';
+}
+function openDeleteScoreDialog(route, scoreId = '') {
+  document.getElementById('deleteScoreForm').action = route + '/score/' + scoreId + '/delete';
+  document.getElementById('deleteScoreDialog').style.display='block';
+}
+function closeDeleteScoreDialog() {
+  document.getElementById('deleteScoreDialog').style.display='none';
 }

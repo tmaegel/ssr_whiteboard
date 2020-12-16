@@ -1,19 +1,24 @@
-{% if workout.userId != 1 %}
 <div id="editWorkoutDialog" class="w3-modal">
   <div class="w3-modal-content w3-card-4" style="max-width:600px">
     <div class="w3-container w3-border-light-gray w3-border-bottom">
       <h3>Edit workout</h3>
     </div>
     <span onclick="closeEditWorkoutDialog()" class="w3-button w3-round-xxlarge w3-large w3-hover-white w3-hover-text-blue w3-display-topright">&times;</span>
-    <form method="post" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/update">
+    {% if '/workout/' == request.path %}
+    <form id="editWorkoutForm" method="post">
       <div class="w3-container w3-section">
-        <input name="name" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Workout name" value="{{ workout.name }}" required>
-        <textarea name="description" class="w3-input w3-border-light-gray w3-border" rows="7" type="text" placeholder="Workout description" required>{{ workout.description }}</textarea>
-      </div>
+        <input id="editWorkoutName" name="name" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Workout name" required>
+        <textarea id="editWorkoutDescription" name="description" class="w3-input w3-border-light-gray w3-border" rows="7" type="text" placeholder="Workout description" required></textarea>
+    {% else %}
+    <form id="editWorkoutForm" method="post" action="{{ url_for(request.endpoint, workout_id=workout.id) }}/update">
+      <div class="w3-container w3-section">
+        <input id="editWorkoutName" name="name" class="w3-input w3-border w3-border-light-gray w3-margin-bottom" type="text" placeholder="Workout name" value="{{ workout.name }}" required>
+        <textarea id="editWorkoutDescription" name="description" class="w3-input w3-border-light-gray w3-border" rows="7" type="text" placeholder="Workout description" required>{{ workout.description }}</textarea>
+    {% endif %}
+        </div>
       <div class="w3-container w3-border-light-gray w3-border-top">
         <button class="w3-button w3-round w3-blue w3-section w3-padding w3-right" type="submit">Save</button>
       </div>
     </form>
   </div>
 </div>
-{% endif %}

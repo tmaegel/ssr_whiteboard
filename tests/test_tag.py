@@ -25,25 +25,25 @@ def test_list_adminlogin(client, auth):
     assert b'Tag B from test1' not in response.data
     assert b'Tag A from test2' not in response.data
 
-    assert b'openDeleteTagDialog(1)' in response.data
-    assert b'openDeleteTagDialog(15)' in response.data
-    assert b'openDeleteTagDialog(16)' in response.data
-    assert b'openDeleteTagDialog(17)' in response.data
-    assert b'openDeleteTagDialog(18)' in response.data
-    assert b'openDeleteTagDialog(19)' in response.data
-    assert b'openDeleteTagDialog(20)' not in response.data
-    assert b'openDeleteTagDialog(21)' not in response.data
-    assert b'openDeleteTagDialog(22)' not in response.data
+    assert b"openDeleteTagDialog('/tag/', 1)" in response.data
+    assert b"openDeleteTagDialog('/tag/', 15)" in response.data
+    assert b"openDeleteTagDialog('/tag/', 16)" in response.data
+    assert b"openDeleteTagDialog('/tag/', 17)" in response.data
+    assert b"openDeleteTagDialog('/tag/', 18)" in response.data
+    assert b"openDeleteTagDialog('/tag/', 19)" in response.data
+    assert b"openDeleteTagDialog('/tag/', 20)" not in response.data
+    assert b"openDeleteTagDialog('/tag/', 21)" not in response.data
+    assert b"openDeleteTagDialog('/tag/', 22)" not in response.data
 
-    assert b'openEditTagDialog(this,1)' in response.data
-    assert b'openEditTagDialog(this,15)' in response.data
-    assert b'openEditTagDialog(this,16)' in response.data
-    assert b'openEditTagDialog(this,17)' in response.data
-    assert b'openEditTagDialog(this,18)' in response.data
-    assert b'openEditTagDialog(this,19)' in response.data
-    assert b'openEditTagDialog(this,20)' not in response.data
-    assert b'openEditTagDialog(this,21)' not in response.data
-    assert b'openEditTagDialog(this,22)' not in response.data
+    assert b"openEditTagDialog('/tag/', 1, this)" in response.data
+    assert b"openEditTagDialog('/tag/', 15, this)" in response.data
+    assert b"openEditTagDialog('/tag/', 16, this)" in response.data
+    assert b"openEditTagDialog('/tag/', 17, this)" in response.data
+    assert b"openEditTagDialog('/tag/', 18, this)" in response.data
+    assert b"openEditTagDialog('/tag/', 19, this)" in response.data
+    assert b"openEditTagDialog('/tag/', 20, this)" not in response.data
+    assert b"openEditTagDialog('/tag/', 21, this)" not in response.data
+    assert b"openEditTagDialog('/tag/', 22, this)" not in response.data
 
 
 # List with User Login
@@ -60,25 +60,25 @@ def test_list_userlogin(client, auth):
     assert b'Tag B from test1' in response.data
     assert b'Tag A from test2' not in response.data
 
-    assert b'openDeleteTagDialog(1)' not in response.data
-    assert b'openDeleteTagDialog(15)' not in response.data
-    assert b'openDeleteTagDialog(16)' not in response.data
-    assert b'openDeleteTagDialog(17)' not in response.data
-    assert b'openDeleteTagDialog(18)' not in response.data
-    assert b'openDeleteTagDialog(19)' not in response.data
-    assert b'openDeleteTagDialog(20)' in response.data
-    assert b'openDeleteTagDialog(21)' in response.data
-    assert b'openDeleteTagDialog(22)' not in response.data
+    assert b"openDeleteTagDialog('/tag/', 1)" not in response.data
+    assert b"openDeleteTagDialog('/tag/', 15)" not in response.data
+    assert b"openDeleteTagDialog('/tag/', 16)" not in response.data
+    assert b"openDeleteTagDialog('/tag/', 17)" not in response.data
+    assert b"openDeleteTagDialog('/tag/', 18)" not in response.data
+    assert b"openDeleteTagDialog('/tag/', 19)" not in response.data
+    assert b"openDeleteTagDialog('/tag/', 20)" in response.data
+    assert b"openDeleteTagDialog('/tag/', 21)" in response.data
+    assert b"openDeleteTagDialog('/tag/', 22)" not in response.data
 
-    assert b'openEditTagDialog(this,1)' not in response.data
-    assert b'openEditTagDialog(this,15)' not in response.data
-    assert b'openEditTagDialog(this,16)' not in response.data
-    assert b'openEditTagDialog(this,17)' not in response.data
-    assert b'openEditTagDialog(this,18)' not in response.data
-    assert b'openEditTagDialog(this,19)' not in response.data
-    assert b'openEditTagDialog(this,20)' in response.data
-    assert b'openEditTagDialog(this,21)' in response.data
-    assert b'openEditTagDialog(this,22)' not in response.data
+    assert b"openEditTagDialog('/tag/', 1, this)" not in response.data
+    assert b"openEditTagDialog('/tag/', 15, this)" not in response.data
+    assert b"openEditTagDialog('/tag/', 16, this)" not in response.data
+    assert b"openEditTagDialog('/tag/', 17, this)" not in response.data
+    assert b"openEditTagDialog('/tag/', 18, this)" not in response.data
+    assert b"openEditTagDialog('/tag/', 19, this)" not in response.data
+    assert b"openEditTagDialog('/tag/', 20, this)" in response.data
+    assert b"openEditTagDialog('/tag/', 21, this)" in response.data
+    assert b"openEditTagDialog('/tag/', 22, this)" not in response.data
 
 
 def test_add(client, auth, app):

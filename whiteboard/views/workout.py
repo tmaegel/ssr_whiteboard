@@ -63,7 +63,8 @@ def list():
     return render_template(
         'workout/workout.html',
         prefs=prefs,
-        workouts=workouts)
+        workouts=workouts,
+        userId=g.user['id'])
 
 
 # Get workout info
@@ -92,6 +93,7 @@ def info(workout_id):
             'workout/entry.html',
             workout=workout,
             scores=scores,
+            userId=g.user['id'],
             cur_format_time=get_format_timestamp(),
             get_format_timestamp=get_format_timestamp,
             timestamp_to_sec=timestamp_to_sec)

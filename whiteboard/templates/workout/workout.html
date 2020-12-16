@@ -4,10 +4,14 @@
 <div class="bar w3-top w3-dark-grey padding-8-y">
   <div class="w3-bar">
     {% include 'general/title.html' %}
-    <a onclick="openPrefsDialog()" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right" href="#">
+    <a onclick="openPrefsDialog()"
+      class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
+      href="#">
       <i class="icon fa fa-gear"></i>
     </a>
-    <a id="toggleSearchbar" onClick="toggleSearch()" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right" href="#" >
+    <a id="toggleSearchbar" onClick="toggleSearch()"
+      class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
+      href="#" >
       <i class="icon fa fa-search"></i>
     </a>
   </div>
@@ -17,32 +21,55 @@
 {% block content %}
 {% include 'general/prefs_dialog.html' %}
 {% include 'workout/add_dialog.html' %}
+{% include 'workout/edit_dialog.html' %}
+{% include 'workout/delete_dialog.html' %}
 {% include 'general/overlay_button_add.html' %}
 
 <ul id="searchable" class="w3-ul">
 {% for workout in workouts %}
   <li class="padding-0">
-    <div onclick="collapseEntry(this)" class="w3-hover-light-gray padding-16 pointer">
+    <div onclick="collapseEntry(this)"
+      class="workoutName w3-hover-light-gray padding-16 pointer">
       {{ workout.name }}
       <i class="collapsable-icon icon fa fa fa-angle-down w3-right"></i>
     </div>
     <div class="collapsable w3-hide w3-border-top w3-border-light-gray">
       <div class="w3-bar">
-        <a onclick="location.href='{{ workout.id }}';" href="#" class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right">
-          <i class="icon fa fa fa-eye"></i>
-        </a>
+        {% if workout.userId == userId %}
+          <a onclick="openEditWorkoutDialog('{{ url_for(request.endpoint) }}', {{ workout.id }}, this)"
+            class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right"
+            href="#">
+            <i class="icon fa fa fa-pencil"></i>
+          </a>
+          <a onclick="openDeleteWorkoutDialog('{{ url_for(request.endpoint) }}', {{ workout.id }})"
+            class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right"
+            href="#">
+            <i class="icon fa fa fa-trash"></i>
+          </a>
+        {% else %}
+          <a class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right w3-disabled"
+            href="#">
+            <i class="icon fa fa fa-pencil"></i>
+          </a>
+          <a class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right w3-disabled"
+            href="#">
+            <i class="icon fa fa fa-trash"></i>
+          </a>
+        {% endif %}
       </div>
       <div class="padding-16-x">
-        {% for item in workout.description.splitlines() %}
-          {{ item }}<br />
-        {% endfor %}
+        <div onclick="location.href='{{ workout.id }}'"
+        class="workoutDescription pointer">
+          {% for item in workout.description.splitlines() %}
+            {{ item }}<br />
+          {% endfor %}
+        </div>
         <div class="w3-margin-top w3-margin-bottom">
           {% for tag in workout.tags %}
             <span class="w3-badge w3-blue w3-round-small padding-4-y padding-8-x">{{ tag.tag }}</span>
           {% endfor %}
         </div>
       </div>
-
     </div>
   </li>
 {% endfor %}

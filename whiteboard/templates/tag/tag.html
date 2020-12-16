@@ -4,10 +4,14 @@
 <div class="bar w3-top w3-dark-grey padding-8-y">
   <div class="w3-bar">
     {% include 'general/title.html' %}
-    <a onclick="openPrefsDialog()" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right" href="#">
+    <a onclick="openPrefsDialog()"
+      class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
+      href="#">
       <i class="icon fa fa-gear"></i>
     </a>
-    <a id="toggleSearchbar" onClick="toggleSearch()" class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right" href="#" >
+    <a id="toggleSearchbar" onClick="toggleSearch()"
+      class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
+      href="#" >
       <i class="icon fa fa-search"></i>
     </a>
   </div>
@@ -23,19 +27,35 @@
 
 <ul id="searchable" class="w3-ul">
 {% for tag in tags %}
-  <li id="{{ tag.id }}" class="padding-0">
-    <div onclick="collapseEntry(this)" class="tagName w3-hover-light-gray padding-16 pointer">
+  <li class="padding-0">
+    <div onclick="collapseEntry(this)"
+      class="tagName w3-hover-light-gray padding-16 pointer">
       {{ tag.tag }}
       <i class="collapsable-icon icon fa fa fa-angle-down w3-right"></i>
     </div>
     <div class="collapsable w3-hide w3-border-top w3-border-light-gray">
       <div class="w3-bar">
-        <a {{ 'onclick=openEditTagDialog(this,' + tag.id|string + ')' if tag.userId == userId }} class="{{ 'w3-disabled' if tag.userId != userId }} w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right" href="#">
-          <i class="icon fa fa fa-pencil"></i>
-        </a>
-        <a {{ 'onclick=openDeleteTagDialog(' + tag.id|string + ')' if tag.userId == userId }} class="{{ 'w3-disabled' if tag.userId != userId }} w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right" href="#">
-          <i class="icon fa fa fa-trash"></i>
-        </a>
+        {% if tag.userId == userId %}
+          <a onclick="openEditTagDialog('{{ url_for(request.endpoint) }}', {{ tag.id }}, this)"
+            class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right"
+            href="#">
+            <i class="icon fa fa fa-pencil"></i>
+          </a>
+          <a onclick="openDeleteTagDialog('{{ url_for(request.endpoint) }}', {{ tag.id }})"
+            class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right"
+            href="#">
+            <i class="icon fa fa fa-trash"></i>
+          </a>
+        {% else %}
+          <a class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right w3-disabled"
+            href="#">
+            <i class="icon fa fa fa-pencil"></i>
+          </a>
+          <a class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right w3-disabled"
+            href="#">
+            <i class="icon fa fa fa-trash"></i>
+          </a>
+        {% endif %}
       </div>
       <div class="padding-16-x">
         {{ tag.tag }}

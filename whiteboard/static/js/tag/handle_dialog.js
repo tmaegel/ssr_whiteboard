@@ -4,17 +4,17 @@ function openAddTagDialog() {
 function closeAddTagDialog() {
   document.getElementById('addTagDialog').style.display='none';
 }
-function openEditTagDialog(element, tagId) {
+function openEditTagDialog(route, tagId, element) {
   tagName = element.parentNode.parentNode.parentNode.getElementsByClassName('tagName')[0].innerText;
   document.getElementById('editTagName').value = tagName;
-  document.getElementById('editTagForm').action = '{{ url_for(request.endpoint) }}' + tagId + '/update';
+  document.getElementById('editTagForm').action = route + tagId + '/update';
   document.getElementById('editTagDialog').style.display='block';
 }
 function closeEditTagDialog() {
   document.getElementById('editTagDialog').style.display='none';
 }
-function openDeleteTagDialog(tagId) {
-  document.getElementById('deleteTagForm').action = '{{ url_for(request.endpoint) }}' + tagId + '/delete';
+function openDeleteTagDialog(route, tagId) {
+  document.getElementById('deleteTagForm').action = route + tagId + '/delete';
   document.getElementById('deleteTagDialog').style.display='block';
 }
 function closeDeleteTagDialog() {

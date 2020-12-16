@@ -4,21 +4,41 @@
 <div class="bar w3-top w3-dark-grey padding-8-y">
   <div class="w3-bar">
     {% include 'general/title.html' %}
-    <a {{ "onclick=openDeleteWorkoutDialog()" if workout.userId != 1 }} href="#"
-      class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right
-      {{ 'w3-disabled' if workout.userId == 1 }}"><i class="icon fa fa-trash"></i>
-    </a>
+    {% if workout.userId == userId %}
+      <a onclick="openEditWorkoutDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}')"
+        class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
+        href="#">
+        <i class="icon fa fa fa-pencil"></i>
+      </a>
+      <a onclick="openDeleteWorkoutDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}')"
+        class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
+        href="#">
+        <i class="icon fa fa fa-trash"></i>
+      </a>
+    {% else %}
+      <a class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right w3-disabled"
+        href="#" id="btn-edit-workout-hide">
+        <i class="icon fa fa fa-pencil"></i>
+      </a>
+      <a class="w3-bar-item w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right w3-disabled"
+        href="#" id="btn-delete-workout-hide">
+        <i class="icon fa fa fa-trash"></i>
+      </a>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
 
 {% block content %}
-{% include 'workout/edit_dialog.html' %}
-{% include 'workout/delete_dialog.html' %}
 {% include 'score/add_dialog.html' %}
 {% include 'score/edit_dialog.html' %}
+{% include 'score/delete_dialog.html' %}
 {% include 'general/overlay_button_add.html' %}
-{% include 'general/overlay_button_edit.html' %}
+{% if workout.userId == userId %}
+{% include 'workout/edit_dialog.html' %}
+{% include 'workout/delete_dialog.html' %}
+{% endif %}
+
 
 <div class="w3-margin">
   <h2>{{ workout.name }}</h2>
@@ -29,7 +49,9 @@
     </p>
     <div class="w3-margin-top">
       {% for tag in workout.tags %}
-        <span class="w3-badge w3-blue w3-round-small padding-4-y padding-8-x">{{ tag.tag }}</span>
+        <span class="w3-badge w3-blue w3-round-small padding-4-y padding-8-x">
+            {{ tag.tag }}
+        </span>
       {% endfor %}
     </div>
 </div>
@@ -37,24 +59,59 @@
   <canvas id="chart"></canvas>
 {% endif %}
 {% if scores | length > 0 %}
-  <table class="w3-table w3-bordered w3-hoverable">
-    {% for score in scores | reverse %}
-    <tr id="{{ score.id }}" class="w3-hover-light-gray pointer" onclick="openEditScoreDialog(this)">
-      <td class="w3-padding-16">
-        {% if score.rx == 1 %}
-        <span class="scoreRx w3-badge w3-small w3-light-gray w3-round-small padding-4-y padding-8-x">Rx</span>
+<ul class="w3-ul">
+  {% for score in scores | reverse %}
+  <li class="padding-0">
+    <div onclick="collapseEntry(this)"
+      class="w3-hover-light-gray padding-16 pointer">
+      {% if score.rx == 1 %}
+        <span class="scoreRx w3-badge w3-small w3-blue w3-round-small w3-margin-right padding-4-y padding-8-x ">
+          Rx
+        </span>
+      {% else %}
+        <span class="w3-badge w3-small w3-light-gray w3-round-small w3-margin-right padding-4-y padding-8-x ">
+          <del>Rx</del>
+        </span>
+      {% endif %}
+      <span class="scoreDatetime w3-small w3-margin-left w3-margin-right">
+        {{ get_format_timestamp(score.datetime) }}
+      </span>
+      <span class="scoreValue w3-margin-left">
+        {{ score.score }}
+      </span>
+      <i class="collapsable-icon icon fa fa fa-angle-down w3-right"></i>
+    </div>
+    <div class="collapsable w3-hide w3-border-top w3-border-light-gray">
+      <div class="w3-bar">
+        <a onclick="openEditScoreDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}', {{ score.id }}, this)"
+          class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right"
+          href="#">
+          <i class="icon fa fa fa-pencil"></i>
+        </a>
+        <a onclick="openDeleteScoreDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}', {{ score.id }})"
+          class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right"
+          href="#">
+          <i class="icon fa fa fa-trash"></i>
+        </a>
+      </div>
+      <div class="scoreNote w3-margin-bottom padding-16-x">
+        {% if score.note %}
+          {% for item in score.note.splitlines() %}
+            {{ item }}<br />
+          {% endfor %}
+        {% else %}
+          no note
         {% endif %}
-      </td>
-      <td class="scoreDatetime w3-padding-16">{{ get_format_timestamp(score.datetime) }}</td>
-      <td class="scoreValue w3-padding-16">{{ score.score }}</td>
-      <td class="scoreNote w3-padding-16">{{ score.note }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+      </div>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
 {% endif %}
 {% endblock %}
 
 {% block script %}
+<script src="{{ url_for('static', filename='js/collapse.js') }}"></script>
 <script src="{{ url_for('static', filename='js/workout/handle_dialog.js') }}"></script>
 <script src="{{ url_for('static', filename='js/score/handle_dialog.js') }}"></script>
 <script>

@@ -18,22 +18,22 @@ def test_list_adminlogin(client, auth):
     assert response.status_code == 200
     assert b'Workout A from admin' in response.data
     assert b'Workout A description from admin' in response.data
-    assert b'onclick="location.href=\'1\';"' in response.data
+    assert b'onclick="location.href=\'1\'"' in response.data
     assert b'Workout B from admin' in response.data
     assert b'Workout B description from admin' in response.data
-    assert b'onclick="location.href=\'2\';"' in response.data
+    assert b'onclick="location.href=\'2\'"' in response.data
     assert b'Workout A from test1' not in response.data
     assert b'Workout A description from test1' not in response.data
-    assert b'onclick="location.href=\'3\';"' not in response.data
+    assert b'onclick="location.href=\'3\'"' not in response.data
     assert b'Workout B from test1' not in response.data
     assert b'Workout B description from test1' not in response.data
-    assert b'onclick="location.href=\'4\';"' not in response.data
+    assert b'onclick="location.href=\'4\'"' not in response.data
     assert b'Workout A from test2' not in response.data
     assert b'Workout A description from test2' not in response.data
-    assert b'onclick="location.href=\'5\';"' not in response.data
+    assert b'onclick="location.href=\'5\'"' not in response.data
     assert b'Workout B from test2' not in response.data
     assert b'Workout B description from test2' not in response.data
-    assert b'onclick="location.href=\'6\';"' not in response.data
+    assert b'onclick="location.href=\'6\'"' not in response.data
 
     # Check the tags
     assert b'Tag A from admin' in response.data
@@ -49,22 +49,22 @@ def test_list_userlogin(client, auth):
     response = client.get('/workout/')
     assert b'Workout A from admin' in response.data
     assert b'Workout A description from admin' in response.data
-    assert b'onclick="location.href=\'1\';"' in response.data
+    assert b'onclick="location.href=\'1\'"' in response.data
     assert b'Workout B from admin' in response.data
     assert b'Workout B description from admin' in response.data
-    assert b'onclick="location.href=\'2\';"' in response.data
+    assert b'onclick="location.href=\'2\'"' in response.data
     assert b'Workout A from test1' in response.data
     assert b'Workout A description from test1' in response.data
-    assert b'onclick="location.href=\'3\';"' in response.data
+    assert b'onclick="location.href=\'3\'"' in response.data
     assert b'Workout B from test1' in response.data
     assert b'Workout B description from test1' in response.data
-    assert b'onclick="location.href=\'4\';"' in response.data
+    assert b'onclick="location.href=\'4\'"' in response.data
     assert b'Workout A from test2' not in response.data
     assert b'Workout A description from test2' not in response.data
-    assert b'onclick="location.href=\'5\';"' not in response.data
+    assert b'onclick="location.href=\'5\'"' not in response.data
     assert b'Workout B from test2' not in response.data
     assert b'Workout B description from test2' not in response.data
-    assert b'onclick="location.href=\'6\';"' not in response.data
+    assert b'onclick="location.href=\'6\'"' not in response.data
 
     # Check the tags
     assert b'Tag A from admin' in response.data
@@ -91,11 +91,14 @@ def test_info_login_default(client, auth):
     assert b'Workout B from admin' in response.data
     assert b'Workout B description from admin' in response.data
     # Check if delete/edit button is hidden when userId = 1
-    assert b'w3-disabled"><i class="icon fa fa-trash"></i>' in response.data
-    assert b'fa-pencil' not in response.data
-    # Check if canvas and score table is hidden if there is no score
-    assert b'canvas' not in response.data
-    assert b'table' not in response.data
+    assert b'id="btn-edit-workout-hide"' in response.data
+    assert b'id="btn-delete-workout-hide"' in response.data
+    assert b'id="editTagDialog"' not in response.data
+    assert b'id="deleteTagDialog"' not in response.data
+
+    # Check if canvas and score ul is hidden if there is no score
+    assert b'<canvas' not in response.data
+    assert b'<ul' not in response.data
 
     # Check the tags
     assert b'Tag A from admin' in response.data
@@ -112,18 +115,21 @@ def test_info_login_custom(client, auth):
     assert response.status_code == 200
     assert b'Workout A from test1' in response.data
     assert b'Workout A description from test1' in response.data
-    # Check if delete/edit button is bot hidden when userId > 1
-    assert b'fa-trash' in response.data
-    assert b'fa-pencil' in response.data
-    # Check if canvas/table isn't hidden if there is more than 1 score
-    assert b'canvas' in response.data
-    assert b'table' in response.data
+    # Check if delete/edit button is not hidden when userId > 1
+    assert b'id="btn-edit-workout-hide"' not in response.data
+    assert b'id="btn-delete-workout-hide"' not in response.data
+    assert b'id="editTagDialog"' not in response.data
+    assert b'id="deleteTagDialog"' not in response.data
+
+    # Check if canvas/ul isn't hidden if there is more than 1 score
+    assert b'<canvas' in response.data
+    assert b'<ul' in response.data
 
     response = client.get('/workout/4')
     assert response.status_code == 200
     # Check if canvas is hidden if there is only 1 score
-    assert b'canvas' not in response.data
-    assert b'table' in response.data
+    assert b'<canvas' not in response.data
+    assert b'<ul' in response.data
     # Check if rx span element is hidden when the score hasn't the rx switch
     assert b'scoreRx' not in response.data
 
