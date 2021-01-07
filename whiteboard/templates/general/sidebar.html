@@ -4,10 +4,10 @@
     {{ 'w3-border-blue' if '/workout/' not in request.path and '/movement/' not in request.path and '/equipment/' not in request.path and '/tag/' not in request.path else 'w3-border-dark-grey' }}">Home</a>
   <a href="{{ url_for('index') }}workout"
     class="w3-bar-item w3-button w3-text-white w3-hover-text-white w3-hover-dark-gray w3-hover-border-white w3-rightbar
-    {{ 'w3-border-blue' if '/movement/' in request.path else 'w3-border-dark-grey' }}">Workout</a>
+    {{ 'w3-border-blue' if '/workout/' in request.path else 'w3-border-dark-grey' }}">Workouts</a>
   <a href="{{ url_for('index') }}movement"
     class="w3-bar-item w3-button w3-text-white w3-hover-text-white w3-hover-dark-gray w3-hover-border-white w3-rightbar
-    {{ 'w3-border-blue' if '/workout/' in request.path else 'w3-border-dark-grey' }}">Movements</a>
+    {{ 'w3-border-blue' if '/movement/' in request.path else 'w3-border-dark-grey' }}">Movements</a>
   <a href="{{ url_for('index') }}equipment"
     class="w3-bar-item w3-button w3-text-white w3-hover-text-white w3-hover-dark-gray w3-hover-border-white w3-rightbar
     {{ 'w3-border-blue' if '/equipment/' in request.path else 'w3-border-dark-grey' }}">Equipment</a>
