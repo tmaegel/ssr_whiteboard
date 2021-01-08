@@ -17,9 +17,10 @@ function collapseEntry(element) {
     }
   }
   for(elemLi of document.getElementsByTagName('li')) {
-    if(elemLi.parentNode != element) {
+    if(elemLi != element.parentNode) {
       elemLi.classList.remove("w3-topbar-sm");
       elemLi.classList.remove("w3-bottombar");
+      elemLi.classList.remove("w3-border-grey");
     }
   }
   // Handle the clicked element
@@ -43,9 +44,11 @@ function collapseEntry(element) {
     if(parent.classList.contains('w3-bottombar')) {
       parent.classList.remove("w3-topbar-sm");
       parent.classList.remove("w3-bottombar");
+      parent.classList.remove("w3-border-grey");
     } else {
       parent.classList.add("w3-topbar-sm");
       parent.classList.add("w3-bottombar");
+      parent.classList.add("w3-border-grey");
     }
   }
 }
