@@ -25,6 +25,7 @@ run: build
 	docker-compose up -d
 
 clean:
+	@docker-compose down || true
 	@docker stop $(APP) || true
 	@docker rm $(APP) || true
 
