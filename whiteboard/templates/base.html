@@ -30,6 +30,11 @@
 
     {% if '/auth/login' not in request.path %}
       <div id="titlebar" class="bar w3-dark-grey padding-8-y padding-8-x">
+        <button
+          class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-large w3-hide-large"
+          onclick="toggleSidebar(event)" style="padding-top:2px;">
+            <i class="fa fa-bars"></i>
+        </button>
         {% if '/workout/' in request.path %}
         <h1 id="pagetitle" class="w3-text-white">Workouts</h1>
         {% elif '/movement/' in request.path %}
@@ -41,11 +46,6 @@
         {% else %}
         <h1 id="pagetitle" class="w3-text-white">Home</h1>
         {% endif %}
-        <button
-          class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right w3-large w3-right w3-hide-large"
-          onclick="toggleSidebar()" style="padding-top:6px;">
-            <i class="fa fa-bars"></i>
-        </button>
 
         {% block toolbar %}{% endblock %}
 

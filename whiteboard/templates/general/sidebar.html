@@ -1,4 +1,4 @@
-<div id="sidebar" class="w3-sidebar w3-bar-block w3-collapse w3-card w3-dark-grey w3-padding-64 bar" style="width:200px;">
+<div id="sidebar" class="w3-sidebar w3-bar-block w3-collapse w3-card w3-dark-grey bar" style="width:250px;">
   <a href="{{ url_for('index') }}"
     class="w3-bar-item w3-button w3-hover-dark-gray w3-hover-text-blue padding-16-y
     {{ 'w3-text-blue' if '/workout/' not in request.path and '/movement/' not in request.path and '/equipment/' not in request.path and '/tag/' not in request.path else 'w3-text-white' }}">Home</a>
