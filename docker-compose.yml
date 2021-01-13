@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  whiteboard:
+    build:
+      context: .
+    image: whiteboard
+    container_name: whiteboard
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./instance/:/app/instance/
+    restart: always

@@ -22,7 +22,7 @@ build:
 	@docker build --pull -t $(APP) .
 
 run: build
-	@docker run --rm --name $(APP) -p 127.0.0.1:8080:8080 -v ${PWD}/instance/:/app/instance/ -d $(APP)
+	docker-compose up -d
 
 clean:
 	@docker stop $(APP) || true
