@@ -9,7 +9,7 @@ debug:
 	FLASK_APP=$(APP) FLASK_ENV=development flask run
 
 test:
-	PYTHONPATH=. pytest
+	pytest
 
 coverage:
 	coverage run -m pytest
@@ -37,10 +37,10 @@ recreate-venv:
 	python3 -m venv venv
 
 install:
-	pip3 install -r requirements_to_run.txt
+	pip3 install -r requirements.txt
 
-install-dev:
-	pip3 install -r requirements_to_dev.txt
+install-dev: install
+	pip3 install -r requirements_dev.txt
 
 init_db:
 	FLASK_APP=$(APP) FLASK_ENV=development flask init-db
