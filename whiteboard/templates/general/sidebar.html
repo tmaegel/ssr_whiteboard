@@ -1,17 +1,17 @@
 <div id="sidebar" class="w3-sidebar w3-bar-block w3-collapse w3-card w3-dark-grey w3-padding-64 bar" style="width:200px;">
   <a href="{{ url_for('index') }}"
-    class="w3-bar-item w3-button w3-text-white w3-rightbar w3-hover-light-gray w3-hover-border-light-gray padding-16-y
-    {{ 'w3-light-gray w3-border-light-gray' if '/workout/' not in request.path and '/movement/' not in request.path and '/equipment/' not in request.path and '/tag/' not in request.path else 'w3-dark-gray w3-border-dark-gray' }}">Home</a>
+    class="w3-bar-item w3-button w3-hover-dark-gray w3-hover-text-blue padding-16-y
+    {{ 'w3-text-blue' if '/workout/' not in request.path and '/movement/' not in request.path and '/equipment/' not in request.path and '/tag/' not in request.path else 'w3-text-white' }}">Home</a>
   <a href="{{ url_for('index') }}workout"
-    class="w3-bar-item w3-button w3-text-white w3-rightbar w3-hover-light-gray w3-hover-border-light-gray padding-16-y
-    {{ 'w3-light-gray w3-border-light-gray' if '/workout/' in request.path else 'w3-dark-gray w3-border-dark-gray' }}">Workouts</a>
+    class="w3-bar-item w3-button w3-hover-dark-gray w3-hover-text-blue padding-16-y
+    {{ 'w3-text-blue' if '/workout/' in request.path else 'w3-text-white' }}">Workouts</a>
   <a href="{{ url_for('index') }}movement"
-    class="w3-bar-item w3-button w3-text-white w3-rightbar w3-hover-light-gray w3-hover-border-light-gray padding-16-y
-    {{ 'w3-light-gray w3-border-light-gray' if '/movement/' in request.path else 'w3-dark-gray w3-border-dark-gray' }}">Movements</a>
+    class="w3-bar-item w3-button w3-hover-dark-gray w3-hover-text-blue padding-16-y
+    {{ 'w3-text-blue' if '/movement/' in request.path else 'w3-text-white' }}">Movements</a>
   <a href="{{ url_for('index') }}equipment"
-    class="w3-bar-item w3-button w3-text-white w3-rightbar w3-hover-light-gray w3-hover-border-light-gray padding-16-y
-    {{ 'w3-light-gray w3-border-light-gray' if '/equipment/' in request.path else 'w3-dark-gray w3-border-dark-gray' }}">Equipment</a>
+    class="w3-bar-item w3-button w3-hover-dark-gray w3-hover-text-blue padding-16-y
+    {{ 'w3-text-blue' if '/equipment/' in request.path else 'w3-text-white' }}">Equipment</a>
   <a href="{{ url_for('index') }}tag"
-    class="w3-bar-item w3-button w3-text-white w3-rightbar w3-hover-light-gray w3-hover-border-light-gray padding-16-y
-    {{ 'w3-light-gray w3-border-light-gray' if '/tag/' in request.path else 'w3-dark-gray w3-border-dark-gray' }}">Tags</a>
+    class="w3-bar-item w3-button w3-hover-dark-gray w3-hover-text-blue padding-16-y
+    {{ 'w3-text-blue' if '/tag/' in request.path else 'w3-text-white' }}">Tags</a>
 </div>
