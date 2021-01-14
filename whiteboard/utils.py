@@ -33,13 +33,15 @@ def is_timestamp(value):
         return True
 
 
-# Get timestamp in specific format
+# Get timestamp (unix time) in specific format
 # e.g. 01.12.1990 12:00
 def get_format_timestamp(datetime=None):
     if datetime is None:
         return time.strftime("%d.%m.%Y %H:%M", time.localtime(time.time()))
-    else:
+    elif str(datetime).isdigit():
         return time.strftime("%d.%m.%Y %H:%M", time.localtime(datetime))
+    else:
+        return -1
 
 
 # Convert timestamp (HH:MM:SS) to seconds
@@ -58,7 +60,8 @@ def timestamp_to_sec(value):
 
         return sec
     elif value.isdigit() is True or is_float(value) is True:
-        return value
+        # Convert float from string to int
+        return int(float(value))
     else:
         return -1
 
@@ -92,6 +95,7 @@ def datetime_to_sec(value):
             year, month, day, hour, minutes, seconds).timetuple())
         return int(sec)
     elif value.isdigit() is True or is_float(value) is True:
-        return value
+        # Convert float from string to int
+        return int(float(value))
     else:
         return -1

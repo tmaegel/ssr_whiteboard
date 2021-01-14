@@ -1,4 +1,5 @@
 import os
+import time
 
 from flask import Flask
 
@@ -21,6 +22,10 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    # Set timezone global
+    os.environ['TZ'] = app.config['TIMEZONE']
+    time.tzset()
 
     from . import db
     db.init_app(app)
