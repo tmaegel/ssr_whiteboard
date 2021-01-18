@@ -16,24 +16,24 @@
       <i class="collapsable-icon icon fa fa fa-angle-down w3-right"></i>
     </div>
     <div class="collapsable w3-hide w3-border-top w3-border-light-gray">
-      <div class="w3-bar">
+      <div class="w3-bar padding-8">
         {% if workout.userId == userId %}
           <a onclick="openEditWorkoutDialog('{{ url_for(request.endpoint) }}', {{ workout.id }}, this)"
-            class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right"
+            class="w3-bar-item w3-button w3-small w3-round w3-blue w3-text-white w3-right margin-4-x"
             href="#">
             <i class="icon fa fa fa-pencil"></i>
           </a>
           <a onclick="openDeleteWorkoutDialog('{{ url_for(request.endpoint) }}', {{ workout.id }})"
-            class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right"
+            class="w3-bar-item w3-button w3-small w3-round w3-red w3-text-white w3-right margin-4-x"
             href="#">
             <i class="icon fa fa fa-trash"></i>
           </a>
         {% else %}
-          <a class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right w3-disabled"
+          <a class="w3-bar-item w3-button w3-small w3-round w3-blue w3-text-white w3-right margin-4-x w3-disabled"
             href="#">
             <i class="icon fa fa fa-pencil"></i>
           </a>
-          <a class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right w3-disabled"
+          <a class="w3-bar-item w3-button w3-small w3-round w3-red w3-text-white w3-right margin-4-x w3-disabled"
             href="#">
             <i class="icon fa fa fa-trash"></i>
           </a>

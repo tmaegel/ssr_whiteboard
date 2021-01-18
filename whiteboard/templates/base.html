@@ -37,15 +37,25 @@
             <i class="fa fa-bars"></i>
         </button>
         {% if '/workout/' in request.path %}
-        <h1 id="pagetitle">WORKOUTS</h1>
+        <h1 id="pagetitle">
+          <a href="{{ url_for('index') }}workout">WORKOUTS</a>
+        </h1>
         {% elif '/movement/' in request.path %}
-        <h1 id="pagetitle">MOVEMENTS</h1>
+        <h1 id="pagetitle">
+          <a href="{{ url_for('index') }}movement">MOVEMENTS</a>
+        </h1>
         {% elif '/equipment/' in request.path %}
-        <h1 id="pagetitle">EQUIPMENT</h1>
+        <h1 id="pagetitle">
+          <a href="{{ url_for('index') }}equipment">EQUIPMENT</a>
+        </h1>
         {% elif '/tag/' in request.path %}
-        <h1 id="pagetitle">TAGS</h1>
+        <h1 id="pagetitle">
+          <a href="{{ url_for('index') }}tag">TAGS</a>
+        </h1>
         {% else %}
-        <h1 id="pagetitle">HOME</h1>
+        <h1 id="pagetitle">
+          <a href="{{ url_for('index') }}">HOME</a>
+        </h1>
         {% endif %}
 
       </div>
