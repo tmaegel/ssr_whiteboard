@@ -1,18 +1,5 @@
 {% extends 'base.html' %}
 
-{% block toolbar %}
-  <a onclick="openPrefsDialog()"
-    class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
-    href="#">
-    <i class="icon fa fa-gear"></i>
-  </a>
-  <a id="toggleSearchbar" onClick="toggleSearch()"
-    class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right"
-    href="#" >
-    <i class="icon fa fa-search"></i>
-  </a>
-{% endblock %}
-
 {% block content %}
 {% include 'general/overlay_button_add.html' %}
 {% include 'general/prefs_dialog.html' %}

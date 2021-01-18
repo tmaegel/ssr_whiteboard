@@ -29,28 +29,28 @@
   <div class="w3-main" style="margin-left:250px">
 
     {% if '/auth/login' not in request.path %}
-      <div id="titlebar" class="bar w3-dark-grey padding-8-y padding-8-x">
+
+      <div id="titlebar" class="w3-white w3-border-light-gray w3-border-bottom padding-8-y">
         <button
-          class="w3-button w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-large w3-hide-large"
+          class="w3-button w3-hover-white w3-hover-text-blue w3-large w3-hide-large"
           onclick="toggleSidebar(event)" style="padding-top:2px;">
             <i class="fa fa-bars"></i>
         </button>
         {% if '/workout/' in request.path %}
-        <h1 id="pagetitle" class="w3-text-white">Workouts</h1>
+        <h1 id="pagetitle">WORKOUTS</h1>
         {% elif '/movement/' in request.path %}
-        <h1 id="pagetitle" class="w3-text-white">Movements</h1>
+        <h1 id="pagetitle">MOVEMENTS</h1>
         {% elif '/equipment/' in request.path %}
-        <h1 id="pagetitle" class="w3-text-white">Equipment</h1>
+        <h1 id="pagetitle">EQUIPMENT</h1>
         {% elif '/tag/' in request.path %}
-        <h1 id="pagetitle" class="w3-text-white">Tags</h1>
+        <h1 id="pagetitle">TAGS</h1>
         {% else %}
-        <h1 id="pagetitle" class="w3-text-white">Home</h1>
+        <h1 id="pagetitle">HOME</h1>
         {% endif %}
-
-        {% block toolbar %}{% endblock %}
 
       </div>
 
+      <!-- search bar -->
       {% include 'general/searchbar.html' %}
 
     {% endif %}

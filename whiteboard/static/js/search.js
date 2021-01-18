@@ -1,7 +1,10 @@
+search = document.getElementById('searchbar');
+search.value = '';
+
 function doSearch() {
   // Declare variables
   var input, filter, ul, li, i, value;
-  input = document.getElementById('search-input');
+  input = document.getElementById('searchbar');
   filter = input.value.toUpperCase();
   ul = document.getElementById('searchable');
   li = ul.getElementsByTagName('li');
@@ -13,20 +16,5 @@ function doSearch() {
     } else {
       li[i].style.display = 'none';
     }
-  }
-}
-
-function toggleSearch() {
-  let searchbar = document.getElementById('searchbar');
-  let titlebar = document.getElementById('titlebar');
-  if(searchbar.classList.contains('w3-hide')) {
-    titlebar.classList.add("w3-hide");
-    searchbar.classList.remove("w3-hide");
-  } else {
-    titlebar.classList.remove("w3-hide");
-    searchbar.classList.add("w3-hide");
-    search = document.getElementById('search-input');
-    search.value = '';
-    doSearch();
   }
 }
