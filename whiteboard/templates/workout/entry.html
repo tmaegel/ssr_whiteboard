@@ -76,14 +76,14 @@
       <i class="collapsable-icon icon fa fa fa-angle-down w3-right"></i>
     </div>
     <div class="collapsable w3-hide w3-border-top w3-border-light-gray">
-      <div class="w3-bar">
+      <div class="w3-bar padding-8">
         <a onclick="openEditScoreDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}', {{ score.id }}, this)"
-          class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right"
+          class="w3-bar-item w3-button w3-small w3-round w3-blue w3-text-white w3-right margin-4-x"
           href="#">
           <i class="icon fa fa fa-pencil"></i>
         </a>
         <a onclick="openDeleteScoreDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}', {{ score.id }})"
-          class="w3-bar-item w3-button w3-text-dark-grey w3-hover-white w3-hover-text-blue w3-right"
+          class="w3-bar-item w3-button w3-small w3-round w3-red w3-text-white w3-right margin-4-x"
           href="#">
           <i class="icon fa fa fa-trash"></i>
         </a>
