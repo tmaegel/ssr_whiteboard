@@ -16,6 +16,7 @@ Graphical web front-end to manage your crossfit workouts results written in Pyth
 1. Clone the repository
 ```sh
 git clone https://github.com/tmaegel/ssr_whiteboard
+cd ssr_whiteboard/
 ```
 
 2. Create virtual environment and install requirements
@@ -51,7 +52,6 @@ This add two user (admin, user) with the default password 'secret'. The password
 
 6. Build and run
 ```sh
-cd ssr_whiteboard/
 make run
 ```
 
