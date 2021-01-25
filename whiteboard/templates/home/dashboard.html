@@ -1,22 +1,24 @@
 {% extends 'base.html' %}
 
-{% block toolbar %}
-  <div class="w3-dropdown-hover w3-right">
-    <button class="w3-button w3-text-white w3-dark-gray w3-hover-dark-gray w3-hover-text-blue">
-      <i class="icon fa fa-user-circle"></i>
-    </button>
-    <div class="w3-dropdown-content w3-bar-block w3-hover-text-blue w3-border" style="right:0">
-      <a onclick="openUpdatePwDialog()" class="w3-bar-item w3-button w3-text-dark-gray w3-hover-text-blue" href="#">Change password</a>
-      <a href="{{ url_for(request.endpoint) }}auth/logout" class="w3-bar-item w3-button w3-text-dark-gray w3-hover-text-blue">Logout</a>
-    </div>
-  </div>
-{% endblock %}
-
 {% block content %}
 {% include 'general/update_pw_dialog.html' %}
 
+  <div class="w3-row w3-border-light-gray w3-border-bottom padding-8">
+    <div class="w3-col w3-right" style="width:60px">
+      <div class="w3-dropdown-hover w3-round w3-white w3-text-dark-gray w3-right">
+        <button class="w3-button w3-round w3-white w3-hover-white margin-8-x">
+          <i class="icon fa fa-user-circle"></i>
+        </button>
+        <div class="w3-dropdown-content w3-bar-block w3-light-grey w3-hover-light-grey w3-border" style="right:20px">
+          <a onclick="openUpdatePwDialog()" class="w3-bar-item w3-button w3-hover-light-grey w3-hover-text-blue" href="#">Change password</a>
+          <a href="{{ url_for(request.endpoint) }}auth/logout" class="w3-bar-item w3-button w3-hover-light-grey w3-hover-text-blue">Logout</a>
+        </div>
+      </div>
+    </div>
+    <div class="w3-rest"></div>
+  </div>
+
   <div class="w3-container">
-   <p>test</p>
   </div>
 {% endblock %}
 
