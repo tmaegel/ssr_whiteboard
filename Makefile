@@ -18,7 +18,7 @@ coverage:
 lint:
 	flake8 $(DIR)
 
-build: scss
+build:
 	@docker build --pull -t $(APP) .
 
 run: build
