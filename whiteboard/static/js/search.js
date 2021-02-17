@@ -1,5 +1,4 @@
 search = document.getElementById('searchbar');
-search.parentNode.style.display = 'none';
 search.value = '';
 
 function doSearch() {
