@@ -1,11 +1,11 @@
 search = document.getElementById('searchbar');
+search.parentNode.style.display = 'none';
 search.value = '';
 
 function doSearch() {
   // Declare variables
-  var input, filter, ul, li, i, value;
-  input = document.getElementById('searchbar');
-  filter = input.value.toUpperCase();
+  var filter, ul, li, i, value;
+  filter = search.value.toUpperCase();
   ul = document.getElementById('searchable');
   li = ul.getElementsByTagName('li');
   // Loop through all list items, and hide those who don't match the search query
@@ -16,5 +16,16 @@ function doSearch() {
     } else {
       li[i].style.display = 'none';
     }
+  }
+}
+
+function toggleSearch() {
+  parentDiv = search.parentNode;
+  if(parentDiv.style.display == 'block') {
+    parentDiv.style.display = 'none';
+    search.value = '';
+    doSearch();
+  } else {
+    parentDiv.style.display = 'block';
   }
 }

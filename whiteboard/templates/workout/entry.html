@@ -1,5 +1,31 @@
 {% extends 'base.html' %}
 
+{% block toolbar %}
+{% if workout.userId == userId %}
+  <button
+    onclick="openEditWorkoutDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}')"
+    class="w3-button w3-small w3-round w3-blue w3-text-white w3-right margin-4-x">
+    <i class="icon fa fa fa-pencil"></i>
+  </button>
+  <button
+    onclick="openDeleteWorkoutDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}')"
+    class="w3-button w3-small w3-round w3-red w3-text-white w3-right margin-4-x">
+    <i class="icon fa fa fa-trash"></i>
+  </button>
+{% else %}
+  <button
+    id="btn-edit-workout-hide"
+    class="w3-button w3-small w3-round w3-hover-dark-gray w3-hover-text-light-gray w3-right w3-disabled margin-4-x">
+    <i class="icon fa fa fa-pencil"></i>
+  </button>
+  <button
+    id="btn-delete-workout-hide"
+    class="w3-button w3-small w3-round w3-hover-dark-gray w3-hover-text-light-gray w3-right w3-disabled margin-4-x">
+    <i class="icon fa fa fa-trash"></i>
+  </button>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 {% include 'general/overlay_button_add.html' %}
 {% include 'score/add_dialog.html' %}
@@ -9,30 +35,6 @@
   {% include 'workout/edit_dialog.html' %}
   {% include 'workout/delete_dialog.html' %}
 {% endif %}
-
-<div class="w3-bar w3-border-light-gray w3-border-bottom padding-8">
-{% if workout.userId == userId %}
-  <a onclick="openEditWorkoutDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}')"
-    class="w3-bar-item w3-button w3-small w3-round w3-blue w3-text-white w3-right margin-4-x"
-    href="#">
-    <i class="icon fa fa fa-pencil"></i>
-  </a>
-  <a onclick="openDeleteWorkoutDialog('{{ url_for(request.endpoint, workout_id=workout.id) }}')"
-    class="w3-bar-item w3-button w3-small w3-round w3-red w3-text-white w3-right margin-4-x"
-    href="#">
-    <i class="icon fa fa fa-trash"></i>
-  </a>
-{% else %}
-  <a class="w3-bar-item w3-button w3-small w3-round w3-blue w3-text-white w3-right w3-disabled margin-4-x"
-    href="#" id="btn-edit-workout-hide">
-    <i class="icon fa fa fa-pencil"></i>
-  </a>
-  <a class="w3-bar-item w3-button w3-small w3-round w3-red w3-text-white w3-right w3-disabled margin-4-x"
-    href="#" id="btn-delete-workout-hide">
-    <i class="icon fa fa fa-trash"></i>
-  </a>
-{% endif %}
-</div>
 
 <div class="w3-margin">
   <h2>{{ workout.name }}</h2>

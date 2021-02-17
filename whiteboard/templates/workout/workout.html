@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
 
+{% block toolbar %}
+  <button
+    onclick="toggleSearch()"
+    class="w3-button w3-small w3-dark-gray w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right margin-4-x">
+    <i class="icon fa fa fa-search"></i>
+  </button>
+  <button
+    onclick="openPrefsDialog()"
+    class="w3-button w3-small w3-dark-gray w3-text-white w3-hover-dark-gray w3-hover-text-blue w3-right margin-4-x">
+    <i class="icon fa fa-sort-alpha-asc"></i>
+  </button>
+{% endblock %}
+
 {% block content %}
 {% include 'general/prefs_dialog.html' %}
 {% include 'workout/add_dialog.html' %}
