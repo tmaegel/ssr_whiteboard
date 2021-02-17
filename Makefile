@@ -18,7 +18,7 @@ coverage:
 lint:
 	flake8 $(DIR)
 
-build:
+build: scss
 	@docker build --pull -t $(APP) .
 
 run: build
@@ -44,3 +44,6 @@ install-dev: install
 
 init_db:
 	FLASK_APP=$(APP) FLASK_ENV=development flask init-db
+
+scss:
+	pyscss whiteboard/assets/scss/style.scss > whiteboard/static/css/style.css
