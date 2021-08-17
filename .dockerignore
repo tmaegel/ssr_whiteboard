@@ -4,5 +4,9 @@ __pycache__/
 instance/
 tests/
 Dockerfile
+docker-compose.yml
 Makefile
 setup.cfg
+tags
+tags.lock
+tags.temp
