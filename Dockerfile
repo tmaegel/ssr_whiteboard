@@ -1,4 +1,4 @@
-FROM python:bullseye-slim
+FROM python:slim-bullseye
 
 COPY requirements.txt /
 RUN pip3 install -r /requirements.txt
