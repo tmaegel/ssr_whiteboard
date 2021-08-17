@@ -9,5 +9,5 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - ./instance/:/app/instance/
+      - ./instance/:/home/worker/instance/
     restart: always
