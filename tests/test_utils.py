@@ -1,34 +1,38 @@
 import pytest
 import time
 from whiteboard.utils import (
-    is_float, is_timestamp, is_datetime, timestamp_to_sec, datetime_to_sec,
-    get_format_timestamp
+    is_float,
+    is_timestamp,
+    is_datetime,
+    timestamp_to_sec,
+    datetime_to_sec,
+    get_format_timestamp,
 )
 
 
-# test is_float function with valid values
 @pytest.mark.parametrize(('value'), (
     ('99.99'),
     ('9.0'),
     ('99'),
 ))
 def test_valid_float(value):
+    """Test is_float function with valid values."""
     assert is_float(value) is True
 
 
-# test is_float function with invalid values
 @pytest.mark.parametrize(('value'), (
     ('99,99'),
     ('-99.99'),
     ('-99'),
     ('abc'),
     (''),
+    (None),
 ))
 def test_invalid_float(value):
+    """Test is_float function with invalid values."""
     assert is_float(value) is False
 
 
-# test is_datetime function with valid values
 @pytest.mark.parametrize(('value'), (
     ('1.1.2020 20:30'),
     ('10.10.2020 20:30'),
@@ -44,10 +48,10 @@ def test_invalid_float(value):
     ('1.1.2020 00:00:00'),
 ))
 def test_valid_datetime(value):
+    """Test is_datetime function with valid values."""
     assert is_datetime(value) is True
 
 
-# test is_datetime function with invalid values
 @pytest.mark.parametrize(('value'), (
     ('1.1.2020'),
     ('1.1.2020 20'),
@@ -55,12 +59,13 @@ def test_valid_datetime(value):
     ('20:30'),
     ('1.1.20 20:30'),
     (''),
+    (None),
 ))
 def test_invalid_datetime(value):
+    """Test is_datetime function with invalid values."""
     assert is_datetime(value) is False
 
 
-# test is_timestamp function with valid values
 @pytest.mark.parametrize(('value'), (
     ('20:30'),
     ('02:30'),
@@ -76,10 +81,10 @@ def test_invalid_datetime(value):
     ('00:00:00'),
 ))
 def test_valid_timestamp(value):
+    """Test is_timestamp function with valid values."""
     assert is_timestamp(value) is True
 
 
-# test is_timestamp function with invalid values
 @pytest.mark.parametrize(('value'), (
     ('2'),
     ('203'),
@@ -87,23 +92,29 @@ def test_valid_timestamp(value):
     ('20:300'),
     ('20:30:450'),
     (''),
+    (None),
 ))
 def test_invalid_timestamp(value):
+    """Test is_timestamp function with invalid values."""
     assert is_timestamp(value) is False
 
 
-# test get_format_timestamp function with valid values and no parameter
 def test_valid_format_timestamp_no_parameter():
+    """
+    Test get_format_timestamp function with valid values and no parameter.
+    """
     assert get_format_timestamp() == time.strftime(
         "%d.%m.%Y %H:%M",
         time.localtime(time.time()))
 
 
-# test get_format_timestamp function with valid values and parameter
 @pytest.mark.parametrize(('value', 'result'), (
     (1577907000, '01.01.2020 20:30'),
 ))
 def test_valid_format_timestamp_with_parameter(value, result):
+    """
+    Test get_format_timestamp with valid values and parameter.
+    """
     assert get_format_timestamp(value) == result
 
 
@@ -113,9 +124,12 @@ def test_valid_format_timestamp_with_parameter(value, result):
     ('20:300'),
     ('20:30:450'),
     ('abc'),
+    (-1),
+    ([]),
 ))
 def test_invalid_format_timestamp(value):
-    assert get_format_timestamp(value) == -1
+    """Test get_format_timestamp function with invalid values."""
+    assert get_format_timestamp(value) is False
 
 
 # test timestamp_to_sec function with valid values
@@ -134,25 +148,26 @@ def test_invalid_format_timestamp(value):
     ('00:00:00', 0),
     ('2', 2),
     ('203', 203),
-    ('20.3', 20),
 ))
 def test_valid_timestamp_to_sec(value, result):
+    """Test timestamp_to_sec function with valid values."""
     assert timestamp_to_sec(value) == result
 
 
-# test timestamp_to_sec function with invalid values
 @pytest.mark.parametrize(('value'), (
     ('203:30'),
     ('20:300'),
     ('20:30:450'),
     (''),
+    ('20.3'),
+    ('-1'),
+    (None),
 ))
 def test_invalid_timestamp_to_sec(value):
-    assert timestamp_to_sec(value) == -1
+    """Test timestamp_to_sec function with invalid values."""
+    assert timestamp_to_sec(value) is False
 
 
-# test datetime_to_sec function with valid values
-# Test based on timezone: Europe/Berlin
 @pytest.mark.parametrize(('value', 'result'), (
     ('1.1.2020 20:30', 1577907000),
     ('10.10.2020 20:30', 1602354600),
@@ -168,10 +183,13 @@ def test_invalid_timestamp_to_sec(value):
     ('1.1.2020 00:00:00', 1577833200),
 ))
 def test_valid_datetime_to_sec(value, result):
+    """
+    Test datetime_to_sec function with valid values.
+    Test based on timezone Europe/Berlin.
+    """
     assert datetime_to_sec(value) == result
 
 
-# test datetime_to_sec function with invalid values
 @pytest.mark.parametrize(('value'), (
     ('1.1.2020'),
     ('1.1.2020 20'),
@@ -179,6 +197,8 @@ def test_valid_datetime_to_sec(value, result):
     ('20:30'),
     ('1.1.20 20:30'),
     (''),
+    (None),
 ))
 def test_invalid_datetime_to_sec(value):
-    assert datetime_to_sec(value) == -1
+    """Test datetime_to_sec function with invalid values."""
+    assert datetime_to_sec(value) is False

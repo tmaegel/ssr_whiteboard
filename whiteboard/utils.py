@@ -1,11 +1,13 @@
 import time
 import datetime
 import re
+from typing import Optional, Union
 
 
-# Floating number regex check
-# e.g. 123.45
-def is_float(value):
+def is_float(value: str) -> bool:
+    """Check for floating number."""
+    if value is None:
+        return False
     pattern = re.compile(r'[0-9]+[.]?[0-9]+')
     if pattern.fullmatch(value) is None:
         return False
@@ -13,9 +15,10 @@ def is_float(value):
         return True
 
 
-# Datetime regex check (dd.mm.YYY HH:MM)
-# e.g. 17.5.2019 19:21
-def is_datetime(value):
+def is_datetime(value: str) -> bool:
+    """Check for datetime format (e.g. dd.mm.YYYY HH:MM)."""
+    if value is None:
+        return False
     pattern = re.compile(r'\d{1,2}.\d{1,2}.\d{4} \d{1,2}([:]\d{1,2}){1,2}')
     if pattern.fullmatch(value) is None:
         return False
@@ -23,9 +26,10 @@ def is_datetime(value):
         return True
 
 
-# Datetime regex check (dd.mm.YYY)
-# e.g 19:21:23
-def is_timestamp(value):
+def is_timestamp(value: str) -> bool:
+    """Check for timestamp format (e.g. HH.MMM.SS)."""
+    if value is None:
+        return False
     pattern = re.compile(r'\d{1,2}(:\d{1,2}){1,2}')
     if pattern.fullmatch(value) is None:
         return False
@@ -33,69 +37,67 @@ def is_timestamp(value):
         return True
 
 
-# Get timestamp (unix time) in specific format
-# e.g. 01.12.1990 12:00
-def get_format_timestamp(datetime=None):
+def get_format_timestamp(datetime: Optional[int] = None) -> Union[str, bool]:
+    """Convert unix timestamp in datetime format (e.g. dd.mm.YYYY HH:MM)."""
     if datetime is None:
         return time.strftime("%d.%m.%Y %H:%M", time.localtime(time.time()))
     elif str(datetime).isdigit():
         return time.strftime("%d.%m.%Y %H:%M", time.localtime(datetime))
     else:
-        return -1
+        return False
 
 
-# Convert timestamp (HH:MM:SS) to seconds
 # @todo Check the timezone
-def timestamp_to_sec(value):
-    if is_timestamp(value) is True:
-        sec = 0
-        ts_split = value.split(":")
-        if len(ts_split) > 3:
-            return -1
+def timestamp_to_sec(value: str) -> Union[int, bool]:
+    """Convert timestamp (HH:MM:SS) to seconds."""
+    if value is None:
+        return False
+    if value.isdigit() is True:
+        return int(value)
+    if is_timestamp(value) is False:
+        return False
 
-        if len(ts_split) == 2:
-            sec = int(ts_split[0])*60*60+int(ts_split[1])*60
-        if len(ts_split) == 3:
-            sec = int(ts_split[0])*3600+int(ts_split[1])*60+int(ts_split[2])
+    sec = 0
+    ts_split = value.split(":")
+    if len(ts_split) > 3:
+        return False
+    if len(ts_split) == 2:
+        sec = int(ts_split[0])*60*60+int(ts_split[1])*60
+    if len(ts_split) == 3:
+        sec = int(ts_split[0])*3600+int(ts_split[1])*60+int(ts_split[2])
 
-        return sec
-    elif value.isdigit() is True or is_float(value) is True:
-        # Convert float from string to int
-        return int(float(value))
-    else:
-        return -1
+    return sec
 
 
-# Convert datetime (DD.MM:YYYY HH:MM:SS) to seconds
 # @todo Check the timezone
-def datetime_to_sec(value):
-    if is_datetime(value) is True:
-        dt_split = value.split(" ")
-        if len(dt_split) > 2:
-            return -1
+def datetime_to_sec(value: str) -> Union[int, bool]:
+    """Convert datetime (dd.mm.YYYY HH:MM) to seconds."""
+    if value is None:
+        return False
+    if is_datetime(value) is False:
+        return False
 
-        d_split = dt_split[0].split(".")
-        t_split = dt_split[1].split(":")
-        if len(d_split) > 3:
-            return -1
+    dt_split = value.split(" ")
+    if len(dt_split) > 2:
+        return False
 
-        if len(t_split) > 3:
-            return -1
+    d_split = dt_split[0].split(".")
+    t_split = dt_split[1].split(":")
+    if len(d_split) > 3:
+        return False
+    if len(t_split) > 3:
+        return False
 
-        day = int(d_split[0])
-        month = int(d_split[1])
-        year = int(d_split[2])
-        hour = int(t_split[0])
-        minutes = int(t_split[1])
-        seconds = 0
+    day = int(d_split[0])
+    month = int(d_split[1])
+    year = int(d_split[2])
+    hour = int(t_split[0])
+    minutes = int(t_split[1])
+    seconds = 0
 
-        if len(t_split) == 3:
-            seconds = int(t_split[2])
-        sec = time.mktime(datetime.datetime(
-            year, month, day, hour, minutes, seconds).timetuple())
-        return int(sec)
-    elif value.isdigit() is True or is_float(value) is True:
-        # Convert float from string to int
-        return int(float(value))
-    else:
-        return -1
+    if len(t_split) == 3:
+        seconds = int(t_split[2])
+    sec = time.mktime(datetime.datetime(
+        year, month, day, hour, minutes, seconds).timetuple())
+
+    return int(sec)
