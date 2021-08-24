@@ -37,9 +37,10 @@ def test_get_workout__valid(app, workout_id):
 def test_get_workout__not_exist(app, workout_id):
     """Test get() from workout model with an id that does not exist."""
     with app.app_context():
-        with pytest.raises(WorkoutNotFoundError):
+        with pytest.raises(WorkoutNotFoundError) as e:
             workout = Workout.get(workout_id)
             assert workout is None
+        assert str(e.value) == f'Workout with id {workout_id} does not exist.'
 
 
 @pytest.mark.parametrize(('workout_id'), (
@@ -54,9 +55,10 @@ def test_get_workout__not_exist(app, workout_id):
 def test_get_workout__invalid(app, workout_id):
     """Test get() from workout model with invalid data."""
     with app.app_context():
-        with pytest.raises(WorkoutInvalidIdError):
+        with pytest.raises(WorkoutInvalidIdError) as e:
             workout = Workout.get(workout_id)
             assert workout is None
+        assert str(e.value) == 'Invalid workout id.'
 
 #
 # Workout.add()
@@ -80,9 +82,10 @@ def test_add_workout__valid(app):
 def test_add_workout__invalid_object(app):
     """Test add() from workout model with invalid object."""
     with app.app_context():
-        with pytest.raises(WorkoutNoneObjectError):
+        with pytest.raises(WorkoutNoneObjectError) as e:
             workout_id = Workout.add(None)
             assert workout_id is None
+        assert str(e.value) == 'Workout object is None.'
 
 
 @pytest.mark.parametrize(('user_id'), (
@@ -102,9 +105,10 @@ def test_add_workout__invalid_user_id(app, user_id):
         'test description'
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidUserIdError):
+        with pytest.raises(WorkoutInvalidUserIdError) as e:
             workout_id = Workout.add(workout)
             assert workout_id is None
+        assert str(e.value) == 'Invalid user id.'
 
 
 @pytest.mark.parametrize(('workout_name'), (
@@ -123,9 +127,10 @@ def test_add_workout__invalid_name(app, workout_name):
         'test description'
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidNameError):
+        with pytest.raises(WorkoutInvalidNameError) as e:
             workout_id = Workout.add(workout)
             assert workout_id is None
+        assert str(e.value) == 'Invalid workout name.'
 
 
 @pytest.mark.parametrize(('workout_description'), (
@@ -144,9 +149,10 @@ def test_add_workout__invalid_description(app, workout_description):
         workout_description
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidDescriptionError):
+        with pytest.raises(WorkoutInvalidDescriptionError) as e:
             workout_id = Workout.add(workout)
             assert workout_id is None
+        assert str(e.value) == 'Invalid workout description.'
 
 
 @pytest.mark.parametrize(('workout_timestamp'), (
@@ -168,9 +174,10 @@ def test_add_workout__invalid_timestamp(app, workout_timestamp):
         workout_timestamp
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidTimestampError):
+        with pytest.raises(WorkoutInvalidTimestampError) as e:
             workout_id = Workout.add(workout)
             assert workout_id is None
+        assert str(e.value) == 'Invalid workout timestamp.'
 
 
 #
@@ -194,9 +201,10 @@ def test_update_workout__valid(app):
 def test_update_workout__invalid_object(app):
     """Test update() from workout model with invalid object."""
     with app.app_context():
-        with pytest.raises(WorkoutNoneObjectError):
+        with pytest.raises(WorkoutNoneObjectError) as e:
             workout_id = Workout.update(None)
             assert workout_id is None
+        assert str(e.value) == 'Workout object is None.'
 
 
 @pytest.mark.parametrize(('workout_id'), (
@@ -216,9 +224,10 @@ def test_update_workout__invalid_id(app, workout_id):
         'test description'
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidIdError):
+        with pytest.raises(WorkoutInvalidIdError) as e:
             workout_id = Workout.update(workout)
             assert workout_id is None
+        assert str(e.value) == 'Invalid workout id.'
 
 
 @pytest.mark.parametrize(('user_id'), (
@@ -238,9 +247,10 @@ def test_update_workout__invalid_user_id(app, user_id):
         'test description'
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidUserIdError):
+        with pytest.raises(WorkoutInvalidUserIdError) as e:
             workout_id = Workout.update(workout)
             assert workout_id is None
+        assert str(e.value) == 'Invalid user id.'
 
 
 @pytest.mark.parametrize(('workout_name'), (
@@ -259,9 +269,10 @@ def test_update_workout__invalid_name(app, workout_name):
         'test description'
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidNameError):
+        with pytest.raises(WorkoutInvalidNameError) as e:
             workout_id = Workout.update(workout)
             assert workout_id is None
+        assert str(e.value) == 'Invalid workout name.'
 
 
 @pytest.mark.parametrize(('workout_description'), (
@@ -280,9 +291,10 @@ def test_update_workout__invalid_description(app, workout_description):
         workout_description
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidDescriptionError):
+        with pytest.raises(WorkoutInvalidDescriptionError) as e:
             workout_id = Workout.update(workout)
             assert workout_id is None
+        assert str(e.value) == 'Invalid workout description.'
 
 
 @pytest.mark.parametrize(('workout_timestamp'), (
@@ -304,9 +316,10 @@ def test_update_workout__invalid_timestamp(app, workout_timestamp):
         workout_timestamp
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidTimestampError):
+        with pytest.raises(WorkoutInvalidTimestampError) as e:
             workout_id = Workout.update(workout)
             assert workout_id is None
+        assert str(e.value) == 'Invalid workout timestamp.'
 
 
 #
@@ -329,9 +342,10 @@ def test_remove_workout__valid(app):
 def test_remove_workout__invalid_object(app):
     """Test remove() from workout model with invalid object."""
     with app.app_context():
-        with pytest.raises(WorkoutNoneObjectError):
+        with pytest.raises(WorkoutNoneObjectError) as e:
             result = Workout.remove(None)
             assert result is None
+        assert str(e.value) == 'Workout object is None.'
 
 
 @pytest.mark.parametrize(('workout_id'), (
@@ -343,7 +357,7 @@ def test_remove_workout__invalid_object(app):
     (True),
 ))
 def test_remove_workout__invalid_id(app, workout_id):
-    """Test remove() from workout model with invalidworkout id."""
+    """Test remove() from workout model with invalid workout id."""
     workout = Workout(
         workout_id,
         1,
@@ -351,9 +365,10 @@ def test_remove_workout__invalid_id(app, workout_id):
         'test description'
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidIdError):
+        with pytest.raises(WorkoutInvalidIdError) as e:
             result = Workout.remove(workout)
             assert result is None
+        assert str(e.value) == 'Invalid workout id.'
 
 
 @pytest.mark.parametrize(('user_id'), (
@@ -373,6 +388,7 @@ def test_remove_workout__invalid_user_id(app, user_id):
         'test description'
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidUserIdError):
+        with pytest.raises(WorkoutInvalidUserIdError) as e:
             result = Workout.remove(workout)
             assert result is None
+        assert str(e.value) == 'Invalid user id.'

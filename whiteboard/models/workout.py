@@ -2,52 +2,50 @@
 # It will become the default in Python 3.10.
 from __future__ import annotations
 import time
-from typing import Optional, Union
+from typing import Optional
 
-from ..db import get_db
+from whiteboard.db import get_db
 
 
 class WorkoutNotFoundError(Exception):
 
     """Custom error that raised when a workout with an id doesn't exist."""
 
-    def __init__(self, _message: str) -> None:
-        self.message = _message
-        super().__init__(_message)
+    def __init__(self, workout_id: int) -> None:
+        self.workout_id = workout_id
+        super().__init__(f'Workout with id {self.workout_id} does not exist.')
 
 
 class WorkoutNoneObjectError(Exception):
 
     """Custom error that raised when a workout object is None."""
 
-    def __init__(self, _message: str) -> None:
-        self.message = _message
-        super().__init__(_message)
+    def __init__(self) -> None:
+        super().__init__('Workout object is None.')
 
 
 class WorkoutInvalidIdError(Exception):
 
     """Custom error that raised when a workout contains a invalid id."""
 
-    def __init__(self, _message: str) -> None:
-        self.message = _message
+    def __init__(self) -> None:
+        super().__init__('Invalid workout id.')
 
 
 class WorkoutInvalidUserIdError(Exception):
 
     """Custom error that raised when a workout contains a invalid user id."""
 
-    def __init__(self, _message: str) -> None:
-        self.message = _message
-        super().__init__(_message)
+    def __init__(self) -> None:
+        super().__init__('Invalid user id.')
 
 
 class WorkoutInvalidNameError(Exception):
 
     """Custom error that raised when a workout contains a invalid name."""
 
-    def __init__(self, _message: str) -> None:
-        self.message = _message
+    def __init__(self) -> None:
+        super().__init__('Invalid workout name.')
 
 
 class WorkoutInvalidDescriptionError(Exception):
@@ -56,16 +54,16 @@ class WorkoutInvalidDescriptionError(Exception):
     Custom error that raised when a workout contains a invalid description.
     """
 
-    def __init__(self, _message: str) -> None:
-        self.message = _message
+    def __init__(self) -> None:
+        super().__init__('Invalid workout description.')
 
 
 class WorkoutInvalidTimestampError(Exception):
 
     """Custom error that raised when a workout contains a invalid timestamp."""
 
-    def __init__(self, _message: str) -> None:
-        self.message = _message
+    def __init__(self) -> None:
+        super().__init__('Invalid workout timestamp.')
 
 
 class Workout():
@@ -84,141 +82,137 @@ class Workout():
                f' datetime={self.datetime} )'
 
     @staticmethod
-    def _query_to_object(_query):
+    def _query_to_object(query):
         """Create workout instance based on the query."""
-        if _query is None:
+        if query is None:
             return None
 
         return Workout(
-            _query['id'],
-            _query['userId'],
-            _query['name'],
-            _query['description'],
-            _query['datetime']
+            query['id'],
+            query['userId'],
+            query['name'],
+            query['description'],
+            query['datetime']
         )
 
     @staticmethod
-    def _validate_object(_workout):
+    def _validate_object(workout):
         """Simple check if the object is None."""
-        if _workout is None:
-            raise WorkoutNoneObjectError('Workout object is None.')
+        if workout is None:
+            raise WorkoutNoneObjectError()
 
     @staticmethod
-    def _validate_id(_id):
+    def _validate_id(workout_id):
         """Validate the workout id."""
-        if _id is None:
-            raise WorkoutInvalidIdError('Given workout id is "None".')
-        if (not isinstance(_id, int) or
-                isinstance(_id, bool) or _id < 0):
-            raise WorkoutInvalidIdError('Invalid workout id.')
+        if workout_id is None:
+            raise WorkoutInvalidIdError()
+        if (not isinstance(workout_id, int) or
+                isinstance(workout_id, bool) or workout_id < 0):
+            raise WorkoutInvalidIdError()
 
     @staticmethod
-    def _validate_user_id(_user_id):
+    def _validate_user_id(user_id):
         """Validate the workout user id."""
-        if (_user_id is None or
-                not isinstance(_user_id, int) or
-                isinstance(_user_id, bool) or _user_id < 0):
-            raise WorkoutInvalidUserIdError('Workout has invalid user id.')
+        if (user_id is None or
+                not isinstance(user_id, int) or
+                isinstance(user_id, bool) or user_id < 0):
+            raise WorkoutInvalidUserIdError()
 
     @staticmethod
-    def _validate_name(_name):
+    def _validate_name(name):
         """Validate the workout name."""
-        if _name is None or not isinstance(_name, str):
-            raise WorkoutInvalidNameError('Workout has invalid name.')
+        if name is None or not isinstance(name, str):
+            raise WorkoutInvalidNameError()
 
     @staticmethod
-    def _validate_description(_description):
+    def _validate_description(description):
         """Validate the workout description."""
-        if (_description is None or not isinstance(_description, str)):
-            raise WorkoutInvalidDescriptionError(
-                'Workout has invalid description.')
+        if (description is None or not isinstance(description, str)):
+            raise WorkoutInvalidDescriptionError()
 
     @staticmethod
-    def _validate_datetime(_datetime):
+    def _validate_datetime(datetime):
         """Validate the workout datetime."""
-        if (_datetime is None or
-                not isinstance(_datetime, int) or
-                isinstance(_datetime, bool) or _datetime < 0):
-            raise WorkoutInvalidTimestampError(
-                'Workout has invalid timestamp.')
+        if (datetime is None or
+                not isinstance(datetime, int) or
+                isinstance(datetime, bool) or datetime < 0):
+            raise WorkoutInvalidTimestampError()
 
     @staticmethod
-    def _validate(_workout):
+    def _validate(workout):
         """Check the workout object for invalid content."""
         # @todo: Check wheather user with user id exist!
 
-        Workout._validate_object(_workout)
-        Workout._validate_user_id(_workout.user_id)
-        Workout._validate_name(_workout.name)
-        Workout._validate_description(_workout.description)
-        Workout._validate_datetime(_workout.datetime)
+        Workout._validate_object(workout)
+        Workout._validate_user_id(workout.user_id)
+        Workout._validate_name(workout.name)
+        Workout._validate_description(workout.description)
+        Workout._validate_datetime(workout.datetime)
 
     @staticmethod
-    def get(_id: int) -> Workout:
+    def get(workout_id: int) -> Workout:
         """Get workout from db by id."""
-        Workout._validate_id(_id)
+        Workout._validate_id(workout_id)
         db = get_db()
         result = db.execute(
             'SELECT id, userId, name, description, datetime'
-            ' FROM table_workout WHERE id = ?', (_id,)
+            ' FROM table_workout WHERE id = ?', (workout_id,)
         ).fetchone()
 
         workout = Workout._query_to_object(result)
         if workout is None:
-            raise WorkoutNotFoundError(
-                'Workout ' + str(_id) + ' does not exist.'
-            )
+            raise WorkoutNotFoundError(workout_id=workout_id)
 
         return workout
 
     @staticmethod
-    def add(_workout: Workout) -> int:
+    def add(workout: Workout) -> int:
         """Add new workout to db."""
-        Workout._validate(_workout)
+        Workout._validate(workout)
         db = get_db()
         db.execute(
             'INSERT INTO table_workout'
             ' (userId, name, description, datetime)'
             ' VALUES (?, ?, ?, ?)',
-            (_workout.user_id, _workout.name, _workout.description,
-             _workout.datetime)
+            (workout.user_id, workout.name, workout.description,
+             workout.datetime)
         )
         db.commit()
         inserted_id = db.execute(
             'SELECT last_insert_rowid()'
             ' FROM table_workout WHERE userId = ? LIMIT 1',
-            (_workout.user_id,)
+            (workout.user_id,)
         ).fetchone()
 
         return inserted_id['last_insert_rowid()']
 
     @staticmethod
-    def update(_workout: Workout) -> int:
+    def update(workout: Workout) -> int:
         """Update workout in db by id."""
-        Workout._validate(_workout)
-        Workout._validate_id(_workout.id)
+        Workout._validate(workout)
+        Workout._validate_id(workout.id)
         db = get_db()
         db.execute(
             'UPDATE table_workout'
             ' SET name = ?, description = ?, datetime = ?'
             ' WHERE id = ? AND userId = ?',
-            (_workout.name, _workout.description, int(time.time()),
-             _workout.id, _workout.user_id,)
+            (workout.name, workout.description, int(time.time()),
+             workout.id, workout.user_id,)
         )
         db.commit()
 
-        return _workout.id
+        return workout.id
 
     @staticmethod
-    def remove(_workout: Workout) -> bool:
+    def remove(workout: Workout) -> bool:
         """Remove workout in db by id."""
-        Workout._validate_object(_workout)
-        Workout._validate_user_id(_workout.user_id)
-        Workout._validate_id(_workout.id)
+        Workout._validate_object(workout)
+        Workout._validate_user_id(workout.user_id)
+        Workout._validate_id(workout.id)
         db = get_db()
         db.execute(
             'DELETE FROM table_workout'
-            ' WHERE id = ? AND userId = ?', (_workout.id, _workout.user_id,)
+            ' WHERE id = ? AND userId = ?', (workout.id, workout.user_id,)
         )
         db.commit()
         # @todo: use current delete_score function
