@@ -2,7 +2,8 @@
 # It will become the default in Python 3.10.
 from __future__ import annotations
 import time
-from typing import Optional
+import sqlite3
+from typing import Any, Union, Optional
 
 from whiteboard.db import get_db
 
@@ -77,12 +78,12 @@ class Workout():
         self.datetime = _datetime
 
     def __str__(self):
-        return f'Workout ( identifier={self.identifier},' \
+        return f'Workout ( id={self.id},' \
                f' user_id={self.user_id}, name="{self.name}",' \
                f' datetime={self.datetime} )'
 
     @staticmethod
-    def _query_to_object(query):
+    def _query_to_object(query: sqlite3.Row) -> Union[Workout, None]:
         """Create workout instance based on the query."""
         if query is None:
             return None
@@ -96,13 +97,13 @@ class Workout():
         )
 
     @staticmethod
-    def _validate_object(workout):
+    def _validate_object(workout: Any) -> None:
         """Simple check if the object is None."""
         if workout is None:
             raise WorkoutNoneObjectError()
 
     @staticmethod
-    def _validate_id(workout_id):
+    def _validate_id(workout_id: Any) -> None:
         """Validate the workout id."""
         if workout_id is None:
             raise WorkoutInvalidIdError()
@@ -111,7 +112,7 @@ class Workout():
             raise WorkoutInvalidIdError()
 
     @staticmethod
-    def _validate_user_id(user_id):
+    def _validate_user_id(user_id: Any) -> None:
         """Validate the workout user id."""
         if (user_id is None or
                 not isinstance(user_id, int) or
@@ -119,19 +120,19 @@ class Workout():
             raise WorkoutInvalidUserIdError()
 
     @staticmethod
-    def _validate_name(name):
+    def _validate_name(name: Any) -> None:
         """Validate the workout name."""
         if name is None or not isinstance(name, str):
             raise WorkoutInvalidNameError()
 
     @staticmethod
-    def _validate_description(description):
+    def _validate_description(description: Any) -> None:
         """Validate the workout description."""
         if (description is None or not isinstance(description, str)):
             raise WorkoutInvalidDescriptionError()
 
     @staticmethod
-    def _validate_datetime(datetime):
+    def _validate_datetime(datetime: Any) -> None:
         """Validate the workout datetime."""
         if (datetime is None or
                 not isinstance(datetime, int) or
@@ -139,7 +140,7 @@ class Workout():
             raise WorkoutInvalidTimestampError()
 
     @staticmethod
-    def _validate(workout):
+    def _validate(workout: Any) -> None:
         """Check the workout object for invalid content."""
         # @todo: Check wheather user with user id exist!
 
@@ -205,7 +206,7 @@ class Workout():
 
     @staticmethod
     def remove(workout: Workout) -> bool:
-        """Remove workout in db by id."""
+        """Remove workout from db by id."""
         Workout._validate_object(workout)
         Workout._validate_user_id(workout.user_id)
         Workout._validate_id(workout.id)
