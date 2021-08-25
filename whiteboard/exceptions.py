@@ -70,12 +70,69 @@ class WorkoutInvalidDescriptionError(Exception):
         super().__init__('Invalid workout description.')
 
 
-class WorkoutInvalidTimestampError(Exception):
+class WorkoutInvalidDatetimeError(Exception):
 
     """Custom error that raised when a workout contains a invalid timestamp."""
 
     def __init__(self) -> None:
         super().__init__('Invalid workout timestamp.')
+
+
+class ScoreNotFoundError(Exception):
+
+    """Custom error that raised when a score with an id doesn't exist."""
+
+    def __init__(self, score_id: int) -> None:
+        self.score_id = score_id
+        super().__init__(f'Score with id {self.score_id} does not exist.')
+
+
+class ScoreNoneObjectError(Exception):
+
+    """Custom error that raised when a score object is None."""
+
+    def __init__(self) -> None:
+        super().__init__('Score object is None.')
+
+
+class ScoreInvalidIdError(Exception):
+
+    """Custom error that raised when a score contains a invalid id."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid score id.')
+
+
+class ScoreInvalidValueError(Exception):
+
+    """Custom error that raised when a score contains a invalid value."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid score value.')
+
+
+class ScoreInvalidRxError(Exception):
+
+    """Custom error that raised when a score contains a invalid rx state."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid score rx state.')
+
+
+class ScoreInvalidNoteError(Exception):
+
+    """Custom error that raised when a score contains a invalid note."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid score note.')
+
+
+class ScoreInvalidDatetimeError(Exception):
+
+    """Custom error that raised when a score contains a invalid timestamp."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid score timestamp.')
 
 
 class EquipmentNotFoundError(Exception):

@@ -11,7 +11,7 @@ from whiteboard.exceptions import (
     WorkoutInvalidIdError,
     WorkoutInvalidNameError,
     WorkoutInvalidDescriptionError,
-    WorkoutInvalidTimestampError,
+    WorkoutInvalidDatetimeError,
 )
 from whiteboard.db import get_db
 from whiteboard.models.user import User
@@ -55,9 +55,7 @@ class Workout():
     @staticmethod
     def _validate_id(workout_id: Any) -> None:
         """Validate the workout id."""
-        if workout_id is None:
-            raise WorkoutInvalidIdError()
-        if (not isinstance(workout_id, int) or
+        if (workout_id is None or not isinstance(workout_id, int) or
                 isinstance(workout_id, bool) or workout_id < 0):
             raise WorkoutInvalidIdError()
 
@@ -87,7 +85,7 @@ class Workout():
         if (datetime is None or
                 not isinstance(datetime, int) or
                 isinstance(datetime, bool) or datetime < 0):
-            raise WorkoutInvalidTimestampError()
+            raise WorkoutInvalidDatetimeError()
 
     @staticmethod
     def _validate(workout: Any) -> None:
@@ -164,6 +162,8 @@ class Workout():
             ' WHERE id = ? AND userId = ?', (workout.id, workout.user_id,)
         )
         db.commit()
+        # @todo
+        # Remove Connection between tags and workouts
         # @todo: use current delete_score function
         # db.execute(
         #     'DELETE FROM table_workout_score'

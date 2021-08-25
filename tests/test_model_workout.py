@@ -7,7 +7,7 @@ from whiteboard.exceptions import (
     WorkoutInvalidIdError,
     WorkoutInvalidNameError,
     WorkoutInvalidDescriptionError,
-    WorkoutInvalidTimestampError,
+    WorkoutInvalidDatetimeError,
 )
 from whiteboard.models.workout import (
     Workout,
@@ -100,7 +100,7 @@ def test_add_workout__invalid_object(app):
     (True),
 ))
 def test_add_workout__invalid_user_id(app, user_id):
-    """Test add() from workout model with invalid user_id."""
+    """Test add() from workout model with invalid user id."""
     workout = Workout(
         None,
         user_id,
@@ -177,7 +177,7 @@ def test_add_workout__invalid_timestamp(app, workout_timestamp):
         workout_timestamp
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidTimestampError) as e:
+        with pytest.raises(WorkoutInvalidDatetimeError) as e:
             workout_id = Workout.add(workout)
             assert workout_id is None
         assert str(e.value) == 'Invalid workout timestamp.'
@@ -262,9 +262,9 @@ def test_update_workout__invalid_id(app, workout_id):
     (True),
 ))
 def test_update_workout__invalid_user_id(app, user_id):
-    """Test update() from workout model with invalid user_id."""
+    """Test update() from workout model with invalid user id."""
     workout = Workout(
-        None,
+        1,
         user_id,
         'test name',
         'test description'
@@ -286,7 +286,7 @@ def test_update_workout__invalid_user_id(app, user_id):
 def test_update_workout__invalid_name(app, workout_name):
     """Test update() from workout model with invalid workout name."""
     workout = Workout(
-        None,
+        1,
         1,
         workout_name,
         'test description'
@@ -308,7 +308,7 @@ def test_update_workout__invalid_name(app, workout_name):
 def test_update_workout__invalid_description(app, workout_description):
     """Test update() from workout model with invalid workout description."""
     workout = Workout(
-        None,
+        1,
         1,
         'test name',
         workout_description
@@ -339,7 +339,7 @@ def test_update_workout__invalid_timestamp(app, workout_timestamp):
         workout_timestamp
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidTimestampError) as e:
+        with pytest.raises(WorkoutInvalidDatetimeError) as e:
             workout_id = Workout.update(workout)
             assert workout_id is None
         assert str(e.value) == 'Invalid workout timestamp.'
@@ -423,9 +423,9 @@ def test_remove_workout__invalid_id(app, workout_id):
     (True),
 ))
 def test_remove_workout__invalid_user_id(app, user_id):
-    """Test remove() from workout model with invalid user_id."""
+    """Test remove() from workout model with invalid user id."""
     workout = Workout(
-        None,
+        1,
         user_id,
         'test name',
         'test description'
@@ -444,7 +444,7 @@ def test_remove_workout__invalid_user_id(app, user_id):
 def test_remove_workout__not_exist_user_id(app, user_id):
     """Test remove() from workout model with an user id that does not exist."""
     workout = Workout(
-        None,
+        1,
         user_id,
         'test name',
         'test description'

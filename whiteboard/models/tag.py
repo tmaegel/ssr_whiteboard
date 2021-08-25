@@ -133,5 +133,7 @@ class Tag():
             ' WHERE id = ? AND userId = ?', (tag.id, tag.user_id,)
         )
         db.commit()
+        # @todo
+        # Remove Connection between tags and workouts
 
         return True
