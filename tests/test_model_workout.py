@@ -1,5 +1,6 @@
 import pytest
 from whiteboard.exceptions import (
+    UserNotFoundError,
     UserInvalidIdError,
     WorkoutNotFoundError,
     WorkoutNoneObjectError,
@@ -182,6 +183,26 @@ def test_add_workout__invalid_timestamp(app, workout_timestamp):
         assert str(e.value) == 'Invalid workout timestamp.'
 
 
+@pytest.mark.parametrize(('user_id'), (
+    (0),
+    (99999),
+))
+def test_add_workout__not_exist_user_id(app, user_id):
+    """Test add() from workout model with an user id that does not exist."""
+    workout = Workout(
+        None,
+        user_id,
+        'test name',
+        'test description'
+    )
+    with app.app_context():
+        with pytest.raises(UserNotFoundError) as e:
+            workout_id = Workout.add(workout)
+            assert workout_id is None
+        assert str(
+            e.value) == f'User with id or name {user_id} does not exist.'
+
+
 #
 # Workout.update()
 #
@@ -324,6 +345,26 @@ def test_update_workout__invalid_timestamp(app, workout_timestamp):
         assert str(e.value) == 'Invalid workout timestamp.'
 
 
+@pytest.mark.parametrize(('user_id'), (
+    (0),
+    (99999),
+))
+def test_update_workout__not_exist_user_id(app, user_id):
+    """Test update() from workout model with an user id that does not exist."""
+    workout = Workout(
+        None,
+        user_id,
+        'test name',
+        'test description'
+    )
+    with app.app_context():
+        with pytest.raises(UserNotFoundError) as e:
+            workout_id = Workout.update(workout)
+            assert workout_id is None
+        assert str(
+            e.value) == f'User with id or name {user_id} does not exist.'
+
+
 #
 # Workout.remove()
 #
@@ -394,3 +435,23 @@ def test_remove_workout__invalid_user_id(app, user_id):
             result = Workout.remove(workout)
             assert result is None
         assert str(e.value) == 'Invalid user id.'
+
+
+@pytest.mark.parametrize(('user_id'), (
+    (0),
+    (99999),
+))
+def test_remove_workout__not_exist_user_id(app, user_id):
+    """Test remove() from workout model with an user id that does not exist."""
+    workout = Workout(
+        None,
+        user_id,
+        'test name',
+        'test description'
+    )
+    with app.app_context():
+        with pytest.raises(UserNotFoundError) as e:
+            workout_id = Workout.remove(workout)
+            assert workout_id is None
+        assert str(
+            e.value) == f'User with id or name {user_id} does not exist.'

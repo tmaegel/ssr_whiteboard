@@ -64,7 +64,7 @@ class Workout():
     @staticmethod
     def _validate_user_id(user_id: Any) -> None:
         """
-        Validate the data by requesting the data.
+        Validate the user_id by requesting the a user.
         The validation is done in the user model.
         """
         User.get(user_id)
@@ -139,7 +139,6 @@ class Workout():
     def update(workout: Workout) -> int:
         """Update workout in db by id."""
         Workout._validate(workout)
-        Workout._validate_user_id(workout.user_id)
         Workout._validate_id(workout.id)
         db = get_db()
         db.execute(

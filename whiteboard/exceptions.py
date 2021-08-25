@@ -76,3 +76,89 @@ class WorkoutInvalidTimestampError(Exception):
 
     def __init__(self) -> None:
         super().__init__('Invalid workout timestamp.')
+
+
+class EquipmentNotFoundError(Exception):
+
+    """Custom error that raised when a equipment with an id doesn't exist."""
+
+    def __init__(self, equipment_id: int) -> None:
+        self.equipment_id = equipment_id
+        super().__init__(
+            f'Equipment with id {self.equipment_id} does not exist.')
+
+
+class EquipmentInvalidIdError(Exception):
+
+    """Custom error that raised when a equipment contains a invalid id."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid equipment id.')
+
+
+class EquipmentInvalidNameError(Exception):
+
+    """Custom error that raised when a equipment contains a invalid name."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid equipment name.')
+
+
+class MovementNotFoundError(Exception):
+
+    """Custom error that raised when a movement with an id doesn't exist."""
+
+    def __init__(self, movement_id: int) -> None:
+        self.movement_id = movement_id
+        super().__init__(
+            f'Movement with id {self.movement_id} does not exist.')
+
+
+class MovementInvalidIdError(Exception):
+
+    """Custom error that raised when a movement contains a invalid id."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid movement id.')
+
+
+class MovementInvalidNameError(Exception):
+
+    """Custom error that raised when a movement contains a invalid name."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid movement name.')
+
+
+class TagNotFoundError(Exception):
+
+    """Custom error that raised when a tag with an id doesn't exist."""
+
+    def __init__(self, tag_id: int) -> None:
+        self.tag_id = tag_id
+        super().__init__(
+            f'Tag with id {self.tag_id} does not exist.')
+
+
+class TagNoneObjectError(Exception):
+
+    """Custom error that raised when a tag object is None."""
+
+    def __init__(self) -> None:
+        super().__init__('Tag object is None.')
+
+
+class TagInvalidIdError(Exception):
+
+    """Custom error that raised when a tag contains a invalid id."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid tag id.')
+
+
+class TagInvalidNameError(Exception):
+
+    """Custom error that raised when a tag contains a invalid name."""
+
+    def __init__(self) -> None:
+        super().__init__('Invalid tag name.')
