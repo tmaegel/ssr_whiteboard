@@ -5,66 +5,16 @@ import time
 import sqlite3
 from typing import Any, Union, Optional
 
+from whiteboard.exceptions import (
+    WorkoutNotFoundError,
+    WorkoutNoneObjectError,
+    WorkoutInvalidIdError,
+    WorkoutInvalidNameError,
+    WorkoutInvalidDescriptionError,
+    WorkoutInvalidTimestampError,
+)
 from whiteboard.db import get_db
-
-
-class WorkoutNotFoundError(Exception):
-
-    """Custom error that raised when a workout with an id doesn't exist."""
-
-    def __init__(self, workout_id: int) -> None:
-        self.workout_id = workout_id
-        super().__init__(f'Workout with id {self.workout_id} does not exist.')
-
-
-class WorkoutNoneObjectError(Exception):
-
-    """Custom error that raised when a workout object is None."""
-
-    def __init__(self) -> None:
-        super().__init__('Workout object is None.')
-
-
-class WorkoutInvalidIdError(Exception):
-
-    """Custom error that raised when a workout contains a invalid id."""
-
-    def __init__(self) -> None:
-        super().__init__('Invalid workout id.')
-
-
-class WorkoutInvalidUserIdError(Exception):
-
-    """Custom error that raised when a workout contains a invalid user id."""
-
-    def __init__(self) -> None:
-        super().__init__('Invalid user id.')
-
-
-class WorkoutInvalidNameError(Exception):
-
-    """Custom error that raised when a workout contains a invalid name."""
-
-    def __init__(self) -> None:
-        super().__init__('Invalid workout name.')
-
-
-class WorkoutInvalidDescriptionError(Exception):
-
-    """
-    Custom error that raised when a workout contains a invalid description.
-    """
-
-    def __init__(self) -> None:
-        super().__init__('Invalid workout description.')
-
-
-class WorkoutInvalidTimestampError(Exception):
-
-    """Custom error that raised when a workout contains a invalid timestamp."""
-
-    def __init__(self) -> None:
-        super().__init__('Invalid workout timestamp.')
+from whiteboard.models.user import User
 
 
 class Workout():
@@ -113,11 +63,11 @@ class Workout():
 
     @staticmethod
     def _validate_user_id(user_id: Any) -> None:
-        """Validate the workout user id."""
-        if (user_id is None or
-                not isinstance(user_id, int) or
-                isinstance(user_id, bool) or user_id < 0):
-            raise WorkoutInvalidUserIdError()
+        """
+        Validate the data by requesting the data.
+        The validation is done in the user model.
+        """
+        User.get(user_id)
 
     @staticmethod
     def _validate_name(name: Any) -> None:
@@ -142,8 +92,6 @@ class Workout():
     @staticmethod
     def _validate(workout: Any) -> None:
         """Check the workout object for invalid content."""
-        # @todo: Check wheather user with user id exist!
-
         Workout._validate_object(workout)
         Workout._validate_user_id(workout.user_id)
         Workout._validate_name(workout.name)
@@ -191,6 +139,7 @@ class Workout():
     def update(workout: Workout) -> int:
         """Update workout in db by id."""
         Workout._validate(workout)
+        Workout._validate_user_id(workout.user_id)
         Workout._validate_id(workout.id)
         db = get_db()
         db.execute(

@@ -1,9 +1,11 @@
 import pytest
-from whiteboard.models.user import (
-    User,
+from whiteboard.exceptions import (
     UserNotFoundError,
     UserInvalidIdError,
     UserInvalidNameError,
+)
+from whiteboard.models.user import (
+    User,
 )
 
 #

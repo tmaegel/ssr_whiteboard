@@ -1,13 +1,15 @@
 import pytest
-from whiteboard.models.workout import (
-    Workout,
+from whiteboard.exceptions import (
+    UserInvalidIdError,
     WorkoutNotFoundError,
     WorkoutNoneObjectError,
     WorkoutInvalidIdError,
-    WorkoutInvalidUserIdError,
     WorkoutInvalidNameError,
     WorkoutInvalidDescriptionError,
     WorkoutInvalidTimestampError,
+)
+from whiteboard.models.workout import (
+    Workout,
 )
 
 #
@@ -105,7 +107,7 @@ def test_add_workout__invalid_user_id(app, user_id):
         'test description'
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidUserIdError) as e:
+        with pytest.raises(UserInvalidIdError) as e:
             workout_id = Workout.add(workout)
             assert workout_id is None
         assert str(e.value) == 'Invalid user id.'
@@ -247,7 +249,7 @@ def test_update_workout__invalid_user_id(app, user_id):
         'test description'
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidUserIdError) as e:
+        with pytest.raises(UserInvalidIdError) as e:
             workout_id = Workout.update(workout)
             assert workout_id is None
         assert str(e.value) == 'Invalid user id.'
@@ -388,7 +390,7 @@ def test_remove_workout__invalid_user_id(app, user_id):
         'test description'
     )
     with app.app_context():
-        with pytest.raises(WorkoutInvalidUserIdError) as e:
+        with pytest.raises(UserInvalidIdError) as e:
             result = Workout.remove(workout)
             assert result is None
         assert str(e.value) == 'Invalid user id.'

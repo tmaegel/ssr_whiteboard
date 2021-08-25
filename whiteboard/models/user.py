@@ -4,33 +4,12 @@ from __future__ import annotations
 from typing import Any, Union
 import sqlite3
 
+from whiteboard.exceptions import (
+    UserNotFoundError,
+    UserInvalidIdError,
+    UserInvalidNameError,
+)
 from whiteboard.db import get_db
-
-
-class UserNotFoundError(Exception):
-
-    """Custom error that raised when a user with an id doesn't exist."""
-
-    def __init__(self, identifier: Union[int, str]) -> None:
-        self.identifier = identifier
-        super().__init__(
-            f'User with id or name {self.identifier} does not exist.')
-
-
-class UserInvalidIdError(Exception):
-
-    """Custom error that raised when a user contains a invalid id."""
-
-    def __init__(self) -> None:
-        super().__init__('Invalid user id.')
-
-
-class UserInvalidNameError(Exception):
-
-    """Custom error that raised when a user contains a invalid name."""
-
-    def __init__(self) -> None:
-        super().__init__('Invalid user name.')
 
 
 class User():
@@ -58,9 +37,7 @@ class User():
     @staticmethod
     def _validate_id(user_id: Any) -> None:
         """Validate the user id."""
-        if user_id is None:
-            raise UserInvalidIdError()
-        if (not isinstance(user_id, int) or
+        if (user_id is None or not isinstance(user_id, int) or
                 isinstance(user_id, bool) or user_id < 0):
             raise UserInvalidIdError()
 
