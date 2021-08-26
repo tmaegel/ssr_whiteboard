@@ -1,8 +1,10 @@
 import pytest
 from whiteboard.exceptions import (
     UserNotFoundError,
+    UserNoneObjectError,
     UserInvalidIdError,
     UserInvalidNameError,
+    UserInvalidPasswordError,
 )
 from whiteboard.models.user import (
     User,
@@ -102,3 +104,140 @@ def test_get_user_by_name__invalid(app, name):
             user = User.get_by_name(name=name)
             assert user is None
         assert str(e.value) == 'Invalid user name.'
+
+#
+# User.add()
+#
+
+
+def test_add_user__valid(app):
+    """Test add() from user model with valid data."""
+    user = User(
+        None,
+        'test name',
+        'test password'
+    )
+    with app.app_context():
+        user = User.add(user)
+        assert user is not None
+        assert isinstance(user, str) is True
+
+
+def test_add_user__invalid_object(app):
+    """Test add() from user model with invalid object."""
+    with app.app_context():
+        with pytest.raises(UserNoneObjectError) as e:
+            user = User.add(None)
+            assert user is None
+        assert str(e.value) == 'User object is None.'
+
+
+@pytest.mark.parametrize(('user_name'), (
+    (123),
+    (123.42),
+    (True),
+    ([]),
+    (None),
+))
+def test_add_user__invalid_name(app, user_name):
+    """Test add() from user model with invalid user name."""
+    user = User(
+        None,
+        user_name,
+        'test password'
+    )
+    with app.app_context():
+        with pytest.raises(UserInvalidNameError) as e:
+            user = User.add(user)
+            assert user is None
+        assert str(e.value) == 'Invalid user name.'
+
+
+@pytest.mark.parametrize(('user_password'), (
+    (123),
+    (123.42),
+    (True),
+    ([]),
+    (None),
+))
+def test_add_user__invalid_password(app, user_password):
+    """Test add() from user model with invalid user password."""
+    user = User(
+        None,
+        'test name',
+        user_password
+    )
+    with app.app_context():
+        with pytest.raises(UserInvalidPasswordError) as e:
+            user = User.add(user)
+            assert user is None
+        assert str(e.value) == 'Invalid user password.'
+
+
+#
+# User.update()
+#
+
+
+def test_update_user__valid(app):
+    """Test update() from user model with valid data."""
+    user = User(
+        1,
+        'test name',
+        'test password'
+    )
+    with app.app_context():
+        user_id = User.update(user)
+        assert user_id is not None
+        assert isinstance(user_id, int) is True
+
+
+def test_update_user__invalid_object(app):
+    """Test update() from user model with invalid object."""
+    with app.app_context():
+        with pytest.raises(UserNoneObjectError) as e:
+            user_id = User.update(None)
+            assert user_id is None
+        assert str(e.value) == 'User object is None.'
+
+
+@pytest.mark.parametrize(('user_name'), (
+    (123),
+    (123.42),
+    (True),
+    ([]),
+    (None),
+))
+def test_update_user__invalid_name(app, user_name):
+    """Test update() from user model with invalid user name."""
+    user = User(
+        1,
+        user_name,
+        'test password'
+    )
+    with app.app_context():
+        with pytest.raises(UserInvalidNameError) as e:
+            user_id = User.update(user)
+            assert user_id is None
+        assert str(e.value) == 'Invalid user name.'
+
+
+@pytest.mark.parametrize(('user_password'), (
+    (123),
+    (123.42),
+    (True),
+    ([]),
+    (None),
+))
+def test_update_user__invalid_password(app, user_password):
+    """Test update() from user model with invalid user password."""
+    user = User(
+        1,
+        'test name',
+        user_password
+    )
+    with app.app_context():
+        with pytest.raises(UserInvalidPasswordError) as e:
+            user_id = User.update(user)
+            assert user_id is None
+        assert str(e.value) == 'Invalid user password.'
