@@ -1,17 +1,16 @@
 import pytest
+
 from whiteboard.exceptions import (
-    UserNotFoundError,
     UserInvalidIdError,
-    WorkoutNotFoundError,
-    WorkoutNoneObjectError,
+    UserNotFoundError,
+    WorkoutInvalidDatetimeError,
+    WorkoutInvalidDescriptionError,
     WorkoutInvalidIdError,
     WorkoutInvalidNameError,
-    WorkoutInvalidDescriptionError,
-    WorkoutInvalidDatetimeError,
+    WorkoutNoneObjectError,
+    WorkoutNotFoundError,
 )
-from whiteboard.models.workout import (
-    Workout,
-)
+from whiteboard.models.workout import Workout
 
 #
 # Workout.get()

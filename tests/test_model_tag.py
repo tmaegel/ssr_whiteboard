@@ -1,15 +1,14 @@
 import pytest
+
 from whiteboard.exceptions import (
-    UserNotFoundError,
-    UserInvalidIdError,
-    TagNotFoundError,
-    TagNoneObjectError,
     TagInvalidIdError,
     TagInvalidNameError,
+    TagNoneObjectError,
+    TagNotFoundError,
+    UserInvalidIdError,
+    UserNotFoundError,
 )
-from whiteboard.models.tag import (
-    Tag,
-)
+from whiteboard.models.tag import Tag
 
 
 #

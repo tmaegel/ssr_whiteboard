@@ -1,11 +1,7 @@
 import pytest
-from whiteboard.exceptions import (
-    MovementNotFoundError,
-    MovementInvalidIdError,
-)
-from whiteboard.models.movement import (
-    Movement,
-)
+
+from whiteboard.exceptions import MovementInvalidIdError, MovementNotFoundError
+from whiteboard.models.movement import Movement
 
 
 #
@@ -20,9 +16,10 @@ from whiteboard.models.movement import (
 def test_get_movement__valid(app, movement_id):
     """Test get() from movement model with valid data."""
     with app.app_context():
-        movement = Movement.get(movement_id)
+        _movement = Movement(movement_id, None, None)
+        movement = _movement.get()
         assert movement is not None
-        assert movement.id == movement_id
+        assert movement.movement_id == movement_id
         assert movement.name == f'Movement {movement_id}'
 
 
@@ -33,8 +30,9 @@ def test_get_movement__valid(app, movement_id):
 def test_get_movement__not_exist(app, movement_id):
     """Test get() from equipemtn model with an id that does not exist."""
     with app.app_context():
+        _movement = Movement(movement_id, None, None)
         with pytest.raises(MovementNotFoundError) as e:
-            movement = Movement.get(movement_id)
+            movement = _movement.get()
             assert movement is None
         assert str(
             e.value) == f'Movement with id {movement_id} does not exist.'
@@ -52,7 +50,8 @@ def test_get_movement__not_exist(app, movement_id):
 def test_get_movement__invalid(app, movement_id):
     """Test get() from movement model with invalid data."""
     with app.app_context():
+        _movement = Movement(movement_id, None, None)
         with pytest.raises(MovementInvalidIdError) as e:
-            movement = Movement.get(movement_id)
+            movement = _movement.get()
             assert movement is None
         assert str(e.value) == 'Invalid movement id.'

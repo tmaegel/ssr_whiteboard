@@ -11,14 +11,6 @@ class UserNotFoundError(Exception):
             f'User with id or name {self.identifier} does not exist.')
 
 
-class UserNoneObjectError(Exception):
-
-    """Custom error that raised when a user object is None."""
-
-    def __init__(self) -> None:
-        super().__init__('User object is None.')
-
-
 class UserInvalidIdError(Exception):
 
     """Custom error that raised when a user contains a invalid id."""

@@ -1,26 +1,34 @@
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.
 from __future__ import annotations
-from typing import Any, Union
-import sqlite3
 
+import sqlite3
+from typing import Any, Union
+
+from whiteboard.db import get_db
 from whiteboard.exceptions import (
-    MovementNotFoundError,
     MovementInvalidIdError,
     MovementInvalidNameError,
+    MovementNotFoundError,
 )
-from whiteboard.db import get_db
 
 
 class Movement():
 
-    def __init__(self, _id: int, _name: str, _equipment_ids: int) -> None:
-        self.id = _id
-        self.name = _name
-        self.equipment_ids = _equipment_ids
+    def __init__(self, movement_id: int, name: str,
+                 equipment_ids: int) -> None:
+        self.movement_id = movement_id
+        self.name = name
+        self.equipment_ids = equipment_ids
+
+        self._db = get_db()
 
     def __str__(self):
-        return f'Movement ( id={self.id}, name={self.name} )'
+        return f'Movement ( movement_id={self.movement_id}, name={self.name} )'
+
+    @property
+    def db(self):
+        return self._db
 
     @staticmethod
     def _query_to_object(query: sqlite3.Row) -> Union[Movement, None]:
@@ -29,7 +37,7 @@ class Movement():
             return None
 
         return Movement(
-            query['id'],
+            query['id'],  # id=movement_id
             query['movement'],  # name=movement
             query['equipmentIds'],
         )
@@ -47,19 +55,21 @@ class Movement():
         if name is None or not isinstance(name, str):
             raise MovementInvalidNameError()
 
-    @staticmethod
-    def get(movement_id: int) -> Movement:
-        """Get movement from db by id."""
-        Movement._validate_id(movement_id)
-        db = get_db()
-        result = db.execute(
+    def get(self) -> Movement:
+        """
+        Get movement from db by id.
+
+        :return: Movement object
+        :rtype: Movement
+        """
+        Movement._validate_id(self.movement_id)
+        result = self.db.execute(
             'SELECT id, movement, equipmentIds'
-            ' FROM table_movements WHERE id = ?',
-            (movement_id,)
+            ' FROM table_movements WHERE id = ?', (self.movement_id,)
         ).fetchone()
 
         movement = Movement._query_to_object(result)
         if movement is None:
-            raise MovementNotFoundError(movement_id=movement_id)
+            raise MovementNotFoundError(movement_id=self.movement_id)
 
         return movement

@@ -1,11 +1,10 @@
 import pytest
+
 from whiteboard.exceptions import (
-    EquipmentNotFoundError,
     EquipmentInvalidIdError,
+    EquipmentNotFoundError,
 )
-from whiteboard.models.equipment import (
-    Equipment,
-)
+from whiteboard.models.equipment import Equipment
 
 
 #
@@ -20,9 +19,10 @@ from whiteboard.models.equipment import (
 def test_get_equipment__valid(app, equipment_id):
     """Test get() from equipment model with valid data."""
     with app.app_context():
-        equipment = Equipment.get(equipment_id)
+        _equipment = Equipment(equipment_id, None)
+        equipment = _equipment.get()
         assert equipment is not None
-        assert equipment.id == equipment_id
+        assert equipment.equipment_id == equipment_id
         assert equipment.name == f'Equipment {equipment_id}'
 
 
@@ -34,7 +34,8 @@ def test_get_equipment__not_exist(app, equipment_id):
     """Test get() from equipemtn model with an id that does not exist."""
     with app.app_context():
         with pytest.raises(EquipmentNotFoundError) as e:
-            equipment = Equipment.get(equipment_id)
+            _equipment = Equipment(equipment_id, None)
+            equipment = _equipment.get()
             assert equipment is None
         assert str(
             e.value) == f'Equipment with id {equipment_id} does not exist.'
@@ -53,6 +54,7 @@ def test_get_equipment__invalid(app, equipment_id):
     """Test get() from equipment model with invalid data."""
     with app.app_context():
         with pytest.raises(EquipmentInvalidIdError) as e:
-            equipment = Equipment.get(equipment_id)
+            _equipment = Equipment(equipment_id, None)
+            equipment = _equipment.get()
             assert equipment is None
         assert str(e.value) == 'Invalid equipment id.'

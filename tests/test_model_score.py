@@ -1,20 +1,19 @@
 import pytest
+
 from whiteboard.exceptions import (
-    UserNotFoundError,
-    UserInvalidIdError,
-    WorkoutNotFoundError,
-    WorkoutInvalidIdError,
-    ScoreNotFoundError,
-    ScoreNoneObjectError,
-    ScoreInvalidIdError,
-    ScoreInvalidValueError,
-    ScoreInvalidRxError,
-    ScoreInvalidNoteError,
     ScoreInvalidDatetimeError,
+    ScoreInvalidIdError,
+    ScoreInvalidNoteError,
+    ScoreInvalidRxError,
+    ScoreInvalidValueError,
+    ScoreNoneObjectError,
+    ScoreNotFoundError,
+    UserInvalidIdError,
+    UserNotFoundError,
+    WorkoutInvalidIdError,
+    WorkoutNotFoundError,
 )
-from whiteboard.models.score import (
-    Score,
-)
+from whiteboard.models.score import Score
 
 #
 # Score.get()

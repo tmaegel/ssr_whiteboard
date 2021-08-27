@@ -1,25 +1,33 @@
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.
 from __future__ import annotations
-from typing import Any, Union
-import sqlite3
 
+import sqlite3
+from typing import Any, Union
+
+from whiteboard.db import get_db
 from whiteboard.exceptions import (
-    EquipmentNotFoundError,
     EquipmentInvalidIdError,
     EquipmentInvalidNameError,
+    EquipmentNotFoundError,
 )
-from whiteboard.db import get_db
 
 
 class Equipment():
 
-    def __init__(self, _id: int, _name: str) -> None:
-        self.id = _id
-        self.name = _name
+    def __init__(self, equipment_id: int, name: str) -> None:
+        self.equipment_id = equipment_id
+        self.name = name
+
+        self._db = get_db()
 
     def __str__(self):
-        return f'Equipment ( id={self.id}, name={self.name} )'
+        return (f'Equipment ( equipment_id={self.equipment_id},'
+                f' name={self.name} )')
+
+    @property
+    def db(self):
+        return self._db
 
     @staticmethod
     def _query_to_object(query: sqlite3.Row) -> Union[Equipment, None]:
@@ -45,18 +53,21 @@ class Equipment():
         if name is None or not isinstance(name, str):
             raise EquipmentInvalidNameError()
 
-    @staticmethod
-    def get(equipment_id: int) -> Equipment:
-        """Get equipment from db by id."""
-        Equipment._validate_id(equipment_id)
-        db = get_db()
-        result = db.execute(
-            'SELECT id, equipment FROM table_equipment WHERE id = ?',
-            (equipment_id,)
+    def get(self) -> Equipment:
+        """
+        Get equipment from db by id.
+
+        :return: Equipment object
+        :rtype: Equipment
+        """
+        Equipment._validate_id(self.equipment_id)
+        result = self.db.execute(
+            'SELECT id, equipment FROM table_equipment'
+            ' WHERE id = ?', (self.equipment_id,)
         ).fetchone()
 
         equipment = Equipment._query_to_object(result)
         if equipment is None:
-            raise EquipmentNotFoundError(equipment_id=equipment_id)
+            raise EquipmentNotFoundError(equipment_id=self.equipment_id)
 
         return equipment
