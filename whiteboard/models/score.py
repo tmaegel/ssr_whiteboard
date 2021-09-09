@@ -1,41 +1,47 @@
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.
 from __future__ import annotations
-import time
-import sqlite3
-from typing import Any, Union, Optional
 
-from whiteboard.exceptions import (
-    ScoreNotFoundError,
-    ScoreNoneObjectError,
-    ScoreInvalidIdError,
-    ScoreInvalidValueError,
-    ScoreInvalidRxError,
-    ScoreInvalidNoteError,
-    ScoreInvalidDatetimeError,
-)
+import sqlite3
+import time
+from typing import Any, Optional, Union
+
 from whiteboard.db import get_db
+from whiteboard.exceptions import (
+    ScoreInvalidDatetimeError,
+    ScoreInvalidIdError,
+    ScoreInvalidNoteError,
+    ScoreInvalidRxError,
+    ScoreInvalidValueError,
+    ScoreNotFoundError,
+)
 from whiteboard.models.user import User
 from whiteboard.models.workout import Workout
 
 
 class Score():
 
-    def __init__(self, _id: int, _user_id: int, _workout_id: int,
-                 _value: str, _rx: bool, _note: str,
-                 _datetime: Optional[int] = int(time.time())) -> None:
-        self.id = _id
-        self.user_id = _user_id
-        self.workout_id = _workout_id
-        self.value = _value
-        self.rx = _rx
-        self.note = _note
-        self.datetime = _datetime
+    def __init__(self, score_id: int, user_id: int, workout_id: int,
+                 value: str, rx: bool, note: str,
+                 datetime: Optional[int] = int(time.time())) -> None:
+        self.score_id = score_id
+        self.user_id = user_id
+        self.workout_id = workout_id
+        self.value = value
+        self.rx = rx
+        self.note = note
+        self.datetime = datetime
+
+        self._db = get_db()
 
     def __str__(self):
-        return f'Score ( id={self.id},' \
+        return f'Score ( score_id={self.score_id},' \
                f' user_id={self.user_id}, workout_id="{self.workout_id}",' \
                f' score={self.score}, rx={self.rx}, datetime={self.datetime} )'
+
+    @property
+    def db(self):
+        return self._db
 
     @staticmethod
     def _query_to_object(query: sqlite3.Row) -> Union[Score, None]:
@@ -44,7 +50,7 @@ class Score():
             return None
 
         return Score(
-            query['id'],
+            query['id'],  # id=score_id
             query['userId'],
             query['workoutId'],
             query['score'],  # value=score
@@ -52,12 +58,6 @@ class Score():
             query['note'],
             query['datetime']
         )
-
-    @staticmethod
-    def _validate_object(score: Any) -> None:
-        """Simple check if the object is None."""
-        if score is None:
-            raise ScoreNoneObjectError()
 
     @staticmethod
     def _validate_id(score_id: Any) -> None:
@@ -72,7 +72,8 @@ class Score():
         Validate the user_id by requesting the a user.
         The validation is done in the user model.
         """
-        User.get(user_id)
+        _user = User(user_id, None, None)
+        _user.get()
 
     @staticmethod
     def _validate_workout_id(workout_id: Any) -> None:
@@ -80,7 +81,8 @@ class Score():
         Validate the workout_id by requesting the a workout.
         The validation is done in the workout model.
         """
-        Workout.get(workout_id)
+        _workout = Workout(workout_id, None, None, None)
+        _workout.get()
 
     @staticmethod
     def _validate_value(value: Any) -> None:
@@ -109,82 +111,119 @@ class Score():
             raise ScoreInvalidDatetimeError()
 
     @staticmethod
-    def _validate(score: Any) -> None:
-        """Check the score object for invalid content."""
-        Score._validate_object(score)
-        Score._validate_user_id(score.user_id)
-        Score._validate_workout_id(score.workout_id)
-        Score._validate_value(score.value)
-        Score._validate_rx(score.rx)
-        Score._validate_note(score.note)
-        Score._validate_datetime(score.datetime)
+    def exist_score_id(score_id: int) -> bool:
+        """
+        Check if score with score id exists by requesting them.
 
-    @staticmethod
-    def get(score_id: int) -> Score:
-        """Get score from db by id."""
-        Score._validate_id(score_id)
-        db = get_db()
-        result = db.execute(
+        :param: score id
+        :return: True if score with score id exists, otherwise False.
+        :rtype: bool
+        """
+        result = get_db().execute(
             'SELECT id, userId, workoutId, score, rx, datetime, note'
             ' FROM table_workout_score WHERE id = ?', (score_id,)
         ).fetchone()
 
+        if result is None:
+            return False
+        else:
+            return True
+
+    def get(self) -> Score:
+        """
+        Get score from db by id.
+
+        :return: Score object
+        :rtype: Score
+        """
+        Score._validate_id(self.score_id)
+        result = self.db.execute(
+            'SELECT id, userId, workoutId, score, rx, datetime, note'
+            ' FROM table_workout_score WHERE id = ?', (self.score_id,)
+        ).fetchone()
+
         score = Score._query_to_object(result)
         if score is None:
-            raise ScoreNotFoundError(score_id=score_id)
+            raise ScoreNotFoundError(score_id=self.score_id)
 
         return score
 
-    @staticmethod
-    def add(score: Score) -> int:
-        """Add new score to db."""
-        Score._validate(score)
-        db = get_db()
-        db.execute(
+    def add(self) -> int:
+        """
+        Add new score to db.
+
+        :return: Return the id of the created score.
+        :rtype: int
+        """
+        Score._validate_value(self.value)
+        Score._validate_rx(self.rx)
+        Score._validate_note(self.note)
+        Score._validate_datetime(self.datetime)
+        Score._validate_workout_id(self.workout_id)
+        Score._validate_user_id(self.user_id)
+        self.db.execute(
             'INSERT INTO table_workout_score'
             '(userId, workoutId, score, rx, datetime, note)'
             ' VALUES (?, ?, ?, ?, ?, ?)',
-            (score.user_id, score.workout_id, score.value,
-             score.rx, score.datetime, score.note,)
+            (self.user_id, self.workout_id, self.value,
+             self.rx, self.datetime, self.note,)
         )
-        db.commit()
-        inserted_id = db.execute(
+        self.db.commit()
+        inserted_id = self.db.execute(
             'SELECT last_insert_rowid()'
             ' FROM table_workout_score WHERE userId = ? LIMIT 1',
-            (score.user_id,)
+            (self.user_id,)
         ).fetchone()
 
         return inserted_id['last_insert_rowid()']
 
-    @staticmethod
-    def update(score: Score) -> int:
-        """Update score in db by id."""
-        Score._validate(score)
-        Score._validate_id(score.id)
-        db = get_db()
-        db.execute(
+    def update(self) -> bool:
+        """
+        Update score in db by id.
+
+        :return: True if score was updated.
+        :rtype: bool
+        """
+        Score._validate_value(self.value)
+        Score._validate_rx(self.rx)
+        Score._validate_note(self.note)
+        Score._validate_datetime(self.datetime)
+        Score._validate_workout_id(self.workout_id)
+        Score._validate_user_id(self.user_id)
+        Score._validate_id(self.score_id)
+
+        if not Score.exist_score_id(self.score_id):
+            raise ScoreNotFoundError(score_id=self.score_id)
+
+        self.db.execute(
             'UPDATE table_workout_score'
             ' SET workoutId = ?, score = ?, rx = ?, datetime = ?, note = ?'
             ' WHERE id = ? AND userId = ?',
-            (score.workout_id, score.value, score.rx, score.datetime,
-             score.note, score.id, score.user_id,)
+            (self.workout_id, self.value, self.rx, self.datetime,
+             self.note, self.score_id, self.user_id,)
         )
-        db.commit()
+        self.db.commit()
 
-        return score.id
+        return True
 
-    @staticmethod
-    def remove(score: Score) -> bool:
-        """Remove score from db by id."""
-        Score._validate_object(score)
-        Score._validate_user_id(score.user_id)
-        Score._validate_workout_id(score.workout_id)
-        Score._validate_id(score.id)
-        db = get_db()
-        db.execute(
+    def remove(self) -> bool:
+        """
+        Remove score from db by id.
+
+        :return: True if score was removed.
+        :rtype: bool
+        """
+        Score._validate_workout_id(self.workout_id)
+        Score._validate_user_id(self.user_id)
+        Score._validate_id(self.score_id)
+
+        if not Score.exist_score_id(self.score_id):
+            raise ScoreNotFoundError(score_id=self.score_id)
+
+        self.db.execute(
             'DELETE FROM table_workout_score'
-            ' WHERE id = ? AND userId = ?', (score.id, score.user_id,)
+            ' WHERE id = ? AND userId = ?', (self.score_id, self.user_id,)
         )
-        db.commit()
+        self.db.commit()
 
         return True

@@ -45,6 +45,7 @@ class Movement():
     @staticmethod
     def _validate_id(movement_id: Any) -> None:
         """Validate the movement id."""
+        # @todo: Check if movement exists by reqeuesting it.
         if (movement_id is None or not isinstance(movement_id, int) or
                 isinstance(movement_id, bool) or movement_id < 0):
             raise MovementInvalidIdError()

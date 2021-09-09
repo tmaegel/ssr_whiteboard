@@ -44,14 +44,6 @@ class WorkoutNotFoundError(Exception):
         super().__init__(f'Workout with id {self.workout_id} does not exist.')
 
 
-class WorkoutNoneObjectError(Exception):
-
-    """Custom error that raised when a workout object is None."""
-
-    def __init__(self) -> None:
-        super().__init__('Workout object is None.')
-
-
 class WorkoutInvalidIdError(Exception):
 
     """Custom error that raised when a workout contains a invalid id."""
@@ -93,14 +85,6 @@ class ScoreNotFoundError(Exception):
     def __init__(self, score_id: int) -> None:
         self.score_id = score_id
         super().__init__(f'Score with id {self.score_id} does not exist.')
-
-
-class ScoreNoneObjectError(Exception):
-
-    """Custom error that raised when a score object is None."""
-
-    def __init__(self) -> None:
-        super().__init__('Score object is None.')
 
 
 class ScoreInvalidIdError(Exception):
@@ -203,14 +187,6 @@ class TagNotFoundError(Exception):
         self.tag_id = tag_id
         super().__init__(
             f'Tag with id {self.tag_id} does not exist.')
-
-
-class TagNoneObjectError(Exception):
-
-    """Custom error that raised when a tag object is None."""
-
-    def __init__(self) -> None:
-        super().__init__('Tag object is None.')
 
 
 class TagInvalidIdError(Exception):

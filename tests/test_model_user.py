@@ -47,7 +47,7 @@ def test_get_user_by_name__valid(app, user_id, user_name):
     (0),
     (99999),
 ))
-def test_get_user__not_exist(app, user_id):
+def test_get_user__not_exist_user_id(app, user_id):
     """Test get() from user model with an id that does not exist."""
     with app.app_context():
         _user = User(user_id, None, None)
@@ -63,7 +63,7 @@ def test_get_user__not_exist(app, user_id):
     ('test3'),
     ('Admin'),
 ))
-def test_get_user_by_name__not_exist(app, user_name):
+def test_get_user__not_exist_name(app, user_name):
     """Test get_by_name() from user model with an name that does not exist."""
     with app.app_context():
         _user = User(None, user_name, None)
@@ -169,6 +169,24 @@ def test_update_user__valid(app):
         assert result is True
 
 
+@pytest.mark.parametrize(('user_id'), (
+    (-1),
+    (1.0),
+    ('1.0'),
+    (None),
+    ('abc'),
+    (True),
+))
+def test_update_user__invalid_user_id(app, user_id):
+    """Test update() from user model with invalid user id."""
+    with app.app_context():
+        _user = User(user_id, 'test_name', 'test password')
+        with pytest.raises(UserInvalidIdError) as e:
+            result = _user.update()
+            assert result is None
+        assert str(e.value) == 'Invalid user id.'
+
+
 @pytest.mark.parametrize(('user_name'), (
     (123),
     (123.42),
@@ -201,3 +219,18 @@ def test_update_user__invalid_password(app, user_password):
             result = _user.update()
             assert result is None
         assert str(e.value) == 'Invalid user password.'
+
+
+@pytest.mark.parametrize(('user_id'), (
+    (0),
+    (99999),
+))
+def test_update_user__not_exist_user_id(app, user_id):
+    """Test update() from user model with an user id that does not exist."""
+    with app.app_context():
+        _user = User(user_id, 'test_name', 'test password')
+        with pytest.raises(UserNotFoundError) as e:
+            result = _user.update()
+            assert result is None
+        assert str(
+            e.value) == f'User with id or name {user_id} does not exist.'

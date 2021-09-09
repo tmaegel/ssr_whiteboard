@@ -6,7 +6,6 @@ from whiteboard.exceptions import (
     ScoreInvalidNoteError,
     ScoreInvalidRxError,
     ScoreInvalidValueError,
-    ScoreNoneObjectError,
     ScoreNotFoundError,
     UserInvalidIdError,
     UserNotFoundError,
@@ -26,9 +25,10 @@ from whiteboard.models.score import Score
 def test_get_score__valid(app, score_id):
     """Test get() from score model with valid data."""
     with app.app_context():
-        score = Score.get(score_id)
+        _score = Score(score_id, None, None, None, None, None, None)
+        score = _score.get()
         assert score is not None
-        assert score.id == 1
+        assert score.score_id == score_id
         assert score.user_id == 2
         assert score.workout_id == 1
         assert score.value == '80'
@@ -41,13 +41,15 @@ def test_get_score__valid(app, score_id):
     (0),
     (99999),
 ))
-def test_get_score__not_exist(app, score_id):
-    """Test get() from score model with an id that does not exist."""
+def test_get_score__not_exist_score_id(app, score_id):
+    """Test get() from score model with an score id that does not exist."""
     with app.app_context():
         with pytest.raises(ScoreNotFoundError) as e:
-            score = Score.get(score_id)
-            assert score is None
-        assert str(e.value) == f'Score with id {score_id} does not exist.'
+            _score = Score(score_id, None, None, None, None, None, None)
+            result = _score.get()
+            assert result is None
+        assert str(
+            e.value) == f'Score with id {score_id} does not exist.'
 
 
 @pytest.mark.parametrize(('score_id'), (
@@ -63,7 +65,8 @@ def test_get_score__invalid(app, score_id):
     """Test get() from score model with invalid data."""
     with app.app_context():
         with pytest.raises(ScoreInvalidIdError) as e:
-            score = Score.get(score_id)
+            _score = Score(score_id, None, None, None, None, None, None)
+            score = _score.get()
             assert score is None
         assert str(e.value) == 'Invalid score id.'
 
@@ -74,27 +77,11 @@ def test_get_score__invalid(app, score_id):
 
 def test_add_score__valid(app):
     """Test add() from score model with valid data."""
-    score = Score(
-        None,
-        1,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
-        score_id = Score.add(score)
+        _score = Score(None, 1, 2, '60', True, 'test note')
+        score_id = _score.add()
         assert score_id is not None
         assert isinstance(score_id, int) is True
-
-
-def test_add_score__invalid_object(app):
-    """Test add() from score model with invalid object."""
-    with app.app_context():
-        with pytest.raises(ScoreNoneObjectError) as e:
-            score_id = Score.add(None)
-            assert score_id is None
-        assert str(e.value) == 'Score object is None.'
 
 
 @pytest.mark.parametrize(('user_id'), (
@@ -107,17 +94,10 @@ def test_add_score__invalid_object(app):
 ))
 def test_add_score__invalid_user_id(app, user_id):
     """Test add() from score model with invalid user id."""
-    score = Score(
-        None,
-        user_id,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(UserInvalidIdError) as e:
-            score_id = Score.add(score)
+            _score = Score(None, user_id, 2, '60', True, 'test note')
+            score_id = _score.add()
             assert score_id is None
         assert str(e.value) == 'Invalid user id.'
 
@@ -132,17 +112,10 @@ def test_add_score__invalid_user_id(app, user_id):
 ))
 def test_add_score__invalid_workout_id(app, workout_id):
     """Test add() from score model with invalid workout id."""
-    score = Score(
-        None,
-        1,
-        workout_id,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(WorkoutInvalidIdError) as e:
-            score_id = Score.add(score)
+            _score = Score(None, 1, workout_id, '60', True, 'test note')
+            score_id = _score.add()
             assert score_id is None
         assert str(e.value) == 'Invalid workout id.'
 
@@ -156,17 +129,10 @@ def test_add_score__invalid_workout_id(app, workout_id):
 ))
 def test_add_score__invalid_value(app, score_value):
     """Test add() from score model with invalid score value."""
-    score = Score(
-        None,
-        1,
-        2,
-        score_value,
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(ScoreInvalidValueError) as e:
-            score_id = Score.add(score)
+            _score = Score(None, 1, 2, score_value, True, 'test note')
+            score_id = _score.add()
             assert score_id is None
         assert str(e.value) == 'Invalid score value.'
 
@@ -181,17 +147,10 @@ def test_add_score__invalid_value(app, score_value):
 ))
 def test_add_score__invalid_rx(app, score_rx):
     """Test add() from score model with invalid score rx."""
-    score = Score(
-        None,
-        1,
-        2,
-        '60',
-        score_rx,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(ScoreInvalidRxError) as e:
-            score_id = Score.add(score)
+            _score = Score(None, 1, 2, '60', score_rx, 'test note')
+            score_id = _score.add()
             assert score_id is None
         assert str(e.value) == 'Invalid score rx state.'
 
@@ -205,17 +164,10 @@ def test_add_score__invalid_rx(app, score_rx):
 ))
 def test_add_score__invalid_note(app, score_note):
     """Test add() from score model with invalid score note."""
-    score = Score(
-        None,
-        1,
-        2,
-        '60',
-        True,
-        score_note
-    )
     with app.app_context():
         with pytest.raises(ScoreInvalidNoteError) as e:
-            score_id = Score.add(score)
+            _score = Score(None, 1, 2, '60', True, score_note)
+            score_id = _score.add()
             assert score_id is None
         assert str(e.value) == 'Invalid score note.'
 
@@ -231,18 +183,11 @@ def test_add_score__invalid_note(app, score_note):
 ))
 def test_add_score__invalid_timestamp(app, score_timestamp):
     """Test add() from score model with invalid score timestamp."""
-    score = Score(
-        None,
-        1,
-        2,
-        '60',
-        True,
-        'test note',
-        score_timestamp
-    )
     with app.app_context():
         with pytest.raises(ScoreInvalidDatetimeError) as e:
-            score_id = Score.add(score)
+            _score = Score(None, 1, 2, '60', True,
+                           'test note', score_timestamp)
+            score_id = _score.add()
             assert score_id is None
         assert str(e.value) == 'Invalid score timestamp.'
 
@@ -253,17 +198,10 @@ def test_add_score__invalid_timestamp(app, score_timestamp):
 ))
 def test_add_score__not_exist_user_id(app, user_id):
     """Test add() from score model with an user id that does not exist."""
-    score = Score(
-        None,
-        user_id,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(UserNotFoundError) as e:
-            score_id = Score.add(score)
+            _score = Score(None, user_id, 2, '60', True, 'test note')
+            score_id = _score.add()
             assert score_id is None
         assert str(
             e.value) == f'User with id or name {user_id} does not exist.'
@@ -275,17 +213,10 @@ def test_add_score__not_exist_user_id(app, user_id):
 ))
 def test_add_score__not_exist_workout_id(app, workout_id):
     """Test add() from score model with an workout id that does not exist."""
-    score = Score(
-        None,
-        1,
-        workout_id,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(WorkoutNotFoundError) as e:
-            score_id = Score.add(score)
+            _score = Score(None, 1,  workout_id, '60', True, 'test note')
+            score_id = _score.add()
             assert score_id is None
         assert str(
             e.value) == f'Workout with id {workout_id} does not exist.'
@@ -298,27 +229,10 @@ def test_add_score__not_exist_workout_id(app, workout_id):
 
 def test_update_score__valid(app):
     """Test update() from score model with valid data."""
-    score = Score(
-        1,
-        1,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
-        score_id = Score.update(score)
-        assert score_id is not None
-        assert isinstance(score_id, int) is True
-
-
-def test_update_score__invalid_object(app):
-    """Test update() from score model with invalid object."""
-    with app.app_context():
-        with pytest.raises(ScoreNoneObjectError) as e:
-            score_id = Score.update(None)
-            assert score_id is None
-        assert str(e.value) == 'Score object is None.'
+        _score = Score(1, 1, 2, '60', True, 'test note')
+        result = _score.update()
+        assert result is True
 
 
 @pytest.mark.parametrize(('score_id'), (
@@ -329,20 +243,13 @@ def test_update_score__invalid_object(app):
     ('abc'),
     (True),
 ))
-def test_update_score__invalid_id(app, score_id):
+def test_update_score__invalid_score_id(app, score_id):
     """Test update() from score model with invalid score id."""
-    score = Score(
-        score_id,
-        1,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(ScoreInvalidIdError) as e:
-            score_id = Score.update(score)
-            assert score_id is None
+            _score = Score(score_id, 1, 2, '60', True, 'test note')
+            result = _score.update()
+            assert result is None
         assert str(e.value) == 'Invalid score id.'
 
 
@@ -356,18 +263,11 @@ def test_update_score__invalid_id(app, score_id):
 ))
 def test_update_score__invalid_user_id(app, user_id):
     """Test update() from score model with invalid user id."""
-    score = Score(
-        1,
-        user_id,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(UserInvalidIdError) as e:
-            score_id = Score.update(score)
-            assert score_id is None
+            _score = Score(1, user_id, 2, '60', True, 'test note')
+            result = _score.update()
+            assert result is None
         assert str(e.value) == 'Invalid user id.'
 
 
@@ -381,18 +281,11 @@ def test_update_score__invalid_user_id(app, user_id):
 ))
 def test_update_score__invalid_workout_id(app, workout_id):
     """Test update() from score model with invalid workout id."""
-    score = Score(
-        1,
-        1,
-        workout_id,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(WorkoutInvalidIdError) as e:
-            score_id = Score.update(score)
-            assert score_id is None
+            _score = Score(1, 1, workout_id, '60', True, 'test note')
+            result = _score.update()
+            assert result is None
         assert str(e.value) == 'Invalid workout id.'
 
 
@@ -405,18 +298,11 @@ def test_update_score__invalid_workout_id(app, workout_id):
 ))
 def test_update_score__invalid_value(app, score_value):
     """Test update() from score model with invalid score value."""
-    score = Score(
-        1,
-        1,
-        2,
-        score_value,
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(ScoreInvalidValueError) as e:
-            score_id = Score.update(score)
-            assert score_id is None
+            _score = Score(1, 1, 2, score_value, True, 'test note')
+            result = _score.update()
+            assert result is None
         assert str(e.value) == 'Invalid score value.'
 
 
@@ -430,18 +316,11 @@ def test_update_score__invalid_value(app, score_value):
 ))
 def test_update_score__invalid_rx(app, score_rx):
     """Test update() from score model with invalid score rx."""
-    score = Score(
-        1,
-        1,
-        2,
-        '60',
-        score_rx,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(ScoreInvalidRxError) as e:
-            score_id = Score.update(score)
-            assert score_id is None
+            _score = Score(1, 1, 2, '60', score_rx, 'test note')
+            result = _score.update()
+            assert result is None
         assert str(e.value) == 'Invalid score rx state.'
 
 
@@ -454,18 +333,11 @@ def test_update_score__invalid_rx(app, score_rx):
 ))
 def test_update_score__invalid_note(app, score_note):
     """Test update() from score model with invalid score note."""
-    score = Score(
-        1,
-        1,
-        2,
-        '60',
-        True,
-        score_note
-    )
     with app.app_context():
         with pytest.raises(ScoreInvalidNoteError) as e:
-            score_id = Score.update(score)
-            assert score_id is None
+            _score = Score(1, 1, 2, '60', True, score_note)
+            result = _score.update()
+            assert result is None
         assert str(e.value) == 'Invalid score note.'
 
 
@@ -480,20 +352,27 @@ def test_update_score__invalid_note(app, score_note):
 ))
 def test_update_score__invalid_timestamp(app, score_timestamp):
     """Test update() from score model with invalid score timestamp."""
-    score = Score(
-        1,
-        1,
-        2,
-        '60',
-        True,
-        'test note',
-        score_timestamp
-    )
     with app.app_context():
         with pytest.raises(ScoreInvalidDatetimeError) as e:
-            score_id = Score.update(score)
-            assert score_id is None
+            _score = Score(1, 1, 2, '60', True, 'test note', score_timestamp)
+            result = _score.update()
+            assert result is None
         assert str(e.value) == 'Invalid score timestamp.'
+
+
+@pytest.mark.parametrize(('score_id'), (
+    (0),
+    (99999),
+))
+def test_update_score__not_exist_score_id(app, score_id):
+    """Test update() from score model with an score id that does not exist."""
+    with app.app_context():
+        with pytest.raises(ScoreNotFoundError) as e:
+            _score = Score(score_id, 1, 2, '60', True, 'test note')
+            result = _score.update()
+            assert result is None
+        assert str(
+            e.value) == f'Score with id {score_id} does not exist.'
 
 
 @pytest.mark.parametrize(('user_id'), (
@@ -502,18 +381,11 @@ def test_update_score__invalid_timestamp(app, score_timestamp):
 ))
 def test_update_score__not_exist_user_id(app, user_id):
     """Test update() from score model with an user id that does not exist."""
-    score = Score(
-        1,
-        user_id,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(UserNotFoundError) as e:
-            score_id = Score.update(score)
-            assert score_id is None
+            _score = Score(1, user_id, 2, '60', True, 'test note')
+            result = _score.update()
+            assert result is None
         assert str(
             e.value) == f'User with id or name {user_id} does not exist.'
 
@@ -526,18 +398,11 @@ def test_update_score__not_exist_workout_id(app, workout_id):
     """
     Test update() from score model with an workout id that does not exist.
     """
-    score = Score(
-        1,
-        1,
-        workout_id,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(WorkoutNotFoundError) as e:
-            score_id = Score.update(score)
-            assert score_id is None
+            _score = Score(1, 1, workout_id, '60', True, 'test note')
+            result = _score.update()
+            assert result is None
         assert str(
             e.value) == f'Workout with id {workout_id} does not exist.'
 
@@ -549,26 +414,10 @@ def test_update_score__not_exist_workout_id(app, workout_id):
 
 def test_remove_score__valid(app):
     """Test remove() from score model with valid data."""
-    score = Score(
-        1,
-        1,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
-        result = Score.remove(score)
+        _score = Score(1, 1, 2, '60', True, 'test note')
+        result = _score.remove()
         assert result is True
-
-
-def test_remove_score__invalid_object(app):
-    """Test remove() from score model with invalid object."""
-    with app.app_context():
-        with pytest.raises(ScoreNoneObjectError) as e:
-            result = Score.remove(None)
-            assert result is None
-        assert str(e.value) == 'Score object is None.'
 
 
 @pytest.mark.parametrize(('score_id'), (
@@ -579,19 +428,12 @@ def test_remove_score__invalid_object(app):
     ('abc'),
     (True),
 ))
-def test_remove_score__invalid_id(app, score_id):
+def test_remove_score__invalid_score_id(app, score_id):
     """Test remove() from score model with invalid id."""
-    score = Score(
-        score_id,
-        1,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(ScoreInvalidIdError) as e:
-            result = Score.remove(score)
+            _score = Score(score_id, 1, 2, '60', True, 'test note')
+            result = _score.remove()
             assert result is None
         assert str(e.value) == 'Invalid score id.'
 
@@ -606,18 +448,11 @@ def test_remove_score__invalid_id(app, score_id):
 ))
 def test_remove_score__invalid_user_id(app, user_id):
     """Test remove() from score model with invalid user id."""
-    score = Score(
-        1,
-        user_id,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(UserInvalidIdError) as e:
-            score_id = Score.remove(score)
-            assert score_id is None
+            _score = Score(1, user_id, 2, '60', True, 'test note')
+            result = _score.remove()
+            assert result is None
         assert str(e.value) == 'Invalid user id.'
 
 
@@ -631,19 +466,27 @@ def test_remove_score__invalid_user_id(app, user_id):
 ))
 def test_remove_score__invalid_workout_id(app, workout_id):
     """Test remove() from score model with invalid workout id."""
-    score = Score(
-        1,
-        1,
-        workout_id,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(WorkoutInvalidIdError) as e:
-            score_id = Score.remove(score)
-            assert score_id is None
+            _score = Score(1, 1, workout_id, '60', True, 'test note')
+            result = _score.remove()
+            assert result is None
         assert str(e.value) == 'Invalid workout id.'
+
+
+@pytest.mark.parametrize(('score_id'), (
+    (0),
+    (99999),
+))
+def test_remove_score__not_exist_score_id(app, score_id):
+    """Test remove() from score model with an score id that does not exist."""
+    with app.app_context():
+        with pytest.raises(ScoreNotFoundError) as e:
+            _score = Score(score_id, 1, 2, '60', True, 'test note')
+            result = _score.remove()
+            assert result is None
+        assert str(
+            e.value) == f'Score with id {score_id} does not exist.'
 
 
 @pytest.mark.parametrize(('user_id'), (
@@ -652,18 +495,11 @@ def test_remove_score__invalid_workout_id(app, workout_id):
 ))
 def test_remove_score__not_exist_user_id(app, user_id):
     """Test remove() from score model with an user id that does not exist."""
-    score = Score(
-        1,
-        user_id,
-        2,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(UserNotFoundError) as e:
-            score_id = Score.remove(score)
-            assert score_id is None
+            _score = Score(1, user_id, 2, '60', True, 'test note')
+            result = _score.remove()
+            assert result is None
         assert str(
             e.value) == f'User with id or name {user_id} does not exist.'
 
@@ -676,17 +512,10 @@ def test_remove_score__not_exist_workout_id(app, workout_id):
     """
     Test remove() from score model with an workout id that does not exist.
     """
-    score = Score(
-        1,
-        1,
-        workout_id,
-        '60',
-        True,
-        'test note'
-    )
     with app.app_context():
         with pytest.raises(WorkoutNotFoundError) as e:
-            score_id = Score.remove(score)
-            assert score_id is None
+            _score = Score(1, 1, workout_id, '60', True, 'test note')
+            result = _score.remove()
+            assert result is None
         assert str(
             e.value) == f'Workout with id {workout_id} does not exist.'

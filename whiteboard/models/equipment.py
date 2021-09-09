@@ -43,6 +43,7 @@ class Equipment():
     @staticmethod
     def _validate_id(equipment_id: Any) -> None:
         """Validate the equipment id."""
+        # @todo: Check if equipment exists by reqeuesting it.
         if (equipment_id is None or not isinstance(equipment_id, int) or
                 isinstance(equipment_id, bool) or equipment_id < 0):
             raise EquipmentInvalidIdError()

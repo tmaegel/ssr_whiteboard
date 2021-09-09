@@ -1,36 +1,43 @@
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.
 from __future__ import annotations
-import time
-import sqlite3
-from typing import Any, Union, Optional
 
+import sqlite3
+import time
+from typing import Any, Optional, Union
+
+from whiteboard.db import get_db
 from whiteboard.exceptions import (
-    WorkoutNotFoundError,
-    WorkoutNoneObjectError,
+    WorkoutInvalidDatetimeError,
+    WorkoutInvalidDescriptionError,
     WorkoutInvalidIdError,
     WorkoutInvalidNameError,
-    WorkoutInvalidDescriptionError,
-    WorkoutInvalidDatetimeError,
+    WorkoutNotFoundError,
 )
-from whiteboard.db import get_db
 from whiteboard.models.user import User
 
 
 class Workout():
 
-    def __init__(self, _id: int, _user_id: int, _name: str, _description: str,
-                 _datetime: Optional[int] = int(time.time())) -> None:
-        self.id = _id
-        self.user_id = _user_id
-        self.name = _name
-        self.description = _description
-        self.datetime = _datetime
+    def __init__(self, workout_id: int, user_id: int,
+                 name: str, description: str,
+                 datetime: Optional[int] = int(time.time())) -> None:
+        self.workout_id = workout_id
+        self.user_id = user_id
+        self.name = name
+        self.description = description
+        self.datetime = datetime
+
+        self._db = get_db()
 
     def __str__(self):
-        return f'Workout ( id={self.id},' \
+        return f'Workout ( workout_id={self.workout_id},' \
                f' user_id={self.user_id}, name="{self.name}",' \
                f' datetime={self.datetime} )'
+
+    @property
+    def db(self):
+        return self._db
 
     @staticmethod
     def _query_to_object(query: sqlite3.Row) -> Union[Workout, None]:
@@ -39,18 +46,12 @@ class Workout():
             return None
 
         return Workout(
-            query['id'],
+            query['id'],  # id=workout_id
             query['userId'],
             query['name'],
             query['description'],
             query['datetime']
         )
-
-    @staticmethod
-    def _validate_object(workout: Any) -> None:
-        """Simple check if the object is None."""
-        if workout is None:
-            raise WorkoutNoneObjectError()
 
     @staticmethod
     def _validate_id(workout_id: Any) -> None:
@@ -65,7 +66,8 @@ class Workout():
         Validate the user_id by requesting the a user.
         The validation is done in the user model.
         """
-        User.get(user_id)
+        _user = User(user_id, None, None)
+        _user.get()
 
     @staticmethod
     def _validate_name(name: Any) -> None:
@@ -88,80 +90,116 @@ class Workout():
             raise WorkoutInvalidDatetimeError()
 
     @staticmethod
-    def _validate(workout: Any) -> None:
-        """Check the workout object for invalid content."""
-        Workout._validate_object(workout)
-        Workout._validate_user_id(workout.user_id)
-        Workout._validate_name(workout.name)
-        Workout._validate_description(workout.description)
-        Workout._validate_datetime(workout.datetime)
+    def exist_workout_id(workout_id: int) -> bool:
+        """
+        Check if workout with workout id exists by requesting them.
 
-    @staticmethod
-    def get(workout_id: int) -> Workout:
-        """Get workout from db by id."""
-        Workout._validate_id(workout_id)
-        db = get_db()
-        result = db.execute(
+        :param: workout id
+        :return: True if workout with workout id exists, otherwise False.
+        :rtype: bool
+        """
+        result = get_db().execute(
             'SELECT id, userId, name, description, datetime'
             ' FROM table_workout WHERE id = ?', (workout_id,)
+
+        ).fetchone()
+
+        if result is None:
+            return False
+        else:
+            return True
+
+    def get(self) -> Workout:
+        """
+        Get workout from db by id.
+
+        :return: Workout object
+        :rtype: Workout
+        """
+        Workout._validate_id(self.workout_id)
+        result = self.db.execute(
+            'SELECT id, userId, name, description, datetime'
+            ' FROM table_workout WHERE id = ?', (self.workout_id,)
         ).fetchone()
 
         workout = Workout._query_to_object(result)
         if workout is None:
-            raise WorkoutNotFoundError(workout_id=workout_id)
+            raise WorkoutNotFoundError(workout_id=self.workout_id)
 
         return workout
 
-    @staticmethod
-    def add(workout: Workout) -> int:
-        """Add new workout to db."""
-        Workout._validate(workout)
-        db = get_db()
-        db.execute(
+    def add(self) -> int:
+        """
+        Add new workout to db.
+
+        :return: Return the id of the created tag.
+        :rtype: int
+        """
+        Workout._validate_name(self.name)
+        Workout._validate_description(self.description)
+        Workout._validate_datetime(self.datetime)
+        Workout._validate_user_id(self.user_id)
+
+        self.db.execute(
             'INSERT INTO table_workout'
             ' (userId, name, description, datetime)'
             ' VALUES (?, ?, ?, ?)',
-            (workout.user_id, workout.name, workout.description,
-             workout.datetime)
+            (self.user_id, self.name, self.description, self.datetime)
         )
-        db.commit()
-        inserted_id = db.execute(
+        self.db.commit()
+        inserted_id = self.db.execute(
             'SELECT last_insert_rowid()'
             ' FROM table_workout WHERE userId = ? LIMIT 1',
-            (workout.user_id,)
+            (self.user_id,)
         ).fetchone()
 
         return inserted_id['last_insert_rowid()']
 
-    @staticmethod
-    def update(workout: Workout) -> int:
-        """Update workout in db by id."""
-        Workout._validate(workout)
-        Workout._validate_id(workout.id)
-        db = get_db()
-        db.execute(
+    def update(self) -> bool:
+        """
+        Update workout in db by id.
+
+        :return: True if workout was updated.
+        :rtype: bool
+        """
+        Workout._validate_name(self.name)
+        Workout._validate_description(self.description)
+        Workout._validate_datetime(self.datetime)
+        Workout._validate_id(self.workout_id)
+        Workout._validate_user_id(self.user_id)
+
+        if not Workout.exist_workout_id(self.workout_id):
+            raise WorkoutNotFoundError(workout_id=self.workout_id)
+
+        self.db.execute(
             'UPDATE table_workout'
             ' SET name = ?, description = ?, datetime = ?'
             ' WHERE id = ? AND userId = ?',
-            (workout.name, workout.description, int(time.time()),
-             workout.id, workout.user_id,)
+            (self.name, self.description, int(time.time()),
+             self.workout_id, self.user_id,)
         )
-        db.commit()
+        self.db.commit()
 
-        return workout.id
+        return True
 
-    @staticmethod
-    def remove(workout: Workout) -> bool:
-        """Remove workout from db by id."""
-        Workout._validate_object(workout)
-        Workout._validate_user_id(workout.user_id)
-        Workout._validate_id(workout.id)
-        db = get_db()
-        db.execute(
+    def remove(self) -> bool:
+        """
+        Remove workout from db by id.
+
+        :return: True if workout was removed.
+        :rtype: bool
+        """
+        Workout._validate_id(self.workout_id)
+        Workout._validate_user_id(self.user_id)
+
+        if not Workout.exist_workout_id(self.workout_id):
+            raise WorkoutNotFoundError(workout_id=self.workout_id)
+
+        self.db.execute(
             'DELETE FROM table_workout'
-            ' WHERE id = ? AND userId = ?', (workout.id, workout.user_id,)
+            ' WHERE id = ? AND userId = ?', (self.workout_id, self.user_id,)
         )
-        db.commit()
+        self.db.commit()
         # @todo
         # Remove Connection between tags and workouts
         # @todo: use current delete_score function

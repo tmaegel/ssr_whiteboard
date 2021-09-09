@@ -45,6 +45,7 @@ class User():
     @staticmethod
     def _validate_id(user_id: Any) -> None:
         """Validate the user id."""
+        # @todo: Check if user exists by reqeuesting it.
         if (user_id is None or not isinstance(user_id, int) or
                 isinstance(user_id, bool) or user_id < 0):
             raise UserInvalidIdError()
@@ -61,6 +62,25 @@ class User():
         """Validate the user password_hash."""
         if password_hash is None or not isinstance(password_hash, str):
             raise UserInvalidPasswordError()
+
+    @staticmethod
+    def exist_user_id(user_id: int) -> bool:
+        """
+        Check if user with user id exists by requesting them.
+
+        :param: user id
+        :return: True if user with user id exists, otherwise False.
+        :rtype: bool
+        """
+        result = get_db().execute(
+            'SELECT id, name, password FROM table_users'
+            ' WHERE id = ?', (user_id,)
+        ).fetchone()
+
+        if result is None:
+            return False
+        else:
+            return True
 
     def get(self) -> User:
         """
@@ -132,6 +152,10 @@ class User():
         User._validate_id(self.user_id)
         User._validate_name(self.name)
         User._validate_password_hash(self.password_hash)
+
+        if not User.exist_user_id(self.user_id):
+            raise UserNotFoundError(identifier=self.user_id)
+
         self.db.execute(
             'UPDATE table_users'
             ' SET name = ?, password = ?'
