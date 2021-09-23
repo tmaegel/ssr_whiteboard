@@ -46,8 +46,13 @@ class User():
     def _validate_id(user_id: Any) -> None:
         """Validate the user id."""
         # @todo: Check if user exists by reqeuesting it.
-        if (user_id is None or not isinstance(user_id, int) or
-                isinstance(user_id, bool) or user_id < 0):
+        if user_id is None or isinstance(user_id, bool):
+            raise UserInvalidIdError()
+        try:
+            user_id = int(user_id)
+        except (ValueError, TypeError):
+            raise UserInvalidIdError()
+        if user_id < 0:
             raise UserInvalidIdError()
 
     @staticmethod
