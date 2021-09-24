@@ -15,7 +15,6 @@ import json
 import logging
 import sqlite3
 
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -35,7 +34,7 @@ def validate(attr=()):
     """
     Decorator to validate a user object.
 
-    :param attr: Attributes of the workout object to validate.
+    :param attr: Attributes of the user object to validate.
                  Possible values: id, name, password_hash
     """
 
@@ -72,6 +71,7 @@ def validate(attr=()):
 
     def _validate_user_password_hash(password_hash: Any) -> None:
         """Validate the user password_hash."""
+        logger.debug('Validate user password hash.')
         if password_hash is None or not isinstance(password_hash, str):
             raise UserInvalidPasswordError()
 

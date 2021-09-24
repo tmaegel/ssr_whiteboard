@@ -2,15 +2,71 @@
 # It will become the default in Python 3.10.
 from __future__ import annotations
 
-import sqlite3
 from typing import Any, Union
-
 from whiteboard.db import get_db
 from whiteboard.exceptions import (
     MovementInvalidIdError,
     MovementInvalidNameError,
     MovementNotFoundError,
 )
+
+import json
+import logging
+import sqlite3
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# Create console handler and set level to debug
+handler = logging.StreamHandler()
+handler.setLevel(logging.DEBUG)
+# Create formatter
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# Add formatter to logger
+handler.setFormatter(formatter)
+# add logger
+logger.addHandler(handler)
+
+
+def validate(attr=()):
+    """
+    Decorator to validate a movement object.
+
+    :param attr: Attributes of the movement  object to validate.
+                 Possible values: id, name
+    """
+
+    def _decorator(func):
+        def _wrapper(*args, **kwargs):
+            logger.debug('Call function %r with attributes %r.' % (func, attr))
+            logger.debug('Validate object %s' % args[0])
+            if 'name' in attr:
+                _validate_movement_name(args[0].name)
+            if 'id' in attr:
+                _validate_movement_id(args[0].movement_id)
+            return func(*args, **kwargs)
+        return _wrapper
+
+    def _validate_movement_id(movement_id: Any) -> None:
+        """Validate the movement id."""
+        logger.debug('Validate movement id.')
+        if movement_id is None or isinstance(movement_id, bool):
+            raise MovementInvalidIdError()
+        try:
+            movement_id = int(movement_id)
+        except (ValueError, TypeError):
+            raise MovementInvalidIdError()
+        if movement_id < 0:
+            raise MovementInvalidIdError()
+
+    def _validate_movement_name(name: Any) -> Any:
+        """Validate the movement name."""
+        logger.debug('Validate movement name.')
+        if name is None or not isinstance(name, str):
+            raise MovementInvalidNameError()
+
+    return _decorator
 
 
 class Movement():
@@ -21,14 +77,15 @@ class Movement():
         self.name = name
         self.equipment_ids = equipment_ids
 
-        self._db = get_db()
-
     def __str__(self):
         return f'Movement ( movement_id={self.movement_id}, name={self.name} )'
 
+    def to_json(self):
+        return json.dumps(self.__dict__)
+
     @property
     def db(self):
-        return self._db
+        return get_db()
 
     @staticmethod
     def _query_to_object(query: sqlite3.Row) -> Union[Movement, None]:
@@ -42,20 +99,7 @@ class Movement():
             query['equipmentIds'],
         )
 
-    @staticmethod
-    def _validate_id(movement_id: Any) -> None:
-        """Validate the movement id."""
-        # @todo: Check if movement exists by reqeuesting it.
-        if (movement_id is None or not isinstance(movement_id, int) or
-                isinstance(movement_id, bool) or movement_id < 0):
-            raise MovementInvalidIdError()
-
-    @staticmethod
-    def _validate_name(name: Any) -> None:
-        """Validate the movement name."""
-        if name is None or not isinstance(name, str):
-            raise MovementInvalidNameError()
-
+    @validate(attr=('id'))
     def get(self) -> Movement:
         """
         Get movement from db by id.
@@ -63,7 +107,6 @@ class Movement():
         :return: Movement object
         :rtype: Movement
         """
-        Movement._validate_id(self.movement_id)
         result = self.db.execute(
             'SELECT id, movement, equipmentIds'
             ' FROM table_movements WHERE id = ?', (self.movement_id,)

@@ -1,5 +1,3 @@
-import pytest
-
 from whiteboard.exceptions import (
     UserInvalidIdError,
     UserInvalidNameError,
@@ -7,6 +5,8 @@ from whiteboard.exceptions import (
     UserNotFoundError,
 )
 from whiteboard.models.user import User
+
+import pytest
 
 
 @pytest.mark.parametrize(('user_id'), (
@@ -33,6 +33,20 @@ def test_update_user__invalid_user_id(app, user_id):
         assert str(e.value) == 'Invalid user id.'
 
 
+@pytest.mark.parametrize(('user_id'), (
+    (0), (99999),
+))
+def test_update_user__not_found_user_id(app, user_id):
+    """Test update() from user model with an user id that does not exist."""
+    with app.app_context():
+        _user = User(user_id, 'test_name', 'test password')
+        with pytest.raises(UserNotFoundError) as e:
+            result = _user.update()
+            assert result is None
+        assert str(
+            e.value) == f'User with id or name {user_id} does not exist.'
+
+
 @pytest.mark.parametrize(('user_name'), (
     (123), (123.42), (True), ([]), (None),
 ))
@@ -57,17 +71,3 @@ def test_update_user__invalid_password(app, user_password):
             result = _user.update()
             assert result is None
         assert str(e.value) == 'Invalid user password.'
-
-
-@pytest.mark.parametrize(('user_id'), (
-    (0), (99999),
-))
-def test_update_user__not_found_user_id(app, user_id):
-    """Test update() from user model with an user id that does not exist."""
-    with app.app_context():
-        _user = User(user_id, 'test_name', 'test password')
-        with pytest.raises(UserNotFoundError) as e:
-            result = _user.update()
-            assert result is None
-        assert str(
-            e.value) == f'User with id or name {user_id} does not exist.'

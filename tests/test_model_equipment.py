@@ -1,20 +1,14 @@
-import pytest
-
 from whiteboard.exceptions import (
     EquipmentInvalidIdError,
     EquipmentNotFoundError,
 )
 from whiteboard.models.equipment import Equipment
 
+import pytest
 
-#
-# Equipment.get()
-#
 
 @pytest.mark.parametrize(('equipment_id'), (
-    (1),
-    (2),
-    (3),
+    (1), ('1'), (1.0),
 ))
 def test_get_equipment__valid(app, equipment_id):
     """Test get() from equipment model with valid data."""
@@ -22,15 +16,14 @@ def test_get_equipment__valid(app, equipment_id):
         _equipment = Equipment(equipment_id, None)
         equipment = _equipment.get()
         assert equipment is not None
-        assert equipment.equipment_id == equipment_id
-        assert equipment.name == f'Equipment {equipment_id}'
+        assert equipment.equipment_id == int(equipment_id)
+        assert equipment.name == f'Equipment {int(equipment_id)}'
 
 
 @pytest.mark.parametrize(('equipment_id'), (
-    (0),
-    (99999),
+    (0), (99999),
 ))
-def test_get_equipment__not_exist(app, equipment_id):
+def test_get_equipment__not_found_equipment_id(app, equipment_id):
     """Test get() from equipemtn model with an id that does not exist."""
     with app.app_context():
         with pytest.raises(EquipmentNotFoundError) as e:
@@ -42,15 +35,9 @@ def test_get_equipment__not_exist(app, equipment_id):
 
 
 @pytest.mark.parametrize(('equipment_id'), (
-    ('1'),
-    (-1),
-    (1.0),
-    ('1.0'),
-    (None),
-    ('abc'),
-    (True),
+    (-1), ('1.0'), (None), ('abc'), (True), (False),
 ))
-def test_get_equipment__invalid(app, equipment_id):
+def test_get_equipment__invalid_equipment_id(app, equipment_id):
     """Test get() from equipment model with invalid data."""
     with app.app_context():
         with pytest.raises(EquipmentInvalidIdError) as e:

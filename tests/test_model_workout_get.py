@@ -1,10 +1,7 @@
-import pytest
-
-from whiteboard.exceptions import (
-    WorkoutInvalidIdError,
-    WorkoutNotFoundError,
-)
+from whiteboard.exceptions import WorkoutInvalidIdError, WorkoutNotFoundError
 from whiteboard.models.workout import Workout
+
+import pytest
 
 
 @pytest.mark.parametrize(('workout_id'), (

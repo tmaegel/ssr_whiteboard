@@ -2,10 +2,7 @@
 # It will become the default in Python 3.10.
 from __future__ import annotations
 
-import sqlite3
-import time
 from typing import Any, Optional, Union
-
 from whiteboard.db import get_db
 from whiteboard.exceptions import (
     WorkoutInvalidDatetimeError,
@@ -18,7 +15,8 @@ from whiteboard.models.user import User
 
 import json
 import logging
-
+import sqlite3
+import time
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -83,7 +81,7 @@ def validate(attr=()):
         Validate the user_id by requesting the a user.
         The validation is done in the user model.
         """
-        logger.debug('Validate workout user.')
+        logger.debug('Validate workout user id.')
         _user = User(user_id, None, None)
         _user.get()
 

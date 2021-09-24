@@ -1,11 +1,11 @@
-import pytest
-
 from whiteboard.exceptions import (
     UserInvalidIdError,
     UserInvalidNameError,
     UserNotFoundError,
 )
 from whiteboard.models.user import User
+
+import pytest
 
 
 @pytest.mark.parametrize(('user_id', 'user_name'), (

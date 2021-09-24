@@ -1,5 +1,3 @@
-import pytest
-
 from whiteboard.exceptions import (
     UserInvalidIdError,
     UserNotFoundError,
@@ -8,6 +6,8 @@ from whiteboard.exceptions import (
     WorkoutInvalidNameError,
 )
 from whiteboard.models.workout import Workout
+
+import pytest
 
 
 @pytest.mark.parametrize(('user_id'), (
