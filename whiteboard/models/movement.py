@@ -52,18 +52,22 @@ def validate(attr=()):
         """Validate the movement id."""
         logger.debug('Validate movement id.')
         if movement_id is None or isinstance(movement_id, bool):
+            logger.error('Invalid movement id.')
             raise MovementInvalidIdError()
         try:
             movement_id = int(movement_id)
         except (ValueError, TypeError):
+            logger.error('Invalid movement id.')
             raise MovementInvalidIdError()
         if movement_id < 0:
+            logger.error('Invalid movement id.')
             raise MovementInvalidIdError()
 
     def _validate_movement_name(name: Any) -> Any:
         """Validate the movement name."""
         logger.debug('Validate movement name.')
         if name is None or not isinstance(name, str):
+            logger.error('Invalid movement name.')
             raise MovementInvalidNameError()
 
     return _decorator

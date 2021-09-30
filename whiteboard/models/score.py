@@ -69,30 +69,36 @@ def validate(attr=()):
         """Validate the score id."""
         logger.debug('Validate score id.')
         if score_id is None or isinstance(score_id, bool):
+            logger.error('Invalid score id.')
             raise ScoreInvalidIdError()
         try:
             score_id = int(score_id)
         except (ValueError, TypeError):
+            logger.error('Invalid score id.')
             raise ScoreInvalidIdError()
         if score_id < 0:
+            logger.error('Invalid score id.')
             raise ScoreInvalidIdError()
 
     def _validate_score_value(value: Any) -> Any:
         """Validate the score value."""
         logger.debug('Validate score value.')
         if value is None or not isinstance(value, str):
+            logger.error('Invalid score value.')
             raise ScoreInvalidValueError()
 
     def _validate_score_rx(rx: Any) -> Any:
         """Validate the score rx state."""
         logger.debug('Validate score rx state.')
         if (rx is None or not isinstance(rx, bool)):
+            logger.error('Invalid score rx state.')
             raise ScoreInvalidRxError()
 
     def _validate_score_note(note: Any) -> None:
         """Validate the score note."""
         logger.debug('Validate score note.')
         if (note is None or not isinstance(note, str)):
+            logger.error('Invalid score note.')
             raise ScoreInvalidNoteError()
 
     def _validate_score_user_id(user_id: Any) -> None:
@@ -116,14 +122,17 @@ def validate(attr=()):
     def _validate_score_datetime(datetime: Any) -> None:
         """Validate the score datetime."""
         logger.debug('Validate score datetime.')
-
-        if datetime is None or isinstance(datetime, bool):
+        if (datetime is None or isinstance(datetime, bool) or
+                isinstance(datetime, float)):
+            logger.error('Invalid score datetime.')
             raise ScoreInvalidDatetimeError()
         try:
             datetime = int(datetime)
         except (ValueError, TypeError):
+            logger.error('Invalid score datetime.')
             raise ScoreInvalidDatetimeError()
         if datetime < 0:
+            logger.error('Invalid score datetime.')
             raise ScoreInvalidDatetimeError()
 
     return _decorator

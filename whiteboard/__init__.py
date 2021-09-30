@@ -2,12 +2,16 @@ import os
 import time
 
 from flask import Flask
+from flask_restful import Api
+
+from .views.rest_workout import WorkoutEnty, WorkoutList
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object('config')  # Load config.py in project directory
+    api = Api(app)
 
     if test_config is None:
         # overload config with instance/config.py
@@ -47,5 +51,9 @@ def create_app(test_config=None):
     app.register_blueprint(movement.bp)
     app.register_blueprint(equipment.bp)
     app.register_blueprint(tag.bp)
+
+    # rest
+    api.add_resource(WorkoutList, '/rest/v1/workout')
+    api.add_resource(WorkoutEnty, '/rest/v1/workout/<int:workout_id>')
 
     return app

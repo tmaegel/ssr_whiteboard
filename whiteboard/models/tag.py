@@ -55,18 +55,22 @@ def validate(attr=()):
         """Validate the tag id."""
         logger.debug('Validate tag id.')
         if tag_id is None or isinstance(tag_id, bool):
+            logger.error('Invalid tag id.')
             raise TagInvalidIdError()
         try:
             tag_id = int(tag_id)
         except (ValueError, TypeError):
+            logger.error('Invalid tag id.')
             raise TagInvalidIdError()
         if tag_id < 0:
+            logger.error('Invalid tag id.')
             raise TagInvalidIdError()
 
     def _validate_tag_name(name: Any) -> Any:
         """Validate the tag name."""
         logger.debug('Validate tag name.')
         if name is None or not isinstance(name, str):
+            logger.error('Invalid tag name.')
             raise TagInvalidNameError()
 
     def _validate_tag_user_id(user_id: Any) -> None:

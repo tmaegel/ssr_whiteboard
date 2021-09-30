@@ -62,18 +62,22 @@ def validate(attr=()):
         """Validate the workout id."""
         logger.debug('Validate workout id.')
         if workout_id is None or isinstance(workout_id, bool):
+            logger.error('Invalid workout id.')
             raise WorkoutInvalidIdError()
         try:
             workout_id = int(workout_id)
         except (ValueError, TypeError):
+            logger.error('Invalid workout id.')
             raise WorkoutInvalidIdError()
         if workout_id < 0:
+            logger.error('Invalid workout id.')
             raise WorkoutInvalidIdError()
 
     def _validate_workout_name(name: Any) -> Any:
         """Validate the workout name."""
         logger.debug('Validate workout name.')
         if name is None or not isinstance(name, str):
+            logger.error('Invalid workout name.')
             raise WorkoutInvalidNameError()
 
     def _validate_workout_user_id(user_id: Any) -> None:
@@ -89,19 +93,23 @@ def validate(attr=()):
         """Validate the workout description."""
         logger.debug('Validate workout description.')
         if (description is None or not isinstance(description, str)):
+            logger.error('Invalid workout description.')
             raise WorkoutInvalidDescriptionError()
 
     def _validate_workout_datetime(datetime: Any) -> None:
         """Validate the workout datetime."""
         logger.debug('Validate workout datetime.')
-
-        if datetime is None or isinstance(datetime, bool):
+        if (datetime is None or isinstance(datetime, bool) or
+                isinstance(datetime, float)):
+            logger.error('Invalid workout datetime.')
             raise WorkoutInvalidDatetimeError()
         try:
             datetime = int(datetime)
         except (ValueError, TypeError):
+            logger.error('Invalid workout datetime.')
             raise WorkoutInvalidDatetimeError()
         if datetime < 0:
+            logger.error('Invalid workout datetime.')
             raise WorkoutInvalidDatetimeError()
 
     return _decorator
@@ -255,3 +263,32 @@ class Workout():
         # db.commit()
 
         return True
+
+    @staticmethod
+    def list(user_id: int, order_by: str = 'name',
+             sort: str = 'asc') -> list[Optional[Workout]]:
+        """
+        Return a list of all workouts.
+
+        :return: List of all workouts.
+        :rtype: list
+        """
+        # Validate user_id
+        _user = User(user_id, None, None)
+        _user.get()
+
+        # Include admin (common) workouts
+        where_filter = 'userId = 1 OR userId = ?'
+        results = get_db().execute(
+            'SELECT id, userId, name, description, datetime'
+            ' FROM table_workout'
+            f' WHERE ({where_filter})'
+            f' ORDER BY {order_by} {sort}',
+            (user_id,)
+        ).fetchall()
+
+        workouts = []
+        for workout in results:
+            workouts.append(Workout._query_to_object(workout))
+
+        return workouts

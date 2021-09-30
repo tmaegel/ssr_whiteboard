@@ -16,7 +16,7 @@ import pytest
     (1), (1.0), ('1'),
 ))
 def test_update_workout__valid_workout_id(app, workout_id):
-    """Test update() from workout model with valid data (no timestamp)."""
+    """Test update() from workout model with valid data (no datetime)."""
     with app.app_context():
         _workout = Workout(workout_id, 1, 'test name', 'workout description')
         result = _workout.update()
@@ -27,21 +27,21 @@ def test_update_workout__valid_workout_id(app, workout_id):
     (1), (1.0), ('1'),
 ))
 def test_update_workout__valid_user_id(app, user_id):
-    """Test update() from workout model with valid data (no timestamp)."""
+    """Test update() from workout model with valid data (no datetime)."""
     with app.app_context():
         _workout = Workout(1, user_id, 'test name', 'workout description')
         result = _workout.update()
         assert result is True
 
 
-@pytest.mark.parametrize(('workout_timestamp'), (
-    (123), ('123'), (123.45),
+@pytest.mark.parametrize(('workout_datetime'), (
+    (123), ('123'),
 ))
-def test_update_workout__valid_with_timestamp(app, workout_timestamp):
-    """Test update() from workout model with valid data (with timestamp)."""
+def test_update_workout__valid_with_datetime(app, workout_datetime):
+    """Test update() from workout model with valid data (with datetime)."""
     with app.app_context():
         _workout = Workout(1, 1, 'test name',
-                           'workout description', workout_timestamp)
+                           'workout description', workout_datetime)
         result = _workout.update()
         assert result is True
 
@@ -133,15 +133,15 @@ def test_update_workout__invalid_description(app, workout_description):
         assert str(e.value) == 'Invalid workout description.'
 
 
-@pytest.mark.parametrize(('workout_timestamp'), (
-    (-1), (True), ([]), ('abc'), ('123.45'), (None),
+@pytest.mark.parametrize(('workout_datetime'), (
+    (-1), (True), ([]), ('abc'), ('123.45'), (123.45), (None),
 ))
-def test_update_workout__invalid_timestamp(app, workout_timestamp):
-    """Test update() from workout model with invalid workout timestamp."""
+def test_update_workout__invalid_datetime(app, workout_datetime):
+    """Test update() from workout model with invalid workout datetime."""
     with app.app_context():
         with pytest.raises(WorkoutInvalidDatetimeError) as e:
             _workout = Workout(1, 1, 'test_name',
-                               'workout description', workout_timestamp)
+                               'workout description', workout_datetime)
             result = _workout.update()
             assert result is None
-        assert str(e.value) == 'Invalid workout timestamp.'
+        assert str(e.value) == 'Invalid workout datetime.'

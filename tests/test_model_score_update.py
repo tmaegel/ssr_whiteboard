@@ -19,7 +19,7 @@ import pytest
     (1), (1.0), ('1'),
 ))
 def test_update_score__valid_score_id(app, score_id):
-    """Test update() from score model with valid data (no timestamp)."""
+    """Test update() from score model with valid data (no datetime)."""
     with app.app_context():
         _score = Score(score_id, 1, 2, '60', True, 'test note')
         result = _score.update()
@@ -30,7 +30,7 @@ def test_update_score__valid_score_id(app, score_id):
     (1), (1.0), ('1'),
 ))
 def test_update_score__valid_user_id(app, user_id):
-    """Test update() from score model with valid data (no timestamp)."""
+    """Test update() from score model with valid data (no datetime)."""
     with app.app_context():
         _score = Score(1, user_id, 2, '60', True, 'test note')
         result = _score.update()
@@ -41,20 +41,20 @@ def test_update_score__valid_user_id(app, user_id):
     (1), (1.0), ('1'),
 ))
 def test_update_score__valid_workout_id(app, workout_id):
-    """Test update() from score model with valid data (no timestamp)."""
+    """Test update() from score model with valid data (no datetime)."""
     with app.app_context():
         _score = Score(1, 1, workout_id, '60', True, 'test note')
         result = _score.update()
         assert result is True
 
 
-@pytest.mark.parametrize(('score_timestamp'), (
-    (123), ('123'), (123.45),
+@pytest.mark.parametrize(('score_datetime'), (
+    (123), ('123'),
 ))
-def test_update_score__valid_with_timestamp(app, score_timestamp):
-    """Test update() from score model with valid data (with timestamp)."""
+def test_update_score__valid_with_datetime(app, score_datetime):
+    """Test update() from score model with valid data (with datetime)."""
     with app.app_context():
-        _score = Score(1, 1, 2, '60', True, 'test note', score_timestamp)
+        _score = Score(1, 1, 2, '60', True, 'test note', score_datetime)
         result = _score.update()
         assert result is True
 
@@ -181,14 +181,14 @@ def test_update_score__invalid_note(app, score_note):
         assert str(e.value) == 'Invalid score note.'
 
 
-@pytest.mark.parametrize(('score_timestamp'), (
-    (-1), (True), ([]), ("abc"), ('123.45'), (None),
+@pytest.mark.parametrize(('score_datetime'), (
+    (-1), (True), ([]), ("abc"), ('123.45'), (123.45), (None),
 ))
-def test_update_score__invalid_timestamp(app, score_timestamp):
-    """Test update() from score model with invalid score timestamp."""
+def test_update_score__invalid_datetime(app, score_datetime):
+    """Test update() from score model with invalid score datetime."""
     with app.app_context():
         with pytest.raises(ScoreInvalidDatetimeError) as e:
-            _score = Score(1, 1, 2, '60', True, 'test note', score_timestamp)
+            _score = Score(1, 1, 2, '60', True, 'test note', score_datetime)
             result = _score.update()
             assert result is None
-        assert str(e.value) == 'Invalid score timestamp.'
+        assert str(e.value) == 'Invalid score datetime.'

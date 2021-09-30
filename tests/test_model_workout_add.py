@@ -14,7 +14,7 @@ import pytest
     (1), (1.0), ('1'),
 ))
 def test_add_workout__valid(app, user_id):
-    """Test add() from workout model with valid data (no timestamp)."""
+    """Test add() from workout model with valid data (no datetime)."""
     with app.app_context():
         _workout = Workout(None, user_id, 'test name', 'test description')
         workout_id = _workout.add()
@@ -22,14 +22,14 @@ def test_add_workout__valid(app, user_id):
         assert isinstance(workout_id, int) is True
 
 
-@pytest.mark.parametrize(('workout_timestamp'), (
-    (123), ('123'), (123.45),
+@pytest.mark.parametrize(('workout_datetime'), (
+    (123), ('123'),
 ))
-def test_add_workout__valid_with_timestamp(app, workout_timestamp):
-    """Test add() from workout model with valid data (with timestamp)."""
+def test_add_workout__valid_with_datetime(app, workout_datetime):
+    """Test add() from workout model with valid data (with datetime)."""
     with app.app_context():
         _workout = Workout(None, 1, 'test name',
-                           'test description', workout_timestamp)
+                           'test description', workout_datetime)
         workout_id = _workout.add()
         assert workout_id is not None
         assert isinstance(workout_id, int) is True
@@ -89,15 +89,15 @@ def test_add_workout__invalid_description(app, workout_description):
         assert str(e.value) == 'Invalid workout description.'
 
 
-@pytest.mark.parametrize(('workout_timestamp'), (
-    (-1), (True), ([]), ("abc"), ('123.45'), (None),
+@pytest.mark.parametrize(('workout_datetime'), (
+    (-1), (True), ([]), ('abc'), ('123.45'), (123.45), (None),
 ))
-def test_add_workout__invalid_timestamp(app, workout_timestamp):
-    """Test add() from workout model with invalid workout timestamp."""
+def test_add_workout__invalid_datetime(app, workout_datetime):
+    """Test add() from workout model with invalid workout datetime."""
     with app.app_context():
         with pytest.raises(WorkoutInvalidDatetimeError) as e:
             _workout = Workout(None, 1, 'test name',
-                               'workout description', workout_timestamp)
+                               'workout description', workout_datetime)
             workout_id = _workout.add()
             assert workout_id is None
-        assert str(e.value) == 'Invalid workout timestamp.'
+        assert str(e.value) == 'Invalid workout datetime.'

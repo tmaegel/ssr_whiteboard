@@ -1,6 +1,7 @@
 import os
 import tempfile
 
+import json
 import pytest
 from whiteboard import create_app
 from whiteboard.db import get_db, init_db
@@ -68,3 +69,50 @@ class AuthActions(object):
 @pytest.fixture
 def auth(client):
     return AuthActions(client)
+
+
+@pytest.fixture()
+def workout_dict():
+    return {
+        'user_id': 1,
+        'name': 'test workout name',
+        'description': 'test workout description',
+        'datetime': 0
+    }
+
+
+@pytest.fixture()
+def workout_get(client):
+    def _wrapper(workout_id):
+        return client.get(f'/rest/v1/workout/{workout_id}')
+    return _wrapper
+
+
+@pytest.fixture()
+def workout_list_get(client):
+    return client.get('/rest/v1/workout')
+
+
+@pytest.fixture()
+def workout_post(client):
+    def _wrapper(workout_data):
+        return client.post('/rest/v1/workout',
+                           headers={'content-type': 'application/json'},
+                           data=json.dumps(workout_data))
+    return _wrapper
+
+
+@pytest.fixture()
+def workout_put(client):
+    def _wrapper(workout_id, workout_data):
+        return client.put(f'/rest/v1/workout/{workout_id}',
+                          headers={'content-type': 'application/json'},
+                          data=json.dumps(workout_data))
+    return _wrapper
+
+
+@pytest.fixture()
+def workout_delete(client):
+    def _wrapper(workout_id):
+        return client.delete(f'/rest/v1/workout/{workout_id}')
+    return _wrapper

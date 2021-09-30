@@ -52,18 +52,22 @@ def validate(attr=()):
         """Validate the equipment id."""
         logger.debug('Validate equipment id.')
         if equipment_id is None or isinstance(equipment_id, bool):
+            logger.error('Invalid equipment id.')
             raise EquipmentInvalidIdError()
         try:
             equipment_id = int(equipment_id)
         except (ValueError, TypeError):
+            logger.error('Invalid equipment id.')
             raise EquipmentInvalidIdError()
         if equipment_id < 0:
+            logger.error('Invalid equipment id.')
             raise EquipmentInvalidIdError()
 
     def _validate_equipment_name(name: Any) -> Any:
         """Validate the equipment name."""
         logger.debug('Validate equipment name.')
         if name is None or not isinstance(name, str):
+            logger.error('Invalid equipment name.')
             raise EquipmentInvalidNameError()
 
     return _decorator

@@ -55,24 +55,29 @@ def validate(attr=()):
         """Validate the user id."""
         logger.debug('Validate user id.')
         if user_id is None or isinstance(user_id, bool):
+            logger.error('Invalid user id.')
             raise UserInvalidIdError()
         try:
             user_id = int(user_id)
         except (ValueError, TypeError):
+            logger.error('Invalid user id.')
             raise UserInvalidIdError()
         if user_id < 0:
+            logger.error('Invalid user id.')
             raise UserInvalidIdError()
 
     def _validate_user_name(name: Any) -> Any:
         """Validate the user name."""
         logger.debug('Validate user name.')
         if name is None or not isinstance(name, str):
+            logger.error('Invalid user name.')
             raise UserInvalidNameError()
 
     def _validate_user_password_hash(password_hash: Any) -> None:
         """Validate the user password_hash."""
         logger.debug('Validate user password hash.')
         if password_hash is None or not isinstance(password_hash, str):
+            logger.error('Invalid password hash.')
             raise UserInvalidPasswordError()
 
     return _decorator

@@ -72,10 +72,10 @@ class WorkoutInvalidDescriptionError(Exception):
 
 class WorkoutInvalidDatetimeError(Exception):
 
-    """Custom error that raised when a workout contains a invalid timestamp."""
+    """Custom error that raised when a workout contains a invalid datetime."""
 
     def __init__(self) -> None:
-        super().__init__('Invalid workout timestamp.')
+        super().__init__('Invalid workout datetime.')
 
 
 class ScoreNotFoundError(Exception):
@@ -121,10 +121,10 @@ class ScoreInvalidNoteError(Exception):
 
 class ScoreInvalidDatetimeError(Exception):
 
-    """Custom error that raised when a score contains a invalid timestamp."""
+    """Custom error that raised when a score contains a invalid datetime."""
 
     def __init__(self) -> None:
-        super().__init__('Invalid score timestamp.')
+        super().__init__('Invalid score datetime.')
 
 
 class EquipmentNotFoundError(Exception):

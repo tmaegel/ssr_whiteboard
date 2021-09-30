@@ -1,8 +1,7 @@
-import sqlite3
-
-import click
-from flask import current_app, g
 from flask.cli import with_appcontext
+from flask import current_app, g
+import click
+import sqlite3
 
 
 def init_app(app):
