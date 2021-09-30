@@ -1,12 +1,8 @@
-from flask import (
-    Blueprint, render_template
-)
-
+# -*- coding: utf-8 -*-
 from ..db import get_db
 from .auth import login_required
-from .user import (
-    get_user_prefs
-)
+from .user import get_user_prefs
+from flask import Blueprint, render_template
 
 bp = Blueprint('equipment', __name__, url_prefix='/equipment')
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Response
 from flask_restful import reqparse, Resource
 from werkzeug.exceptions import BadRequest
@@ -36,7 +37,7 @@ class WorkoutList(Resource):
 
         return Response(response=json.dumps(
                         [workout.__dict__ for workout in workouts]),
-                        mimetype="application/json",
+                        mimetype='application/json',
                         status=200)
 
     def post(self):
@@ -91,7 +92,7 @@ class WorkoutEnty(Resource):
             return {'type': 'error', 'message': str(e)}, 404
 
         return Response(response=workout.to_json(),
-                        mimetype="application/json",
+                        mimetype='application/json',
                         status=200)
 
     def put(self, workout_id):

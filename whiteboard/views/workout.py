@@ -1,17 +1,19 @@
-import time
-
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
-)
-
+# -*- coding: utf-8 -*-
 from ..db import get_db
-from ..utils import (
-    get_format_timestamp, timestamp_to_sec
-)
+from ..utils import get_format_timestamp, timestamp_to_sec
 from .auth import login_required
-from .user import (
-    get_user_prefs
+from .user import get_user_prefs
+from flask import (
+    Blueprint,
+    flash,
+    g,
+    redirect,
+    render_template,
+    request,
+    url_for,
 )
+
+import time
 
 bp = Blueprint('workout', __name__, url_prefix='/workout')
 

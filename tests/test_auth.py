@@ -1,14 +1,16 @@
-import pytest
+# -*- coding: utf-8 -*-
 from flask import g, session
+
+import pytest
 
 
 def test_login(client, auth):
     # test that viewing the page renders without template errors
     response = client.get('/auth/login')
     assert response.status_code == 200
-    assert b"Login" in response.data
-    assert b"Username" in response.data
-    assert b"Password" in response.data
+    assert b'Login' in response.data
+    assert b'Username' in response.data
+    assert b'Password' in response.data
 
     # test that successful login redirects to the index page
     response = auth.login()
@@ -78,7 +80,8 @@ def test_passwd_update_userlogin(client, auth):
     ('', '123456', b'Passwords are not equal.'),
     ('123', '456', b'Passwords are not equal.'),
 ))
-def test_passwd_udpate_validate_input(client, auth, password1, password2, message):
+def test_passwd_udpate_validate_input(
+        client, auth, password1, password2, message):
     auth.login()
     response = client.post(
         '/auth/passwd/update',

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # List with No Login
 def test_list_nologin(client):
     response = client.get('/movement/', follow_redirects=True)

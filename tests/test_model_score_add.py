@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from whiteboard.exceptions import (
     ScoreInvalidDatetimeError,
     ScoreInvalidNoteError,
@@ -143,7 +144,7 @@ def test_add_score__invalid_note(app, score_note):
 
 
 @pytest.mark.parametrize(('score_datetime'), (
-    (-1), (True), ([]), ("abc"), ('123.45'), (123.45), (None),
+    (-1), (True), ([]), ('abc'), ('123.45'), (123.45), (None),
 ))
 def test_add_score__invalid_datetime(app, score_datetime):
     """Test add() from score model with invalid score datetime."""

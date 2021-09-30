@@ -1,5 +1,7 @@
-import pytest
+# -*- coding: utf-8 -*-
 from whiteboard.db import get_db
+
+import pytest
 
 
 # Update user prefs with no Login
@@ -68,7 +70,8 @@ def test_prefs_update(client, auth, app):
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) FROM table_user_prefs').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) FROM table_user_prefs').fetchone()[0]
         assert count == 0
 
     # Initialize entry in table_user_prefs
@@ -85,9 +88,11 @@ def test_prefs_update(client, auth, app):
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) FROM table_user_prefs').fetchone()[0]
+        count = db.execute(
+            'SELECT COUNT(id) FROM table_user_prefs').fetchone()[0]
         assert count == 1
-        result = db.execute('SELECT * FROM table_user_prefs WHERE userId=2').fetchone()
+        result = db.execute(
+            'SELECT * FROM table_user_prefs WHERE userId=2').fetchone()
         assert result['userId'] == 2
         assert result['sortType'] == 1
         assert result['filterType'] == 2
@@ -103,7 +108,8 @@ def test_prefs_update(client, auth, app):
     ('1.5', '2', b'Sort type is invalid.'),
     ('1', '1.5', b'Filter type is invalid.'),
 ))
-def test_prefs_update_validate_input(client, auth, inputSort, inputFilter, message):
+def test_prefs_update_validate_input(
+        client, auth, inputSort, inputFilter, message):
     auth.login()
     response = client.post(
         '/user/prefs/update/xxx/',

@@ -1,10 +1,11 @@
-import pytest
-
+# -*- coding: utf-8 -*-
 from whiteboard.exceptions import (
     UserInvalidNameError,
     UserInvalidPasswordError,
 )
 from whiteboard.models.user import User
+
+import pytest
 
 
 def test_add_user__valid(app):

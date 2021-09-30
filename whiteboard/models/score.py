@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.
 from __future__ import annotations
@@ -217,7 +218,8 @@ class Score():
 
         return score
 
-    @validate(attr=('user_id', 'workout_id', 'value', 'rx', 'note', 'datetime'))
+    @validate(attr=('user_id', 'workout_id', 'value', 'rx', 'note',
+                    'datetime'))
     def add(self) -> int:
         """
         Add new score to db.
@@ -239,9 +241,14 @@ class Score():
             (self.user_id,)
         ).fetchone()
 
-        return inserted_id['last_insert_rowid()']
+        try:
+            return int(inserted_id['last_insert_rowid()'])
+        except (TypeError, ValueError) as e:
+            logger.error('Invalid last_insert_rowid: %s', str(e))
+            raise
 
-    @validate(attr=('id', 'user_id', 'workout_id', 'value', 'rx', 'note', 'datetime'))
+    @validate(attr=('id', 'user_id', 'workout_id', 'value', 'rx', 'note',
+                    'datetime'))
     def update(self) -> bool:
         """
         Update score in db by id.

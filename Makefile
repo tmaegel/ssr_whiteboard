@@ -8,16 +8,6 @@ default: debug
 debug:
 	FLASK_APP=$(APP) FLASK_ENV=development flask run
 
-test:
-	pytest
-
-coverage:
-	coverage run -m pytest
-	coverage report
-
-lint:
-	flake8 $(DIR)
-
 build:
 	@docker build --pull -t $(APP) .
 
@@ -29,12 +19,18 @@ clean:
 	@docker stop $(APP) || true
 	@docker rm $(APP) || true
 
-create-venv:
-	python3 -m venv venv
+test:
+	python -m pytest
 
-recreate-venv:
-	rm -r ./venv
-	python3 -m venv venv
+lint:
+	python -m flake8
+	python -m mypy --exclude instance/ .
+
+coverage:
+	python -m pytest --cov --cov-fail-under=100
+
+pre-commit:
+	pre-commit run --all-files
 
 install:
 	pip3 install -r requirements.txt

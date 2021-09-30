@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 DEBUG = False
 SECRET_KEY = 'dev'  # Be shure to overload it by instance/config.py
 DATABASE = 'instance/whiteboard.sqlite'

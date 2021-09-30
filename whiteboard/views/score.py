@@ -1,15 +1,9 @@
-from flask import (
-    Blueprint, flash, g, redirect, request, url_for
-)
-
+# -*- coding: utf-8 -*-
 from ..db import get_db
-from ..utils import (
-    is_float, is_timestamp, is_datetime, datetime_to_sec
-)
+from ..utils import datetime_to_sec, is_datetime, is_float, is_timestamp
 from .auth import login_required
-from .workout import (
-    get_workout
-)
+from .workout import get_workout
+from flask import Blueprint, flash, g, redirect, request, url_for
 
 bp = Blueprint('score', __name__, url_prefix='/workout/<int:workout_id>/score')
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from whiteboard.exceptions import UserInvalidIdError, UserNotFoundError
 from whiteboard.models.workout import Workout
 

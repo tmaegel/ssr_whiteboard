@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.
 from __future__ import annotations

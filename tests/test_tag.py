@@ -1,5 +1,7 @@
-import pytest
+# -*- coding: utf-8 -*-
 from whiteboard.db import get_db
+
+import pytest
 
 
 # List with No Login

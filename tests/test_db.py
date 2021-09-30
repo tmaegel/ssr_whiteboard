@@ -1,7 +1,8 @@
-import sqlite3
+# -*- coding: utf-8 -*-
+from whiteboard.db import get_db
 
 import pytest
-from whiteboard.db import get_db
+import sqlite3
 
 
 def test_get_close_db(app):

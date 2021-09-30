@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from whiteboard.exceptions import WorkoutInvalidIdError, WorkoutNotFoundError
 from whiteboard.models.workout import Workout
 

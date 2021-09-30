@@ -1,5 +1,7 @@
-from flask.cli import with_appcontext
+# -*- coding: utf-8 -*-
 from flask import current_app, g
+from flask.cli import with_appcontext
+
 import click
 import sqlite3
 

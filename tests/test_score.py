@@ -1,5 +1,7 @@
-import pytest
+# -*- coding: utf-8 -*-
 from whiteboard.db import get_db
+
+import pytest
 
 
 @pytest.mark.parametrize(('score'), (
@@ -37,7 +39,7 @@ def test_add(client, auth, app, score):
         result = db.execute(
             'SELECT * FROM table_workout_score WHERE id=6').fetchone()
         assert result['workoutId'] == 4
-        assert result['score'] == score.decode("utf-8")
+        assert result['score'] == score.decode('utf-8')
         assert result['datetime'] == 1234567860
         assert result['rx'] == 1
         assert result['note'] == 'Add note to Workout B from test1'
@@ -121,7 +123,7 @@ def test_update(client, auth, app, score):
             'SELECT * FROM table_workout_score WHERE workoutId=3').fetchone()
         assert result['id'] == 2
         assert result['workoutId'] == 3
-        assert result['score'] == score.decode("utf-8")
+        assert result['score'] == score.decode('utf-8')
         assert result['rx'] == 0
         assert result['datetime'] == 1234567860
         assert result['note'] == 'Update note to Workout B from test1'

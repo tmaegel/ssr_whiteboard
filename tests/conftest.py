@@ -1,10 +1,11 @@
-import os
-import tempfile
-
-import json
-import pytest
+# -*- coding: utf-8 -*-
 from whiteboard import create_app
 from whiteboard.db import get_db, init_db
+
+import json
+import os
+import pytest
+import tempfile
 
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')

@@ -1,13 +1,15 @@
-import pytest
-import time
+# -*- coding: utf-8 -*-
 from whiteboard.utils import (
-    is_float,
-    is_timestamp,
-    is_datetime,
-    timestamp_to_sec,
     datetime_to_sec,
     get_format_timestamp,
+    is_datetime,
+    is_float,
+    is_timestamp,
+    timestamp_to_sec,
 )
+
+import pytest
+import time
 
 
 @pytest.mark.parametrize(('value'), (
@@ -104,7 +106,7 @@ def test_valid_format_timestamp_no_parameter():
     Test get_format_timestamp function with valid values and no parameter.
     """
     assert get_format_timestamp() == time.strftime(
-        "%d.%m.%Y %H:%M",
+        '%d.%m.%Y %H:%M',
         time.localtime(time.time()))
 
 

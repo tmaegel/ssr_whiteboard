@@ -1,14 +1,20 @@
-import functools
-
-from flask import (
-    Flask, Blueprint, flash, g, redirect, render_template, request, session,
-    url_for
-)
-
-from hashlib import sha256
-from flask_bcrypt import Bcrypt
-
+# -*- coding: utf-8 -*-
 from ..db import get_db
+from flask import (
+    Blueprint,
+    flash,
+    Flask,
+    g,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+from flask_bcrypt import Bcrypt
+from hashlib import sha256
+
+import functools
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)

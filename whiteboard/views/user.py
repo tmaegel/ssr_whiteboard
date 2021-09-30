@@ -1,10 +1,8 @@
-from flask import (
-    Blueprint, flash, g, redirect, request, url_for
-)
-from markupsafe import escape
-
+# -*- coding: utf-8 -*-
 from ..db import get_db
 from .auth import login_required
+from flask import Blueprint, flash, g, redirect, request, url_for
+from markupsafe import escape
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from whiteboard import create_app
 
 

@@ -1,5 +1,7 @@
-import pytest
+# -*- coding: utf-8 -*-
 from whiteboard.db import get_db
+
+import pytest
 
 
 # List with No Login
@@ -177,7 +179,8 @@ def test_add(client, auth, app):
         result = db.execute(
             'SELECT * FROM table_workout WHERE id=7').fetchone()
         assert result['name'] == 'Add Workout C from test1'
-        assert result['description'] == 'Update Workout C description from test1'
+        assert result['description'] == (
+            'Update Workout C description from test1')
         assert result['datetime'] != 0
 
     response = client.get('/workout/')
@@ -225,7 +228,8 @@ def test_update(client, auth, app):
         result = db.execute(
             'SELECT * FROM table_workout WHERE id=3').fetchone()
         assert result['name'] == 'Update Workout A from test1'
-        assert result['description'] == 'Update Workout A description from test1'
+        assert result['description'] == (
+            'Update Workout A description from test1')
         assert result['datetime'] != 0
 
     response = client.get('/workout/')

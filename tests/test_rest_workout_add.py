@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 import pytest
 
@@ -128,7 +129,7 @@ def test_rest_add_workout__invalid_empty_description(
 
 
 @ pytest.mark.parametrize(('datetime'), (
-    (-1), (True), ([]), ("abc"), ('123.45'), (123.45),
+    (-1), (True), ([]), ('abc'), ('123.45'), (123.45),
 ))
 def test_rest_add_workout__invalid_datetime(
         workout_post, workout_dict, datetime):

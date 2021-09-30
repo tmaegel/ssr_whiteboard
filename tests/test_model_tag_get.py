@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from whiteboard.exceptions import TagInvalidIdError, TagNotFoundError
 from whiteboard.models.tag import Tag
 

@@ -1,8 +1,6 @@
-from flask import (
-    Blueprint, render_template
-)
-
+# -*- coding: utf-8 -*-
 from .auth import login_required
+from flask import Blueprint, render_template
 
 bp = Blueprint('dashboard', __name__)
 

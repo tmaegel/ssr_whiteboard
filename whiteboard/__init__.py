@@ -1,10 +1,10 @@
-import os
-import time
-
+# -*- coding: utf-8 -*-
+from .views.rest_workout import WorkoutEnty, WorkoutList
 from flask import Flask
 from flask_restful import Api
 
-from .views.rest_workout import WorkoutEnty, WorkoutList
+import os
+import time
 
 
 def create_app(test_config=None):
@@ -34,14 +34,16 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from .views import auth
-    from .views import dashboard
-    from .views import user
-    from .views import workout
-    from .views import score
-    from .views import movement
-    from .views import equipment
-    from .views import tag
+    from .views import (
+        auth,
+        dashboard,
+        equipment,
+        movement,
+        score,
+        tag,
+        user,
+        workout,
+    )
     app.register_blueprint(auth.bp)
     app.register_blueprint(dashboard.bp)
     app.add_url_rule('/', endpoint='index')
