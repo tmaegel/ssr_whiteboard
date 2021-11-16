@@ -1,71 +1,55 @@
 # -*- coding: utf-8 -*-
-from whiteboard.exceptions import (
-    ScoreInvalidIdError,
-    ScoreNotFoundError,
-    UserInvalidIdError,
-    UserNotFoundError,
-    WorkoutInvalidIdError,
-    WorkoutNotFoundError,
-)
+from whiteboard.exceptions import InvalidAttributeError, NotFoundError
 from whiteboard.models.score import Score
 
 import pytest
 
 
 @pytest.mark.parametrize(('score_id'), (
-    (1), (1.0), ('1'),
+    (1), ('1'),
 ))
 def test_remove_score__valid_score_id(app, score_id):
-    """Test remove() from score model with valid data."""
+    """Test remove() from score model with valid score_id."""
     with app.app_context():
-        _score = Score(score_id, 1, 2, '60', True, 'test note')
+        _score = Score(score_id=score_id, user_id=1, workout_id=2,
+                       value='60', rx=True, note='test note')
         result = _score.remove()
         assert result is True
 
 
 @pytest.mark.parametrize(('user_id'), (
-    (1), (1.0), ('1'),
+    (1), ('1'),
 ))
 def test_remove_score__valid_user_id(app, user_id):
-    """Test remove() from score model with valid data."""
+    """Test remove() from score model with valid user_id."""
     with app.app_context():
-        _score = Score(1, user_id, 2, '60', True, 'test note')
+        _score = Score(score_id=1, user_id=user_id, workout_id=2,
+                       value='60', rx=True, note='test note')
         result = _score.remove()
         assert result is True
 
 
 @pytest.mark.parametrize(('workout_id'), (
-    (1), (1.0), ('1'),
+    (1), ('1'),
 ))
 def test_remove_score__valid_workout_id(app, workout_id):
-    """Test remove() from score model with valid data."""
+    """Test remove() from score model with valid workout_id."""
     with app.app_context():
-        _score = Score(1, 1, workout_id, '60', True, 'test note')
+        _score = Score(score_id=1, user_id=1, workout_id=workout_id,
+                       value='60', rx=True, note='test note')
         result = _score.remove()
         assert result is True
 
 
 @pytest.mark.parametrize(('score_id'), (
-    (-1), ('1.0'), (None), ('abc'), (True), (False),
+    (99999),
 ))
-def test_remove_score__invalid_score_id(app, score_id):
-    """Test remove() from score model with invalid id."""
+def test_remove_score__not_found_score_id(app, score_id):
+    """Test remove() from score model with score_id that does not exist."""
     with app.app_context():
-        with pytest.raises(ScoreInvalidIdError) as e:
-            _score = Score(score_id, 1, 2, '60', True, 'test note')
-            result = _score.remove()
-            assert result is None
-        assert str(e.value) == 'Invalid score id.'
-
-
-@pytest.mark.parametrize(('score_id'), (
-    (0), (99999),
-))
-def test_remove_score__not_exist_score_id(app, score_id):
-    """Test remove() from score model with an score id that does not exist."""
-    with app.app_context():
-        with pytest.raises(ScoreNotFoundError) as e:
-            _score = Score(score_id, 1, 2, '60', True, 'test note')
+        with pytest.raises(NotFoundError) as e:
+            _score = Score(score_id=score_id, user_id=1, workout_id=2,
+                           value='60', rx=True, note='test note')
             result = _score.remove()
             assert result is None
         assert str(
@@ -73,56 +57,74 @@ def test_remove_score__not_exist_score_id(app, score_id):
 
 
 @pytest.mark.parametrize(('user_id'), (
-    (-1), ('1.0'), (None), ('abc'), (True), (False),
+    (99999),
 ))
-def test_remove_score__invalid_user_id(app, user_id):
-    """Test remove() from score model with invalid user id."""
+def test_remove_score__not_found_user_id(app, user_id):
+    """Test remove() from score model with user_id that does not exist."""
     with app.app_context():
-        with pytest.raises(UserInvalidIdError) as e:
-            _score = Score(1, user_id, 2, '60', True, 'test note')
-            result = _score.remove()
-            assert result is None
-        assert str(e.value) == 'Invalid user id.'
-
-
-@pytest.mark.parametrize(('user_id'), (
-    (0), (99999),
-))
-def test_remove_score__not_exist_user_id(app, user_id):
-    """Test remove() from score model with an user id that does not exist."""
-    with app.app_context():
-        with pytest.raises(UserNotFoundError) as e:
-            _score = Score(1, user_id, 2, '60', True, 'test note')
+        with pytest.raises(NotFoundError) as e:
+            _score = Score(score_id=1, user_id=user_id, workout_id=2,
+                           value='60', rx=True, note='test note')
             result = _score.remove()
             assert result is None
         assert str(
-            e.value) == f'User with id or name {user_id} does not exist.'
+            e.value) == f'User with id {user_id} does not exist.'
 
 
 @pytest.mark.parametrize(('workout_id'), (
-    (-1), ('1.0'), (None), ('abc'), (True), (False),
+    (99999),
 ))
-def test_remove_score__invalid_workout_id(app, workout_id):
-    """Test remove() from score model with invalid workout id."""
-    with app.app_context():
-        with pytest.raises(WorkoutInvalidIdError) as e:
-            _score = Score(1, 1, workout_id, '60', True, 'test note')
-            result = _score.remove()
-            assert result is None
-        assert str(e.value) == 'Invalid workout id.'
-
-
-@pytest.mark.parametrize(('workout_id'), (
-    (0), (99999),
-))
-def test_remove_score__not_exist_workout_id(app, workout_id):
+def test_remove_score__not_found_workout_id(app, workout_id):
     """
-    Test remove() from score model with an workout id that does not exist.
+    Test remove() from score model with workout_id that does not exist.
     """
     with app.app_context():
-        with pytest.raises(WorkoutNotFoundError) as e:
-            _score = Score(1, 1, workout_id, '60', True, 'test note')
+        with pytest.raises(NotFoundError) as e:
+            _score = Score(score_id=1, user_id=1, workout_id=workout_id,
+                           value='60', rx=True, note='test note')
             result = _score.remove()
             assert result is None
         assert str(
             e.value) == f'Workout with id {workout_id} does not exist.'
+
+
+@pytest.mark.parametrize(('score_id'), (
+    (0), (-1), (1.0), ('1.0'), (None), ('abc'), (True), (False),
+))
+def test_remove_score__invalid_score_id(app, score_id):
+    """Test remove() from score model with invalid score_id."""
+    with app.app_context():
+        with pytest.raises(InvalidAttributeError) as e:
+            _score = Score(score_id=score_id, user_id=1, workout_id=2,
+                           value='60', rx=True, note='test note')
+            result = _score.remove()
+            assert result is None
+        assert str(e.value) == 'Invalid score_id.'
+
+
+@pytest.mark.parametrize(('user_id'), (
+    (0), (-1), (1.0), ('1.0'), (None), ('abc'), (True), (False),
+))
+def test_remove_score__invalid_user_id(app, user_id):
+    """Test remove() from score model with invalid user_id."""
+    with app.app_context():
+        with pytest.raises(InvalidAttributeError) as e:
+            _score = Score(score_id=1, user_id=user_id, workout_id=2,
+                           value='60', rx=True, note='test note')
+            result = _score.remove()
+            assert result is None
+        assert str(e.value) == 'Invalid user_id.'
+
+
+@pytest.mark.parametrize(('workout_id'), (
+    (0), (-1), (1.0), ('1.0'), (None), ('abc'), (True), (False),
+))
+def test_remove_score__invalid_workout_id(app, workout_id):
+    """Test remove() from score model with invalid workout_id."""
+    with app.app_context():
+        with pytest.raises(InvalidAttributeError) as e:
+            _score = Score(score_id=1, user_id=1, workout_id=workout_id,
+                           value='60', rx=True, note='test note')
+            result = _score.remove()
+            assert result is None
+        assert str(e.value) == 'Invalid workout_id.'

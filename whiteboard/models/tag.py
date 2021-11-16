@@ -3,92 +3,56 @@
 # It will become the default in Python 3.10.
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Union
 from whiteboard.db import get_db
-from whiteboard.exceptions import (
-    TagInvalidIdError,
-    TagInvalidNameError,
-    TagNotFoundError,
-)
-from whiteboard.models.user import User
+from whiteboard.decorators import is_defined
+from whiteboard.descriptors import Id, Name
+from whiteboard.exceptions import InvalidAttributeError, NotFoundError
+from whiteboard.models.user import is_user_exists
 
 import json
-import logging
 import sqlite3
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# Create console handler and set level to debug
-handler = logging.StreamHandler()
-handler.setLevel(logging.DEBUG)
-# Create formatter
-formatter = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# Add formatter to logger
-handler.setFormatter(formatter)
-# add logger
-logger.addHandler(handler)
+import whiteboard.logger as logger
 
 
-def validate(attr=()):
+def is_tag_exists(func):
     """
-    Decorator to validate a tag object.
+    Decorator to check wheather the tag object with id exists.
 
-    :param attr: Attributes of the tag  object to validate.
-                 Possible values: id, name
+    :param objects: Objects to be checked for existence.
     """
-
-    def _decorator(func):
-        def _wrapper(*args, **kwargs):
-            logger.debug('Call function %r with attributes %r.' % (func, attr))
-            logger.debug('Validate object %s' % args[0])
-            if 'name' in attr:
-                _validate_tag_name(args[0].name)
-            if 'id' in attr:
-                _validate_tag_id(args[0].tag_id)
-            if 'user_id' in attr:
-                _validate_tag_user_id(args[0].user_id)
-            return func(*args, **kwargs)
-        return _wrapper
-
-    def _validate_tag_id(tag_id: Any) -> None:
-        """Validate the tag id."""
-        logger.debug('Validate tag id.')
-        if tag_id is None or isinstance(tag_id, bool):
-            logger.error('Invalid tag id.')
-            raise TagInvalidIdError()
+    def _decorator(*args, **kwargs):
+        logger.debug('Check if tag exists.')
         try:
-            tag_id = int(tag_id)
-        except (ValueError, TypeError):
-            logger.error('Invalid tag id.')
-            raise TagInvalidIdError()
-        if tag_id < 0:
-            logger.error('Invalid tag id.')
-            raise TagInvalidIdError()
+            tag_id = getattr(args[0], 'tag_id')
+        except AttributeError:
+            raise InvalidAttributeError('tag_id')
+        if not Tag.exist_tag_id(tag_id):
+            raise NotFoundError(Tag.__name__, tag_id)
+        return func(*args, **kwargs)
+    return _decorator
 
-    def _validate_tag_name(name: Any) -> Any:
-        """Validate the tag name."""
-        logger.debug('Validate tag name.')
-        if name is None or not isinstance(name, str):
-            logger.error('Invalid tag name.')
-            raise TagInvalidNameError()
 
-    def _validate_tag_user_id(user_id: Any) -> None:
-        """
-        Validate the user_id by requesting the a user.
-        The validation is done in the user model.
-        """
-        logger.debug('Validate tag user id.')
-        _user = User(user_id, None, None)
-        _user.get()
-
+def is_owner(func):
+    """
+    Decorator to check wheather the workout is owned by user.
+    """
+    def _decorator(*args, **kwargs):
+        # @todo
+        return func(*args, **kwargs)
     return _decorator
 
 
 class Tag():
 
-    def __init__(self, tag_id: int, user_id: int, name: str) -> None:
+    tag_id = Id()
+    user_id = Id()
+    name = Name()
+
+    def __init__(self,
+                 tag_id: int = None,
+                 user_id: int = None,
+                 name: str = None) -> None:
         self.tag_id = tag_id
         self.user_id = user_id
         self.name = name
@@ -103,6 +67,10 @@ class Tag():
     @property
     def db(self):
         return get_db()
+
+    @property
+    def id(self):
+        return self.tag_id
 
     @staticmethod
     def _query_to_object(query: sqlite3.Row) -> Union[Tag, None]:
@@ -126,7 +94,7 @@ class Tag():
         :rtype: bool
         """
         result = get_db().execute(
-            'SELECT id, userId, tag FROM table_tags WHERE id = ?',
+            'SELECT id FROM table_tags WHERE id = ?',
             (tag_id,)
         ).fetchone()
 
@@ -135,26 +103,29 @@ class Tag():
         else:
             return True
 
-    @validate(attr=('id'))
+    @is_defined(attributes=('tag_id', 'user_id'))
+    @is_user_exists
     def get(self) -> Tag:
         """
-        Get tag from db by id.
+        Get tag from db by tag_id and user_id.
 
         :return: Tag object
         :rtype: Tag
         """
         result = self.db.execute(
-            'SELECT id, userId, tag FROM table_tags WHERE id = ?',
-            (self.tag_id,)
+            'SELECT id, userId, tag FROM table_tags'
+            ' WHERE id = ? AND ( userId = 1 OR userId = ? )',
+            (self.tag_id, self.user_id)
         ).fetchone()
 
         tag = Tag._query_to_object(result)
         if tag is None:
-            raise TagNotFoundError(tag_id=self.tag_id)
+            raise NotFoundError(type(self).__name__, self.tag_id)
 
         return tag
 
-    @validate(attr=('user_id', 'name'))
+    @is_defined(attributes=('user_id', 'name'))
+    @is_user_exists
     def add(self) -> int:
         """
         Add new tag to db.
@@ -176,10 +147,12 @@ class Tag():
         try:
             return int(inserted_id['last_insert_rowid()'])
         except (TypeError, ValueError) as e:
-            logger.error('Invalid last_insert_rowid: %s', str(e))
+            logger.error('Invalid last_insert_rowid: %s' % str(e))
             raise
 
-    @validate(attr=('id', 'user_id', 'name'))
+    @is_defined(attributes=('tag_id', 'user_id', 'name'))
+    @is_tag_exists
+    @is_user_exists
     def update(self) -> bool:
         """
         Update tag in db by id.
@@ -187,9 +160,6 @@ class Tag():
         :return: True if tag was updated.
         :rtype: bool
         """
-        if not Tag.exist_tag_id(self.tag_id):
-            raise TagNotFoundError(tag_id=self.tag_id)
-
         self.db.execute(
             'UPDATE table_tags'
             ' SET tag = ?'
@@ -200,7 +170,9 @@ class Tag():
 
         return True
 
-    @validate(attr=('id', 'user_id'))
+    @is_defined(attributes=('tag_id', 'user_id'))
+    @is_tag_exists
+    @is_user_exists
     def remove(self) -> bool:
         """
         Remove tag from db by id.
@@ -209,12 +181,10 @@ class Tag():
         :rtype: bool
         """
         # @todo: Remove Connection between tags and tags too
-        if not Tag.exist_tag_id(self.tag_id):
-            raise TagNotFoundError(tag_id=self.tag_id)
-
         self.db.execute(
             'DELETE FROM table_tags'
-            ' WHERE id = ? AND userId = ?', (self.tag_id, self.user_id,)
+            ' WHERE id = ? AND userId = ?',
+            (self.tag_id, self.user_id,)
         )
         self.db.commit()
 

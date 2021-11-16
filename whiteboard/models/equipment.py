@@ -3,80 +3,24 @@
 # It will become the default in Python 3.10.
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Union
 from whiteboard.db import get_db
-from whiteboard.exceptions import (
-    EquipmentInvalidIdError,
-    EquipmentInvalidNameError,
-    EquipmentNotFoundError,
-)
+from whiteboard.decorators import is_defined
+from whiteboard.descriptors import Id, Name
+from whiteboard.exceptions import NotFoundError
 
 import json
-import logging
 import sqlite3
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# Create console handler and set level to debug
-handler = logging.StreamHandler()
-handler.setLevel(logging.DEBUG)
-# Create formatter
-formatter = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# Add formatter to logger
-handler.setFormatter(formatter)
-# add logger
-logger.addHandler(handler)
-
-
-def validate(attr=()):
-    """
-    Decorator to validate a equipment object.
-
-    :param attr: Attributes of the equipment  object to validate.
-                 Possible values: id, name
-    """
-
-    def _decorator(func):
-        def _wrapper(*args, **kwargs):
-            logger.debug('Call function %r with attributes %r.' % (func, attr))
-            logger.debug('Validate object %s' % args[0])
-            if 'name' in attr:
-                _validate_equipment_name(args[0].name)
-            if 'id' in attr:
-                _validate_equipment_id(args[0].equipment_id)
-            return func(*args, **kwargs)
-        return _wrapper
-
-    def _validate_equipment_id(equipment_id: Any) -> None:
-        """Validate the equipment id."""
-        logger.debug('Validate equipment id.')
-        if equipment_id is None or isinstance(equipment_id, bool):
-            logger.error('Invalid equipment id.')
-            raise EquipmentInvalidIdError()
-        try:
-            equipment_id = int(equipment_id)
-        except (ValueError, TypeError):
-            logger.error('Invalid equipment id.')
-            raise EquipmentInvalidIdError()
-        if equipment_id < 0:
-            logger.error('Invalid equipment id.')
-            raise EquipmentInvalidIdError()
-
-    def _validate_equipment_name(name: Any) -> Any:
-        """Validate the equipment name."""
-        logger.debug('Validate equipment name.')
-        if name is None or not isinstance(name, str):
-            logger.error('Invalid equipment name.')
-            raise EquipmentInvalidNameError()
-
-    return _decorator
 
 
 class Equipment():
 
-    def __init__(self, equipment_id: int, name: str) -> None:
+    equipment_id = Id()
+    name = Name()
+
+    def __init__(self,
+                 equipment_id: int = None,
+                 name: str = None) -> None:
         self.equipment_id = equipment_id
         self.name = name
 
@@ -91,6 +35,10 @@ class Equipment():
     def db(self):
         return get_db()
 
+    @property
+    def id(self):
+        return self.equipment_id
+
     @staticmethod
     def _query_to_object(query: sqlite3.Row) -> Union[Equipment, None]:
         """Create equipment instance based on the query."""
@@ -102,7 +50,7 @@ class Equipment():
             query['equipment'],  # name=equipment
         )
 
-    @validate(attr=('id'))
+    @is_defined(attributes=('equipment_id',))
     def get(self) -> Equipment:
         """
         Get equipment from db by id.
@@ -117,6 +65,6 @@ class Equipment():
 
         equipment = Equipment._query_to_object(result)
         if equipment is None:
-            raise EquipmentNotFoundError(equipment_id=self.equipment_id)
+            raise NotFoundError(type(self).__name__, self.equipment_id)
 
         return equipment

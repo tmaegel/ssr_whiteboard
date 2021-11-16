@@ -1,8 +1,8 @@
 INSERT INTO table_users(name, password)
 VALUES
-  ('admin', '$2a$10$Q0X4lrRRIvWoLFoiX3CvAO/8fesQsnMR.tQxyBYjzuoSSm4W9IFKe'),
-  ('test1', '$2a$10$Q0X4lrRRIvWoLFoiX3CvAO/8fesQsnMR.tQxyBYjzuoSSm4W9IFKe'),
-  ('test2', '$2a$10$Q0X4lrRRIvWoLFoiX3CvAO/8fesQsnMR.tQxyBYjzuoSSm4W9IFKe');
+  ('admin', '$2b$12$RsD0NB3z.5xHedjHnozuBeEpvmf5MhSf6Mluh3qmDyhsMn6K4PqGG'),
+  ('test1', '$2b$12$RsD0NB3z.5xHedjHnozuBeEpvmf5MhSf6Mluh3qmDyhsMn6K4PqGG'),
+  ('test2', '$2b$12$RsD0NB3z.5xHedjHnozuBeEpvmf5MhSf6Mluh3qmDyhsMn6K4PqGG');
 
 INSERT INTO table_workout(userId, name, description, datetime)
 VALUES

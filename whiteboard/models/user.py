@@ -3,90 +3,52 @@
 # It will become the default in Python 3.10.
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Union
 from whiteboard.db import get_db
+from whiteboard.decorators import is_defined
+from whiteboard.descriptors import Hash, Id, Name
 from whiteboard.exceptions import (
-    UserInvalidIdError,
-    UserInvalidNameError,
-    UserInvalidPasswordError,
-    UserNotFoundError,
+    InvalidAttributeError,
+    InvalidPasswordError,
+    NotFoundError,
 )
 
+import base64
+import bcrypt
+import hashlib
 import json
-import logging
 import sqlite3
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# Create console handler and set level to debug
-handler = logging.StreamHandler()
-handler.setLevel(logging.DEBUG)
-# Create formatter
-formatter = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# Add formatter to logger
-handler.setFormatter(formatter)
-# add logger
-logger.addHandler(handler)
+import whiteboard.logger as logger
 
 
-def validate(attr=()):
+def is_user_exists(func):
     """
-    Decorator to validate a user object.
+    Decorator to check wheather the user object with id exists.
 
-    :param attr: Attributes of the user object to validate.
-                 Possible values: id, name, password_hash
+    :param objects: Objects to be checked for existence.
     """
-
-    def _decorator(func):
-        def _wrapper(*args, **kwargs):
-            logger.debug('Call function %r with attributes %r.' % (func, attr))
-            logger.debug('Validate object %s' % args[0])
-            if 'name' in attr:
-                _validate_user_name(args[0].name)
-            if 'password_hash' in attr:
-                _validate_user_password_hash(args[0].password_hash)
-            if 'id' in attr:
-                _validate_user_id(args[0].user_id)
-            return func(*args, **kwargs)
-        return _wrapper
-
-    def _validate_user_id(user_id: Any) -> None:
-        """Validate the user id."""
-        logger.debug('Validate user id.')
-        if user_id is None or isinstance(user_id, bool):
-            logger.error('Invalid user id.')
-            raise UserInvalidIdError()
+    def _decorator(*args, **kwargs):
+        logger.debug('Check if user exists.')
         try:
-            user_id = int(user_id)
-        except (ValueError, TypeError):
-            logger.error('Invalid user id.')
-            raise UserInvalidIdError()
-        if user_id < 0:
-            logger.error('Invalid user id.')
-            raise UserInvalidIdError()
-
-    def _validate_user_name(name: Any) -> Any:
-        """Validate the user name."""
-        logger.debug('Validate user name.')
-        if name is None or not isinstance(name, str):
-            logger.error('Invalid user name.')
-            raise UserInvalidNameError()
-
-    def _validate_user_password_hash(password_hash: Any) -> None:
-        """Validate the user password_hash."""
-        logger.debug('Validate user password hash.')
-        if password_hash is None or not isinstance(password_hash, str):
-            logger.error('Invalid password hash.')
-            raise UserInvalidPasswordError()
-
+            user_id = getattr(args[0], 'user_id')
+        except AttributeError:
+            raise InvalidAttributeError('user_id')
+        if not User.exist_user_id(user_id):
+            raise NotFoundError(User.__name__, user_id)
+        return func(*args, **kwargs)
     return _decorator
 
 
 class User():
 
-    def __init__(self, user_id: int, name: str, password_hash: str) -> None:
+    user_id = Id()
+    name = Name()
+    password_hash = Hash()
+
+    def __init__(self,
+                 user_id: int = None,
+                 name: str = None,
+                 password_hash: str = None) -> None:
         self.user_id = user_id
         self.name = name
         self.password_hash = password_hash
@@ -100,6 +62,11 @@ class User():
     @property
     def db(self):
         return get_db()
+
+    @property
+    def id(self):
+        """The identify handler of flask_jwt expected an id property."""
+        return self.user_id
 
     @staticmethod
     def _query_to_object(query: sqlite3.Row) -> Union[User, None]:
@@ -123,8 +90,8 @@ class User():
         :rtype: bool
         """
         result = get_db().execute(
-            'SELECT id, name, password FROM table_users'
-            ' WHERE id = ?', (user_id,)
+            'SELECT id FROM table_users WHERE id = ?',
+            (user_id,)
         ).fetchone()
 
         if result is None:
@@ -132,7 +99,7 @@ class User():
         else:
             return True
 
-    @validate(attr=('id'))
+    @is_defined(attributes=('user_id',))
     def get(self) -> User:
         """
         Get user from db by id.
@@ -147,11 +114,11 @@ class User():
 
         user = User._query_to_object(result)
         if user is None:
-            raise UserNotFoundError(identifier=self.user_id)
+            raise NotFoundError(type(self).__name__, self.user_id)
 
         return user
 
-    @validate(attr=('name'))
+    @is_defined(attributes=('name',))
     def get_by_name(self) -> User:
         """
         Get user from db by name.
@@ -166,12 +133,12 @@ class User():
 
         user = User._query_to_object(result)
         if user is None:
-            raise UserNotFoundError(identifier=self.name)
+            raise NotFoundError(type(self).__name__, self.name)
 
         return user
 
-    @validate(attr=('name', 'password_hash'))
-    def add(self) -> bool:
+    @is_defined(attributes=('name', 'password_hash'))
+    def add(self) -> int:
         """
         Add new user to db.
 
@@ -187,9 +154,19 @@ class User():
         )
         self.db.commit()
 
-        return True
+        inserted_id = self.db.execute(
+            'SELECT last_insert_rowid()'
+            ' FROM table_users LIMIT 1'
+        ).fetchone()
 
-    @validate(attr=('id', 'name', 'password_hash'))
+        try:
+            return int(inserted_id['last_insert_rowid()'])
+        except (TypeError, ValueError) as e:
+            logger.error('Invalid last_insert_rowid: %s' % str(e))
+            raise
+
+    @is_defined(attributes=('user_id', 'name', 'password_hash'))
+    @is_user_exists
     def update(self) -> bool:
         """
         Update user in db by id.
@@ -199,9 +176,6 @@ class User():
         """
         # @todo: bcrypt + hash here?
         # gen_password_hash() + check_password() function?
-        if not User.exist_user_id(self.user_id):
-            raise UserNotFoundError(identifier=self.user_id)
-
         self.db.execute(
             'UPDATE table_users'
             ' SET name = ?, password = ?'
@@ -212,7 +186,61 @@ class User():
 
         return True
 
-    @validate(attr=('id'))
-    def Remove(self) -> bool:
+    @is_defined(attributes=('user_id'))
+    @is_user_exists
+    def remove(self) -> bool:
         """Remove user from db by id."""
         pass
+
+    @staticmethod
+    def authenticate(username: str, password: str) -> Union[User, None]:
+        """
+        The first being the username the second being the password.
+        It should return an user object representing an authenticated
+        identity.
+
+        :return: User object
+        :rtype: User
+        """
+        logger.info(f'Authenticate user {username}.')
+        user: User = User(None, username, None).get_by_name()
+
+        if (user and User.check_password(
+                password, user.password_hash)):
+            return user
+        else:
+            return None
+
+    @staticmethod
+    def check_password(password: str, hash_str: str) -> bool:
+        """
+        Verify a password against a bcrypt encoded hash.
+
+        :return: True if the password and hash matched. Otherwise false.
+        :rtype: boolean
+        """
+        logger.info('Verifing password.')
+        if not password:
+            raise InvalidPasswordError()
+        pw_byte = password.encode('utf-8')
+        pw_hash = base64.b64encode(hashlib.sha256(pw_byte).digest())
+        hash_byte = hash_str.encode('utf-8')
+        if not bcrypt.checkpw(pw_hash, hash_byte):
+            raise InvalidPasswordError()
+
+        return True
+
+    @staticmethod
+    def gen_password_hash(password: str) -> str:
+        """
+        Create a bcrypt encoded hash of a password.
+
+        :return: Hashed password
+        :rtype: str
+        """
+        logger.info('Generating password hash.')
+        pw_byte = password.encode('utf-8')
+        pw_hash = base64.b64encode(hashlib.sha256(pw_byte).digest())
+        hashed = bcrypt.hashpw(pw_hash, bcrypt.gensalt(12))
+
+        return hashed.decode()

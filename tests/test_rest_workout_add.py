@@ -141,3 +141,12 @@ def test_rest_add_workout__invalid_datetime(
     json_resp = json.loads(response.data.decode('utf-8'))
     assert json_resp['type'] == 'error'
     assert json_resp['message'] == 'Invalid workout datetime.'
+
+
+def test_rest_add_workout__unauthorized(workout_post_no_auth, workout_dict):
+    response = workout_post_no_auth(workout_data=workout_dict)
+    assert response.status == '401 UNAUTHORIZED'
+    assert response.headers['Content-Type'] == 'application/json'
+    json_resp = json.loads(response.data.decode('utf-8'))
+    assert json_resp['type'] == 'error'
+    assert json_resp['message'] == 'Authorization required.'

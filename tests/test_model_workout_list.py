@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-from whiteboard.exceptions import UserInvalidIdError, UserNotFoundError
+from whiteboard.exceptions import InvalidAttributeError, NotFoundError
 from whiteboard.models.workout import Workout
 
 import pytest
 
 
 @pytest.mark.parametrize(('user_id'), (
-    (1), (1.0), ('1'),
+    (1), ('1'),
 ))
 def test_get_workout__valid_user_id(app, user_id):
-    """Test list() from workout model with valid data."""
+    """Test list() from workout model with valid user_id."""
     with app.app_context():
         results = Workout.list(user_id=user_id)
         assert results is not None
@@ -21,25 +21,24 @@ def test_get_workout__valid_user_id(app, user_id):
 
 
 @pytest.mark.parametrize(('user_id'), (
-    (-1), ('1.0'), (None), ('abc'), (True), (False),
+    (0), (-1), (1.0), ('1.0'), (None), ('abc'), (True), (False),
 ))
 def test_get_workout__invalid_user(app, user_id):
-    """Test list() from workout model with invalid user id."""
+    """Test list() from workout model with invalid user_id."""
     with app.app_context():
-        with pytest.raises(UserInvalidIdError) as e:
+        with pytest.raises(InvalidAttributeError) as e:
             results = Workout.list(user_id=user_id)
             assert results is None
-        assert str(e.value) == 'Invalid user id.'
+        assert str(e.value) == 'Invalid user_id.'
 
 
 @pytest.mark.parametrize(('user_id'), (
-    (0), (99999),
+    (99999),
 ))
 def test_get_workout__not_found_user(app, user_id):
-    """Test list() from workout model with an user id that does not exist."""
+    """Test list() from workout model with user_id that does not exist."""
     with app.app_context():
-        with pytest.raises(UserNotFoundError) as e:
+        with pytest.raises(NotFoundError) as e:
             results = Workout.list(user_id=user_id)
             assert results is None
-        assert str(
-            e.value) == f'User with id or name {user_id} does not exist.'
+        assert str(e.value) == f'User with id {user_id} does not exist.'

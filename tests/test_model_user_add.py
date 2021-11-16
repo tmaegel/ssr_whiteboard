@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
-from whiteboard.exceptions import (
-    UserInvalidNameError,
-    UserInvalidPasswordError,
-)
+from whiteboard.exceptions import InvalidAttributeError
 from whiteboard.models.user import User
 
 import pytest
 
 
-def test_add_user__valid(app):
-    """Test add() from user model with valid data."""
+def test_add_user__valid_user_id(app):
+    """Test add() from user model with valid user_id."""
     with app.app_context():
-        _user = User(None, 'test name', 'test password')
-        result = _user.add()
-        assert result is True
+        _user = User(name='test name', password_hash='test password')
+        user_id = _user.add()
+        assert user_id is not None
+        assert isinstance(user_id, int) is True
 
 
 @pytest.mark.parametrize(('user_name'), (
@@ -22,11 +20,11 @@ def test_add_user__valid(app):
 def test_add_user__invalid_name(app, user_name):
     """Test add() from user model with invalid user name."""
     with app.app_context():
-        _user = User(None, user_name, 'test password')
-        with pytest.raises(UserInvalidNameError) as e:
+        with pytest.raises(InvalidAttributeError) as e:
+            _user = User(None, user_name, 'test password')
             result = _user.add()
             assert result is None
-        assert str(e.value) == 'Invalid user name.'
+        assert str(e.value) == 'Invalid name.'
 
 
 @pytest.mark.parametrize(('user_password'), (
@@ -35,8 +33,8 @@ def test_add_user__invalid_name(app, user_name):
 def test_add_user__invalid_password(app, user_password):
     """Test add() from user model with invalid user password."""
     with app.app_context():
-        _user = User(None, 'test name', user_password)
-        with pytest.raises(UserInvalidPasswordError) as e:
+        with pytest.raises(InvalidAttributeError) as e:
+            _user = User(name='test name', password_hash=user_password)
             result = _user.add()
             assert result is None
-        assert str(e.value) == 'Invalid user password.'
+        assert str(e.value) == 'Invalid password_hash.'

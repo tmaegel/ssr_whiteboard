@@ -83,19 +83,97 @@ def workout_dict():
 
 
 @pytest.fixture()
-def workout_get(client):
+def user_id_admin():
+    return 1
+
+
+@pytest.fixture()
+def user_id_user():
+    return 2
+
+
+@pytest.fixture()
+def workout_id_admin():
+    return 1
+
+
+@pytest.fixture()
+def workout_id_user():
+    return 3
+
+
+@pytest.fixture
+def authenticate(client):
+    def _wrapper(auth_data):
+        return client.post(
+            '/rest/v1/auth/login',
+            headers={'content-type': 'application/json'},
+            data=json.dumps(auth_data))
+    return _wrapper
+
+
+@pytest.fixture()
+def auth_admin(authenticate):
+    return authenticate({'username': 'admin', 'password': 'secret'})
+
+
+@pytest.fixture()
+def auth_user(authenticate):
+    return authenticate({'username': 'test1', 'password': 'secret'})
+
+
+@pytest.fixture()
+def auth_admin_token(auth_admin):
+    return json.loads(auth_user.data.decode('utf-8'))['token']
+
+
+@pytest.fixture()
+def auth_user_token(auth_user):
+    return json.loads(auth_user.data.decode('utf-8'))['token']
+
+
+@pytest.fixture()
+def workout_get(client, auth_user_token):
+    def _wrapper(workout_id):
+        return client.get(
+            f'/rest/v1/workout/{workout_id}',
+            headers={'Authorization': f'Bearer {auth_user_token}'})
+    return _wrapper
+
+
+@pytest.fixture()
+def workout_get_no_auth(client):
     def _wrapper(workout_id):
         return client.get(f'/rest/v1/workout/{workout_id}')
     return _wrapper
 
 
 @pytest.fixture()
-def workout_list_get(client):
+def workout_list_get(client, auth_user_token):
+    return client.get(
+        '/rest/v1/workout',
+        headers={'Authorization': f'Bearer {auth_user_token}'})
+
+
+@pytest.fixture()
+def workout_list_get_no_auth(client):
     return client.get('/rest/v1/workout')
 
 
 @pytest.fixture()
-def workout_post(client):
+def workout_post(client, auth_user_token):
+    def _wrapper(workout_data):
+        return client.post('/rest/v1/workout',
+                           headers={
+                               'content-type': 'application/json',
+                               'Authorization': f'Bearer {auth_user_token}'
+                           },
+                           data=json.dumps(workout_data))
+    return _wrapper
+
+
+@pytest.fixture()
+def workout_post_no_auth(client):
     def _wrapper(workout_data):
         return client.post('/rest/v1/workout',
                            headers={'content-type': 'application/json'},
@@ -104,7 +182,19 @@ def workout_post(client):
 
 
 @pytest.fixture()
-def workout_put(client):
+def workout_put(client, auth_user_token):
+    def _wrapper(workout_id, workout_data):
+        return client.put(f'/rest/v1/workout/{workout_id}',
+                          headers={
+                              'content-type': 'application/json',
+                              'Authorization': f'Bearer {auth_user_token}'
+                          },
+                          data=json.dumps(workout_data))
+    return _wrapper
+
+
+@pytest.fixture()
+def workout_put_no_auth(client):
     def _wrapper(workout_id, workout_data):
         return client.put(f'/rest/v1/workout/{workout_id}',
                           headers={'content-type': 'application/json'},
@@ -113,7 +203,16 @@ def workout_put(client):
 
 
 @pytest.fixture()
-def workout_delete(client):
+def workout_delete(client, auth_user_token):
+    def _wrapper(workout_id):
+        return client.delete(
+            f'/rest/v1/workout/{workout_id}',
+            headers={'Authorization': f'Bearer {auth_user_token}'})
+    return _wrapper
+
+
+@pytest.fixture()
+def workout_delete_no_auth(client):
     def _wrapper(workout_id):
         return client.delete(f'/rest/v1/workout/{workout_id}')
     return _wrapper

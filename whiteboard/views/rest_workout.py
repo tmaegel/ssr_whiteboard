@@ -2,18 +2,12 @@
 from flask import Response
 from flask_restful import reqparse, Resource
 from werkzeug.exceptions import BadRequest
-from whiteboard.exceptions import (
-    UserInvalidIdError,
-    UserNotFoundError,
-    WorkoutInvalidDatetimeError,
-    WorkoutInvalidDescriptionError,
-    WorkoutInvalidIdError,
-    WorkoutInvalidNameError,
-    WorkoutNotFoundError,
-)
+from whiteboard.controller import token_required
+from whiteboard.exceptions import InvalidAttributeError, NotFoundError
 from whiteboard.models.workout import Workout
 
 import json
+import whiteboard.logger as logger
 
 parser = reqparse.RequestParser()
 parser.add_argument('name', required=True, location='json',
@@ -28,11 +22,16 @@ parser.add_argument('datetime', required=False, location='json',
 
 class WorkoutList(Resource):
 
-    def get(self):
+    # Decorators that will be added to all method functions in resource.
+    decorators = [token_required]
+
+    def get(self, user):
+        logger.debug('Getting workouts.')
         try:
             # @todo: pass right user_id
-            workouts = Workout.list(user_id=1)
-        except (UserNotFoundError, UserInvalidIdError) as e:
+            workouts = Workout.list(user_id=user.user_id)
+        except (NotFoundError, InvalidAttributeError) as e:
+            logger.debug(str(e))
             return {'type': 'error', 'message': str(e)}, 404
 
         return Response(response=json.dumps(
@@ -62,12 +61,10 @@ class WorkoutList(Resource):
 
         try:
             result = _workout.add()
-        except UserNotFoundError as e:
-            return {'type': 'error', 'message': str(e)}, 404
-        except (UserInvalidIdError, WorkoutInvalidNameError,
-                WorkoutInvalidDatetimeError,
-                WorkoutInvalidDescriptionError) as e:
+        except InvalidAttributeError as e:
             return {'type': 'error', 'message': str(e)}, 400
+        except NotFoundError as e:
+            return {'type': 'error', 'message': str(e)}, 404
 
         if not result:
             return {
@@ -83,12 +80,15 @@ class WorkoutList(Resource):
 
 class WorkoutEnty(Resource):
 
+    # Decorators that will be added to all method functions in resource.
+    decorators = [token_required]
+
     def get(self, workout_id):
         # @todo: pass user_id
         _workout = Workout(workout_id)
         try:
             workout = _workout.get()
-        except WorkoutNotFoundError as e:
+        except NotFoundError as e:
             return {'type': 'error', 'message': str(e)}, 404
 
         return Response(response=workout.to_json(),
@@ -118,12 +118,10 @@ class WorkoutEnty(Resource):
 
         try:
             result = _workout.update()
-        except (WorkoutNotFoundError, UserNotFoundError) as e:
-            return {'type': 'error', 'message': str(e)}, 404
-        except (WorkoutInvalidIdError, UserInvalidIdError,
-                WorkoutInvalidNameError, WorkoutInvalidDatetimeError,
-                WorkoutInvalidDescriptionError) as e:
+        except InvalidAttributeError as e:
             return {'type': 'error', 'message': str(e)}, 400
+        except NotFoundError as e:
+            return {'type': 'error', 'message': str(e)}, 404
 
         if not result:
             return {
@@ -142,10 +140,10 @@ class WorkoutEnty(Resource):
 
         try:
             result = _workout.remove()
-        except (WorkoutNotFoundError, UserNotFoundError) as e:
-            return {'type': 'error', 'message': str(e)}, 404
-        except (WorkoutInvalidIdError, UserInvalidIdError) as e:
+        except InvalidAttributeError as e:
             return {'type': 'error', 'message': str(e)}, 400
+        except NotFoundError as e:
+            return {'type': 'error', 'message': str(e)}, 404
 
         if not result:
             return {

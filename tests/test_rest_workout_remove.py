@@ -57,3 +57,12 @@ def test_rest_remove_workout__not_found_user(
 def test_rest_remove_workout__invalid_empty_user(
         workout_delete):
     pass
+
+
+def test_rest_remove_workout__unauthorized(workout_delete_no_auth):
+    response = workout_delete_no_auth(workout_id=1)
+    assert response.status == '401 UNAUTHORIZED'
+    assert response.headers['Content-Type'] == 'application/json'
+    json_resp = json.loads(response.data.decode('utf-8'))
+    assert json_resp['type'] == 'error'
+    assert json_resp['message'] == 'Authorization required.'

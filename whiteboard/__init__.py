@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from .views.rest_auth import Login
 from .views.rest_workout import WorkoutEnty, WorkoutList
 from flask import Flask
 from flask_restful import Api
@@ -8,7 +9,6 @@ import time
 
 
 def create_app(test_config=None):
-    # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object('config')  # Load config.py in project directory
     api = Api(app)
@@ -55,6 +55,7 @@ def create_app(test_config=None):
     app.register_blueprint(tag.bp)
 
     # rest
+    api.add_resource(Login, '/rest/v1/auth/login')
     api.add_resource(WorkoutList, '/rest/v1/workout')
     api.add_resource(WorkoutEnty, '/rest/v1/workout/<int:workout_id>')
 
