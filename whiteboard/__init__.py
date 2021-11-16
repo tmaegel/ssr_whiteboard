@@ -2,6 +2,7 @@
 from .views.rest_auth import Login
 from .views.rest_workout import WorkoutEnty, WorkoutList
 from flask import Flask
+from flask_cors import CORS
 from flask_restful import Api
 
 import os
@@ -12,6 +13,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object('config')  # Load config.py in project directory
     api = Api(app)
+    CORS(app)
 
     if test_config is None:
         # overload config with instance/config.py

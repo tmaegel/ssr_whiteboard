@@ -8,10 +8,8 @@ def test_rest_auth_login__valid_admin(auth_admin):
     assert response.status == '200 OK'
     assert response.headers['Content-Type'] == 'application/json'
     json_resp = json.loads(response.data.decode('utf-8'))
-    for attr in ('type', 'message', 'token'):
+    for attr in ('user_id', 'name', 'token'):
         assert attr in json_resp
-    assert json_resp['type'] == 'success'
-    assert json_resp['message'] == 'Successfully logged in.'
 
 
 def test_rest_auth_login__valid_user(auth_user):
@@ -19,10 +17,8 @@ def test_rest_auth_login__valid_user(auth_user):
     assert response.status == '200 OK'
     assert response.headers['Content-Type'] == 'application/json'
     json_resp = json.loads(response.data.decode('utf-8'))
-    for attr in ('type', 'message', 'token'):
+    for attr in ('user_id', 'name', 'token'):
         assert attr in json_resp
-    assert json_resp['type'] == 'success'
-    assert json_resp['message'] == 'Successfully logged in.'
 
 
 @pytest.mark.parametrize(('username'), (

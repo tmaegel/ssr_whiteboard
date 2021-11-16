@@ -14,6 +14,6 @@ build/
 *.egg-info/
 
 # ctags
-tags
-tags.lock
-tags.temp
+ctags
+ctags.lock
+ctags.temp
