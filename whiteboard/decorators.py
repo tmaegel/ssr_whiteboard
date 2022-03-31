@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
+from whiteboard import logger
 from whiteboard.exceptions import InvalidAttributeError
-
-import whiteboard.logger as logger
 
 
 def is_defined(attributes=()):
@@ -10,13 +9,16 @@ def is_defined(attributes=()):
 
     :param attributes: Attributes of the object to validate.
     """
+
     def _decorator(func):
         def _wrapper(*args, **kwargs):
             for attr in attributes:
-                logger.debug(f'Check if attribute {attr} is defined.')
+                logger.debug(f"Check if attribute {attr} is defined.")
                 if not getattr(args[0], attr):
-                    logger.error(f'Attribute {attr} is not defined.')
+                    logger.error(f"Attribute {attr} is not defined.")
                     raise InvalidAttributeError(attr)
             return func(*args, **kwargs)
+
         return _wrapper
+
     return _decorator

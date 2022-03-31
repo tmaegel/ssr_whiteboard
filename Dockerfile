@@ -8,6 +8,6 @@ USER worker
 WORKDIR /home/worker
 
 COPY --chown=worker:worker . .
-RUN pip install --user -r requirements.txt
+RUN pip install --user --upgrade pip && pip install --user -r requirements.txt
 
 ENTRYPOINT ["./entrypoint.sh"]
