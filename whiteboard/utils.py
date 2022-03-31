@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-from typing import Optional, Union
-
 import datetime
 import re
 import time
+from typing import Optional, Union
 
 
 def is_float(value: str) -> bool:
     """Check for floating number."""
     if value is None:
         return False
-    pattern = re.compile(r'[0-9]+[.]?[0-9]+')
+    pattern = re.compile(r"[0-9]+[.]?[0-9]+")
     if pattern.fullmatch(value) is None:
         return False
     else:
@@ -21,7 +20,7 @@ def is_datetime(value: str) -> bool:
     """Check for datetime format (e.g. dd.mm.YYYY HH:MM)."""
     if value is None:
         return False
-    pattern = re.compile(r'\d{1,2}.\d{1,2}.\d{4} \d{1,2}([:]\d{1,2}){1,2}')
+    pattern = re.compile(r"\d{1,2}.\d{1,2}.\d{4} \d{1,2}([:]\d{1,2}){1,2}")
     if pattern.fullmatch(value) is None:
         return False
     else:
@@ -32,7 +31,7 @@ def is_timestamp(value: str) -> bool:
     """Check for timestamp format (e.g. HH.MMM.SS)."""
     if value is None:
         return False
-    pattern = re.compile(r'\d{1,2}(:\d{1,2}){1,2}')
+    pattern = re.compile(r"\d{1,2}(:\d{1,2}){1,2}")
     if pattern.fullmatch(value) is None:
         return False
     else:
@@ -42,9 +41,9 @@ def is_timestamp(value: str) -> bool:
 def get_format_timestamp(datetime: Optional[int] = None) -> Union[str, bool]:
     """Convert unix timestamp in datetime format (e.g. dd.mm.YYYY HH:MM)."""
     if datetime is None:
-        return time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time()))
+        return time.strftime("%d.%m.%Y %H:%M", time.localtime(time.time()))
     elif str(datetime).isdigit():
-        return time.strftime('%d.%m.%Y %H:%M', time.localtime(datetime))
+        return time.strftime("%d.%m.%Y %H:%M", time.localtime(datetime))
     else:
         return False
 
@@ -60,13 +59,13 @@ def timestamp_to_sec(value: str) -> Union[int, bool]:
         return False
 
     sec = 0
-    ts_split = value.split(':')
+    ts_split = value.split(":")
     if len(ts_split) > 3:
         return False
     if len(ts_split) == 2:
-        sec = int(ts_split[0])*60*60+int(ts_split[1])*60
+        sec = int(ts_split[0]) * 60 * 60 + int(ts_split[1]) * 60
     if len(ts_split) == 3:
-        sec = int(ts_split[0])*3600+int(ts_split[1])*60+int(ts_split[2])
+        sec = int(ts_split[0]) * 3600 + int(ts_split[1]) * 60 + int(ts_split[2])
 
     return sec
 
@@ -79,12 +78,12 @@ def datetime_to_sec(value: str) -> Union[int, bool]:
     if is_datetime(value) is False:
         return False
 
-    dt_split = value.split(' ')
+    dt_split = value.split(" ")
     if len(dt_split) > 2:
         return False
 
-    d_split = dt_split[0].split('.')
-    t_split = dt_split[1].split(':')
+    d_split = dt_split[0].split(".")
+    t_split = dt_split[1].split(":")
     if len(d_split) > 3:
         return False
     if len(t_split) > 3:
@@ -99,7 +98,8 @@ def datetime_to_sec(value: str) -> Union[int, bool]:
 
     if len(t_split) == 3:
         seconds = int(t_split[2])
-    sec = time.mktime(datetime.datetime(
-        year, month, day, hour, minutes, seconds).timetuple())
+    sec = time.mktime(
+        datetime.datetime(year, month, day, hour, minutes, seconds).timetuple()
+    )
 
     return int(sec)

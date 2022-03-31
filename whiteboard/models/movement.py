@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.

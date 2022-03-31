@@ -1,91 +1,99 @@
 # -*- coding: utf-8 -*-
 import json
+
 import pytest
 
 
 def test_rest_auth_login__valid_admin(auth_admin):
     response = auth_admin
-    assert response.status == '200 OK'
-    assert response.headers['Content-Type'] == 'application/json'
-    json_resp = json.loads(response.data.decode('utf-8'))
-    for attr in ('user_id', 'name', 'token'):
+    assert response.status == "200 OK"
+    assert response.headers["Content-Type"] == "application/json"
+    json_resp = json.loads(response.data.decode("utf-8"))
+    for attr in ("user_id", "name", "token"):
         assert attr in json_resp
 
 
 def test_rest_auth_login__valid_user(auth_user):
     response = auth_user
-    assert response.status == '200 OK'
-    assert response.headers['Content-Type'] == 'application/json'
-    json_resp = json.loads(response.data.decode('utf-8'))
-    for attr in ('user_id', 'name', 'token'):
+    assert response.status == "200 OK"
+    assert response.headers["Content-Type"] == "application/json"
+    json_resp = json.loads(response.data.decode("utf-8"))
+    for attr in ("user_id", "name", "token"):
         assert attr in json_resp
 
 
-@pytest.mark.parametrize(('username'), (
-    (None),
-))
+@pytest.mark.parametrize(("username"), ((None),))
 def test_rest_auth_login__invalid_user(authenticate, username):
-    response = authenticate({'username': username, 'password': 'secret'})
-    assert response.status == '400 BAD REQUEST'
-    assert response.headers['Content-Type'] == 'application/json'
-    json_resp = json.loads(response.data.decode('utf-8'))
-    for attr in ('type', 'message'):
+    response = authenticate({"username": username, "password": "secret"})
+    assert response.status == "400 BAD REQUEST"
+    assert response.headers["Content-Type"] == "application/json"
+    json_resp = json.loads(response.data.decode("utf-8"))
+    for attr in ("type", "message"):
         assert attr in json_resp
-    assert 'token' not in json_resp
-    assert json_resp['type'] == 'error'
-    assert json_resp['message'] == 'Invalid user name.'
+    assert "token" not in json_resp
+    assert json_resp["type"] == "error"
+    assert json_resp["message"] == "Invalid user name."
 
 
-@pytest.mark.parametrize(('username'), (
-    ('Admin'), ('TEST1'), ('test99'),
-))
+@pytest.mark.parametrize(
+    ("username"),
+    (
+        ("Admin"),
+        ("TEST1"),
+        ("test99"),
+    ),
+)
 def test_rest_auth_login__not_found_user(authenticate, username):
-    response = authenticate({'username': username, 'password': 'secret'})
-    assert response.status == '404 NOT FOUND'
-    assert response.headers['Content-Type'] == 'application/json'
-    json_resp = json.loads(response.data.decode('utf-8'))
-    for attr in ('type', 'message'):
+    response = authenticate({"username": username, "password": "secret"})
+    assert response.status == "404 NOT FOUND"
+    assert response.headers["Content-Type"] == "application/json"
+    json_resp = json.loads(response.data.decode("utf-8"))
+    for attr in ("type", "message"):
         assert attr in json_resp
-    assert 'token' not in json_resp
-    assert json_resp['type'] == 'error'
-    assert json_resp['message'] == (
-        f'User with id or name {username} does not exist.')
+    assert "token" not in json_resp
+    assert json_resp["type"] == "error"
+    assert json_resp["message"] == (f"User with id or name {username} does not exist.")
 
 
 def test_rest_auth_login__empty_user(authenticate):
-    response = authenticate({'password': 'secret'})
-    assert response.status == '400 BAD REQUEST'
-    assert response.headers['Content-Type'] == 'application/json'
-    json_resp = json.loads(response.data.decode('utf-8'))
-    for attr in ('type', 'message'):
+    response = authenticate({"password": "secret"})
+    assert response.status == "400 BAD REQUEST"
+    assert response.headers["Content-Type"] == "application/json"
+    json_resp = json.loads(response.data.decode("utf-8"))
+    for attr in ("type", "message"):
         assert attr in json_resp
-    assert 'token' not in json_resp
-    assert json_resp['type'] == 'error'
-    assert json_resp['message'] == 'Missing arguments in payload.'
+    assert "token" not in json_resp
+    assert json_resp["type"] == "error"
+    assert json_resp["message"] == "Missing arguments in payload."
 
 
-@pytest.mark.parametrize(('password'), (
-    ('secret1'), ('SECRET'), (None),
-))
+@pytest.mark.parametrize(
+    ("password"),
+    (
+        ("secret1"),
+        ("SECRET"),
+        (None),
+    ),
+)
 def test_rest_auth_login__invalid_password(authenticate, password):
-    response = authenticate({'username': 'admin', 'password': password})
-    assert response.status == '401 UNAUTHORIZED'
-    assert response.headers['Content-Type'] == 'application/json'
-    json_resp = json.loads(response.data.decode('utf-8'))
-    for attr in ('type', 'message'):
+    response = authenticate({"username": "admin", "password": password})
+    assert response.status == "401 UNAUTHORIZED"
+    assert response.headers["Content-Type"] == "application/json"
+    json_resp = json.loads(response.data.decode("utf-8"))
+    for attr in ("type", "message"):
         assert attr in json_resp
-    assert 'token' not in json_resp
-    assert json_resp['type'] == 'error'
-    assert json_resp['message'] == 'Invalid user password.'
+    assert "token" not in json_resp
+    assert json_resp["type"] == "error"
+    assert json_resp["message"] == "Invalid user password."
 
 
 def test_rest_auth_login__empty_password(authenticate):
-    response = authenticate({'username': 'admin'})
-    assert response.status == '400 BAD REQUEST'
-    assert response.headers['Content-Type'] == 'application/json'
-    json_resp = json.loads(response.data.decode('utf-8'))
-    for attr in ('type', 'message'):
+    response = authenticate({"username": "admin"})
+    assert response.status == "400 BAD REQUEST"
+    assert response.headers["Content-Type"] == "application/json"
+    json_resp = json.loads(response.data.decode("utf-8"))
+    for attr in ("type", "message"):
         assert attr in json_resp
-    assert 'token' not in json_resp
-    assert json_resp['type'] == 'error'
-    assert json_resp['message'] == 'Missing arguments in payload.'
+    assert "token" not in json_resp
+    assert json_resp["type"] == "error"
+    assert json_resp["message"] == "Missing arguments in payload."
