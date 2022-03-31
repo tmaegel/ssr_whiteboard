@@ -1,9 +1,19 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding=utf-8
+
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.
 from __future__ import annotations
 
-from typing import Union
+import base64
+import hashlib
+import json
+import sqlite3
+from typing import Optional, Union
+
+import bcrypt
+
+from whiteboard import logger
 from whiteboard.db import get_db
 from whiteboard.decorators import is_defined
 from whiteboard.descriptors import Hash, Id, Name
@@ -13,13 +23,6 @@ from whiteboard.exceptions import (
     NotFoundError,
 )
 
-import base64
-import bcrypt
-import hashlib
-import json
-import sqlite3
-import whiteboard.logger as logger
-
 
 def is_user_exists(func):
     """
@@ -27,34 +30,38 @@ def is_user_exists(func):
 
     :param objects: Objects to be checked for existence.
     """
+
     def _decorator(*args, **kwargs):
-        logger.debug('Check if user exists.')
+        logger.debug("Check if user exists.")
         try:
-            user_id = getattr(args[0], 'user_id')
-        except AttributeError:
-            raise InvalidAttributeError('user_id')
+            user_id = getattr(args[0], "user_id")
+        except AttributeError as exc:
+            raise InvalidAttributeError("user_id") from exc
         if not User.exist_user_id(user_id):
             raise NotFoundError(User.__name__, user_id)
         return func(*args, **kwargs)
+
     return _decorator
 
 
-class User():
+class User:
 
     user_id = Id()
     name = Name()
     password_hash = Hash()
 
-    def __init__(self,
-                 user_id: int = None,
-                 name: str = None,
-                 password_hash: str = None) -> None:
+    def __init__(
+        self,
+        user_id: Optional[int] = None,
+        name: Optional[str] = None,
+        password_hash: Optional[str] = None,
+    ) -> None:
         self.user_id = user_id
         self.name = name
         self.password_hash = password_hash
 
     def __str__(self):
-        return f'User ( user_id={self.user_id}, name={self.name} )'
+        return f"User ( user_id={self.user_id}, name={self.name} )"
 
     def to_json(self):
         return json.dumps(self.__dict__)
@@ -75,9 +82,9 @@ class User():
             return None
 
         return User(
-            query['id'],  # id=user_id
-            query['name'],
-            query['password'],  # password=password_hash
+            query["id"],  # id=user_id
+            query["name"],
+            query["password"],  # password=password_hash
         )
 
     @staticmethod
@@ -89,17 +96,18 @@ class User():
         :return: True if user with user id exists, otherwise False.
         :rtype: bool
         """
-        result = get_db().execute(
-            'SELECT id FROM table_users WHERE id = ?',
-            (user_id,)
-        ).fetchone()
+        result = (
+            get_db()
+            .execute("SELECT id FROM table_users WHERE id = ?", (user_id,))
+            .fetchone()
+        )
 
         if result is None:
             return False
-        else:
-            return True
 
-    @is_defined(attributes=('user_id',))
+        return True
+
+    @is_defined(attributes=("user_id",))
     def get(self) -> User:
         """
         Get user from db by id.
@@ -108,8 +116,8 @@ class User():
         :rtype: User
         """
         result = self.db.execute(
-            'SELECT id, name, password FROM table_users'
-            ' WHERE id = ?', (self.user_id,)
+            "SELECT id, name, password FROM table_users WHERE id = ?",
+            (self.user_id,),
         ).fetchone()
 
         user = User._query_to_object(result)
@@ -118,7 +126,7 @@ class User():
 
         return user
 
-    @is_defined(attributes=('name',))
+    @is_defined(attributes=("name",))
     def get_by_name(self) -> User:
         """
         Get user from db by name.
@@ -127,8 +135,7 @@ class User():
         :rtype: User
         """
         result = self.db.execute(
-            'SELECT id, name, password FROM table_users'
-            ' WHERE name = ?', (self.name,)
+            "SELECT id, name, password FROM table_users WHERE name = ?", (self.name,)
         ).fetchone()
 
         user = User._query_to_object(result)
@@ -137,7 +144,7 @@ class User():
 
         return user
 
-    @is_defined(attributes=('name', 'password_hash'))
+    @is_defined(attributes=("name", "password_hash"))
     def add(self) -> int:
         """
         Add new user to db.
@@ -148,24 +155,22 @@ class User():
         # @todo: bcrypt + hash here?
         # gen_password_hash() + check_password() function?
         self.db.execute(
-            'INSERT INTO table_users'
-            ' (name, password)'
-            ' VALUES (?, ?)', (self.name, self.password_hash)
+            "INSERT INTO table_users (name, password) VALUES (?, ?)",
+            (self.name, self.password_hash),
         )
         self.db.commit()
 
         inserted_id = self.db.execute(
-            'SELECT last_insert_rowid()'
-            ' FROM table_users LIMIT 1'
+            "SELECT last_insert_rowid() FROM table_users LIMIT 1"
         ).fetchone()
 
         try:
-            return int(inserted_id['last_insert_rowid()'])
+            return int(inserted_id["last_insert_rowid()"])
         except (TypeError, ValueError) as e:
-            logger.error('Invalid last_insert_rowid: %s' % str(e))
+            logger.error("Invalid last_insert_rowid: %s" % e)
             raise
 
-    @is_defined(attributes=('user_id', 'name', 'password_hash'))
+    @is_defined(attributes=("user_id", "name", "password_hash"))
     @is_user_exists
     def update(self) -> bool:
         """
@@ -177,20 +182,18 @@ class User():
         # @todo: bcrypt + hash here?
         # gen_password_hash() + check_password() function?
         self.db.execute(
-            'UPDATE table_users'
-            ' SET name = ?, password = ?'
-            ' WHERE id = ?',
-            (self.name, self.password_hash, self.user_id)
+            "UPDATE table_users SET name = ?, password = ? WHERE id = ?",
+            (self.name, self.password_hash, self.user_id),
         )
         self.db.commit()
 
         return True
 
-    @is_defined(attributes=('user_id'))
+    @is_defined(attributes=("user_id"))
     @is_user_exists
     def remove(self) -> bool:
         """Remove user from db by id."""
-        pass
+        return True
 
     @staticmethod
     def authenticate(username: str, password: str) -> Union[User, None]:
@@ -202,14 +205,13 @@ class User():
         :return: User object
         :rtype: User
         """
-        logger.info(f'Authenticate user {username}.')
+        logger.info(f"Authenticate user {username}.")
         user: User = User(None, username, None).get_by_name()
 
-        if (user and User.check_password(
-                password, user.password_hash)):
+        if user and User.check_password(password, user.password_hash):
             return user
-        else:
-            return None
+
+        return None
 
     @staticmethod
     def check_password(password: str, hash_str: str) -> bool:
@@ -219,12 +221,12 @@ class User():
         :return: True if the password and hash matched. Otherwise false.
         :rtype: boolean
         """
-        logger.info('Verifing password.')
+        logger.info("Verifing password.")
         if not password:
             raise InvalidPasswordError()
-        pw_byte = password.encode('utf-8')
+        pw_byte = password.encode("utf-8")
         pw_hash = base64.b64encode(hashlib.sha256(pw_byte).digest())
-        hash_byte = hash_str.encode('utf-8')
+        hash_byte = hash_str.encode("utf-8")
         if not bcrypt.checkpw(pw_hash, hash_byte):
             raise InvalidPasswordError()
 
@@ -238,8 +240,8 @@ class User():
         :return: Hashed password
         :rtype: str
         """
-        logger.info('Generating password hash.')
-        pw_byte = password.encode('utf-8')
+        logger.info("Generating password hash.")
+        pw_byte = password.encode("utf-8")
         pw_hash = base64.b64encode(hashlib.sha256(pw_byte).digest())
         hashed = bcrypt.hashpw(pw_hash, bcrypt.gensalt(12))
 

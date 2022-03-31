@@ -1,18 +1,20 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding=utf-8
+
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.
 from __future__ import annotations
 
-from typing import Union
+import json
+import sqlite3
+from typing import Optional, Union
+
+from whiteboard import logger
 from whiteboard.db import get_db
 from whiteboard.decorators import is_defined
 from whiteboard.descriptors import Id, Name
 from whiteboard.exceptions import InvalidAttributeError, NotFoundError
 from whiteboard.models.user import is_user_exists
-
-import json
-import sqlite3
-import whiteboard.logger as logger
 
 
 def is_tag_exists(func):
@@ -21,15 +23,17 @@ def is_tag_exists(func):
 
     :param objects: Objects to be checked for existence.
     """
+
     def _decorator(*args, **kwargs):
-        logger.debug('Check if tag exists.')
+        logger.debug("Check if tag exists.")
         try:
-            tag_id = getattr(args[0], 'tag_id')
-        except AttributeError:
-            raise InvalidAttributeError('tag_id')
+            tag_id = getattr(args[0], "tag_id")
+        except AttributeError as exc:
+            raise InvalidAttributeError("tag_id") from exc
         if not Tag.exist_tag_id(tag_id):
             raise NotFoundError(Tag.__name__, tag_id)
         return func(*args, **kwargs)
+
     return _decorator
 
 
@@ -37,29 +41,35 @@ def is_owner(func):
     """
     Decorator to check wheather the workout is owned by user.
     """
+
     def _decorator(*args, **kwargs):
         # @todo
         return func(*args, **kwargs)
+
     return _decorator
 
 
-class Tag():
+class Tag:
 
     tag_id = Id()
     user_id = Id()
     name = Name()
 
-    def __init__(self,
-                 tag_id: int = None,
-                 user_id: int = None,
-                 name: str = None) -> None:
+    def __init__(
+        self,
+        tag_id: Optional[int] = None,
+        user_id: Optional[int] = None,
+        name: Optional[str] = None,
+    ) -> None:
         self.tag_id = tag_id
         self.user_id = user_id
         self.name = name
 
     def __str__(self):
-        return f'Tag ( tag_id={self.tag_id}, user_id={self.user_id},' \
-               f' name={self.name} )'
+        return (
+            f"Tag ( tag_id={self.tag_id}, user_id={self.user_id},"
+            f" name={self.name} )"
+        )
 
     def to_json(self):
         return json.dumps(self.__dict__)
@@ -79,9 +89,9 @@ class Tag():
             return None
 
         return Tag(
-            query['id'],  # id=tag_id
-            query['userId'],
-            query['tag'],  # name=tag
+            query["id"],  # id=tag_id
+            query["userId"],
+            query["tag"],  # name=tag
         )
 
     @staticmethod
@@ -93,17 +103,18 @@ class Tag():
         :return: True if tag with tag id exists, otherwise False.
         :rtype: bool
         """
-        result = get_db().execute(
-            'SELECT id FROM table_tags WHERE id = ?',
-            (tag_id,)
-        ).fetchone()
+        result = (
+            get_db()
+            .execute("SELECT id FROM table_tags WHERE id = ?", (tag_id,))
+            .fetchone()
+        )
 
         if result is None:
             return False
-        else:
-            return True
 
-    @is_defined(attributes=('tag_id', 'user_id'))
+        return True
+
+    @is_defined(attributes=("tag_id", "user_id"))
     @is_user_exists
     def get(self) -> Tag:
         """
@@ -113,9 +124,9 @@ class Tag():
         :rtype: Tag
         """
         result = self.db.execute(
-            'SELECT id, userId, tag FROM table_tags'
-            ' WHERE id = ? AND ( userId = 1 OR userId = ? )',
-            (self.tag_id, self.user_id)
+            """SELECT id, userId, tag FROM table_tags
+            WHERE id = ? AND ( userId = 1 OR userId = ? )""",
+            (self.tag_id, self.user_id),
         ).fetchone()
 
         tag = Tag._query_to_object(result)
@@ -124,7 +135,7 @@ class Tag():
 
         return tag
 
-    @is_defined(attributes=('user_id', 'name'))
+    @is_defined(attributes=("user_id", "name"))
     @is_user_exists
     def add(self) -> int:
         """
@@ -134,23 +145,25 @@ class Tag():
         :rtype: int
         """
         self.db.execute(
-            'INSERT INTO table_tags'
-            ' (userId, tag)' ' VALUES (?, ?)', (self.user_id, self.name,)
+            "INSERT INTO table_tags (userId, tag) VALUES (?, ?)",
+            (
+                self.user_id,
+                self.name,
+            ),
         )
         self.db.commit()
         inserted_id = self.db.execute(
-            'SELECT last_insert_rowid()'
-            ' FROM table_tags WHERE userId = ? LIMIT 1',
-            (self.user_id,)
+            "SELECT last_insert_rowid() FROM table_tags WHERE userId = ? LIMIT 1",
+            (self.user_id,),
         ).fetchone()
 
         try:
-            return int(inserted_id['last_insert_rowid()'])
+            return int(inserted_id["last_insert_rowid()"])
         except (TypeError, ValueError) as e:
-            logger.error('Invalid last_insert_rowid: %s' % str(e))
+            logger.error("Invalid last_insert_rowid: %s" % e)
             raise
 
-    @is_defined(attributes=('tag_id', 'user_id', 'name'))
+    @is_defined(attributes=("tag_id", "user_id", "name"))
     @is_tag_exists
     @is_user_exists
     def update(self) -> bool:
@@ -161,16 +174,18 @@ class Tag():
         :rtype: bool
         """
         self.db.execute(
-            'UPDATE table_tags'
-            ' SET tag = ?'
-            ' WHERE id = ? AND userId = ?',
-            (self.name, self.tag_id, self.user_id,)
+            "UPDATE table_tags SET tag = ? WHERE id = ? AND userId = ?",
+            (
+                self.name,
+                self.tag_id,
+                self.user_id,
+            ),
         )
         self.db.commit()
 
         return True
 
-    @is_defined(attributes=('tag_id', 'user_id'))
+    @is_defined(attributes=("tag_id", "user_id"))
     @is_tag_exists
     @is_user_exists
     def remove(self) -> bool:
@@ -182,9 +197,11 @@ class Tag():
         """
         # @todo: Remove Connection between tags and tags too
         self.db.execute(
-            'DELETE FROM table_tags'
-            ' WHERE id = ? AND userId = ?',
-            (self.tag_id, self.user_id,)
+            "DELETE FROM table_tags WHERE id = ? AND userId = ?",
+            (
+                self.tag_id,
+                self.user_id,
+            ),
         )
         self.db.commit()
 

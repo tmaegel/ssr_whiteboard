@@ -1,36 +1,39 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding=utf-8
+
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.
 from __future__ import annotations
 
-from typing import Optional, Union
+import json
+import sqlite3
+import time
+from typing import Any, Optional, Union
+
+from whiteboard import logger
 from whiteboard.db import get_db
 from whiteboard.decorators import is_defined
 from whiteboard.descriptors import Id, Name, Text, UnixTimestamp
 from whiteboard.exceptions import InvalidAttributeError, NotFoundError
-from whiteboard.models.user import is_user_exists, User
-
-import json
-import sqlite3
-import time
-import whiteboard.logger as logger
+from whiteboard.models.user import User, is_user_exists
 
 
 def is_workout_exists(func):
     """
     Decorator to check wheather the workout object with id exists.
-
     :param objects: Objects to be checked for existence.
     """
-    def _decorator(*args, **kwargs):
-        logger.debug('Check if workout exists.')
+
+    def _decorator(*args: Any, **kwargs: Any) -> Any:
+        logger.debug("Check if workout exists.")
         try:
-            workout_id = getattr(args[0], 'workout_id')
-        except AttributeError:
-            raise InvalidAttributeError('workout_id')
+            workout_id = getattr(args[0], "workout_id")
+        except AttributeError as exc:
+            raise InvalidAttributeError("workout_id") from exc
         if not Workout.exist_workout_id(workout_id):
             raise NotFoundError(Workout.__name__, workout_id)
-        return func(*args, **kwargs)
+        return func(*args, **kwargs)  # type: ignore
+
     return _decorator
 
 
@@ -38,13 +41,15 @@ def is_owner(func):
     """
     Decorator to check wheather the workout is owned by user.
     """
-    def _decorator(*args, **kwargs):
+
+    def _decorator(*args: Any, **kwargs: Any) -> Any:
         # @todo
-        return func(*args, **kwargs)
+        return func(*args, **kwargs)  # type: ignore
+
     return _decorator
 
 
-class Workout():
+class Workout:
 
     workout_id = Id()
     user_id = Id()
@@ -52,22 +57,29 @@ class Workout():
     description = Text()
     datetime = UnixTimestamp()
 
-    def __init__(self,
-                 workout_id: int = None,
-                 user_id: int = None,
-                 name: str = None,
-                 description: str = None,
-                 datetime: Optional[int] = int(time.time())) -> None:
+    def __init__(
+        self,
+        workout_id: Optional[int] = None,
+        user_id: Optional[int] = None,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        datetime: Optional[int] = None,
+    ) -> None:
         self.workout_id = workout_id
         self.user_id = user_id
         self.name = name
         self.description = description
-        self.datetime = datetime
+        if datetime is None:
+            self.datetime = int(time.time())
+        else:
+            self.datetime = datetime
 
     def __str__(self):
-        return f'Workout ( workout_id={self.workout_id},' \
-               f' user_id={self.user_id}, name="{self.name}",' \
-               f' datetime={self.datetime} )'
+        return (
+            f"Workout ( workout_id={self.workout_id},"
+            f' user_id={self.user_id}, name="{self.name}",'
+            f" datetime={self.datetime} )"
+        )
 
     def to_json(self):
         return json.dumps(self.__dict__)
@@ -87,11 +99,11 @@ class Workout():
             return None
 
         return Workout(
-            query['id'],  # id=workout_id
-            query['userId'],
-            query['name'],
-            query['description'],
-            query['datetime']
+            query["id"],  # id=workout_id
+            query["userId"],
+            query["name"],
+            query["description"],
+            query["datetime"],
         )
 
     @staticmethod
@@ -103,17 +115,18 @@ class Workout():
         :return: True if workout with workout id exists, otherwise False.
         :rtype: bool
         """
-        result = get_db().execute(
-            'SELECT id FROM table_workout WHERE id = ?',
-            (workout_id,)
-        ).fetchone()
+        result = (
+            get_db()
+            .execute("SELECT id FROM table_workout WHERE id = ?", (workout_id,))
+            .fetchone()
+        )
 
         if result is None:
             return False
-        else:
-            return True
 
-    @is_defined(attributes=('workout_id', 'user_id'))
+        return True
+
+    @is_defined(attributes=("workout_id", "user_id"))
     @is_user_exists
     def get(self) -> Workout:
         """
@@ -123,9 +136,9 @@ class Workout():
         :rtype: Workout
         """
         result = self.db.execute(
-            'SELECT id, userId, name, description, datetime'
-            ' FROM table_workout WHERE id = ? AND userId = ?',
-            (self.workout_id, self.user_id)
+            """SELECT id, userId, name, description, datetime
+            FROM table_workout WHERE id = ? AND userId = ?""",
+            (self.workout_id, self.user_id),
         ).fetchone()
 
         workout = Workout._query_to_object(result)
@@ -134,7 +147,7 @@ class Workout():
 
         return workout
 
-    @is_defined(attributes=('user_id', 'name', 'description', 'datetime'))
+    @is_defined(attributes=("user_id", "name", "description", "datetime"))
     @is_user_exists
     def add(self) -> int:
         """
@@ -144,26 +157,24 @@ class Workout():
         :rtype: int
         """
         self.db.execute(
-            'INSERT INTO table_workout'
-            ' (userId, name, description, datetime)'
-            ' VALUES (?, ?, ?, ?)',
-            (self.user_id, self.name, self.description, self.datetime)
+            """INSERT INTO table_workout
+            (userId, name, description, datetime)
+            VALUES (?, ?, ?, ?)""",
+            (self.user_id, self.name, self.description, self.datetime),
         )
         self.db.commit()
         inserted_id = self.db.execute(
-            'SELECT last_insert_rowid()'
-            ' FROM table_workout WHERE userId = ? LIMIT 1',
-            (self.user_id,)
+            "SELECT last_insert_rowid() FROM table_workout WHERE userId = ? LIMIT 1",
+            (self.user_id,),
         ).fetchone()
 
         try:
-            return int(inserted_id['last_insert_rowid()'])
+            return int(inserted_id["last_insert_rowid()"])
         except (TypeError, ValueError) as e:
-            logger.error('Invalid last_insert_rowid: %s' % str(e))
+            logger.error("Invalid last_insert_rowid: %s" % e)
             raise
 
-    @is_defined(attributes=('workout_id', 'user_id', 'name', 'description',
-                            'datetime'))
+    @is_defined(attributes=("workout_id", "user_id", "name", "description", "datetime"))
     @is_workout_exists
     @is_user_exists
     def update(self) -> bool:
@@ -174,17 +185,22 @@ class Workout():
         :rtype: bool
         """
         self.db.execute(
-            'UPDATE table_workout'
-            ' SET name = ?, description = ?, datetime = ?'
-            ' WHERE id = ? AND userId = ?',
-            (self.name, self.description, int(time.time()),
-             self.workout_id, self.user_id,)
+            """UPDATE table_workout
+            SET name = ?, description = ?, datetime = ?
+            WHERE id = ? AND userId = ?""",
+            (
+                self.name,
+                self.description,
+                int(time.time()),
+                self.workout_id,
+                self.user_id,
+            ),
         )
         self.db.commit()
 
         return True
 
-    @is_defined(attributes=('workout_id', 'user_id'))
+    @is_defined(attributes=("workout_id", "user_id"))
     @is_workout_exists
     @is_user_exists
     def remove(self) -> bool:
@@ -195,9 +211,11 @@ class Workout():
         :rtype: bool
         """
         self.db.execute(
-            'DELETE FROM table_workout'
-            ' WHERE id = ? AND userId = ?',
-            (self.workout_id, self.user_id,)
+            "DELETE FROM table_workout WHERE id = ? AND userId = ?",
+            (
+                self.workout_id,
+                self.user_id,
+            ),
         )
         self.db.commit()
         # @todo
@@ -213,8 +231,9 @@ class Workout():
         return True
 
     @staticmethod
-    def list(user_id: int, order_by: str = 'name',
-             sort: str = 'asc') -> list[Optional[Workout]]:
+    def list(
+        user_id: int, order_by: str = "name", sort: str = "asc"
+    ) -> list[Optional[Workout]]:
         """
         Return a list of all workouts.
 
@@ -226,14 +245,18 @@ class Workout():
         _user.get()
 
         # Include admin (common) workouts
-        where_filter = 'userId = 1 OR userId = ?'
-        results = get_db().execute(
-            'SELECT id, userId, name, description, datetime'
-            ' FROM table_workout'
-            f' WHERE ({where_filter})'
-            f' ORDER BY {order_by} {sort}',
-            (user_id,)
-        ).fetchall()
+        where_filter = "userId = 1 OR userId = ?"
+        results = (
+            get_db()
+            .execute(
+                f"""SELECT id, userId, name, description, datetime
+                FROM table_workout
+                WHERE ({where_filter})
+                ORDER BY {order_by} {sort}""",
+                (user_id,),
+            )
+            .fetchall()
+        )
 
         workouts = []
         for workout in results:

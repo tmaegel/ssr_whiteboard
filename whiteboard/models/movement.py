@@ -1,34 +1,38 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding=utf-8
+
 # PEP 563: Postponed Evaluation of Annotations
 # It will become the default in Python 3.10.
 from __future__ import annotations
 
-from typing import Union
+import json
+import sqlite3
+from typing import Optional, Union
+
 from whiteboard.db import get_db
 from whiteboard.decorators import is_defined
 from whiteboard.descriptors import Id, Name
 from whiteboard.exceptions import NotFoundError
 
-import json
-import sqlite3
 
-
-class Movement():
+class Movement:
 
     movement_id = Id()
     name = Name()
     equipment_ids = Id()
 
-    def __init__(self,
-                 movement_id: int = None,
-                 name: str = None,
-                 equipment_ids: int = None) -> None:
+    def __init__(
+        self,
+        movement_id: Optional[int] = None,
+        name: Optional[str] = None,
+        equipment_ids: Optional[int] = None,
+    ) -> None:
         self.movement_id = movement_id
         self.name = name
         self.equipment_ids = equipment_ids
 
     def __str__(self):
-        return f'Movement ( movement_id={self.movement_id}, name={self.name} )'
+        return f"Movement ( movement_id={self.movement_id}, name={self.name} )"
 
     def to_json(self):
         return json.dumps(self.__dict__)
@@ -48,12 +52,12 @@ class Movement():
             return None
 
         return Movement(
-            query['id'],  # id=movement_id
-            query['movement'],  # name=movement
-            query['equipmentIds'],
+            query["id"],  # id=movement_id
+            query["movement"],  # name=movement
+            query["equipmentIds"],
         )
 
-    @is_defined(attributes=('movement_id',))
+    @is_defined(attributes=("movement_id",))
     def get(self) -> Movement:
         """
         Get movement from db by id.
@@ -62,9 +66,8 @@ class Movement():
         :rtype: Movement
         """
         result = self.db.execute(
-            'SELECT id, movement, equipmentIds'
-            ' FROM table_movements WHERE id = ?',
-            (self.movement_id,)
+            "SELECT id, movement, equipmentIds FROM table_movements WHERE id = ?",
+            (self.movement_id,),
         ).fetchone()
 
         movement = Movement._query_to_object(result)

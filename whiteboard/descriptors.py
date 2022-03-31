@@ -1,21 +1,22 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from abc import ABC, abstractmethod
-from whiteboard.exceptions import InvalidAttributeError
 
-import whiteboard.logger as logger
+from abc import ABC, abstractmethod
+
+from whiteboard import logger
+from whiteboard.exceptions import InvalidAttributeError
 
 
 class Validator(ABC):
-
     def __set_name__(self, owner, name):
         self.public_name = name
-        self.private_name = '_' + name
+        self.private_name = "_" + name
 
     def __get__(self, obj, objtype=None):
         return getattr(obj, self.private_name)
 
     def __set__(self, obj, value):
-        logger.debug(f'Validating {self.public_name} with value {value}.')
+        logger.debug(f"Validating {self.public_name} with value {value}.")
         self.validate(value)
         setattr(obj, self.private_name, value)
 
@@ -34,16 +35,12 @@ class Number(Validator):
     :param float_allowed: Float numbers are allows (default: False).
     """
 
-    def __init__(self,
-                 none_allowed=True,
-                 negative_allowed=True,
-                 float_allowed=False):
+    def __init__(self, none_allowed=True, negative_allowed=True, float_allowed=False):
         self.none_allowed = none_allowed
         self.negative_allowed = negative_allowed
         self.float_allowed = float_allowed
 
     def validate(self, value):
-
         def invalid():
             raise InvalidAttributeError(self.public_name)
 
@@ -112,9 +109,9 @@ class Id(Number):
     """
 
     def __init__(self, none_allowed=True):
-        super(Id, self).__init__(none_allowed=none_allowed,
-                                 negative_allowed=False,
-                                 float_allowed=False)
+        super().__init__(
+            none_allowed=none_allowed, negative_allowed=False, float_allowed=False
+        )
 
 
 class UnixTimestamp(Number):
@@ -126,9 +123,9 @@ class UnixTimestamp(Number):
     """
 
     def __init__(self, none_allowed=True):
-        super(UnixTimestamp, self).__init__(none_allowed=none_allowed,
-                                            negative_allowed=False,
-                                            float_allowed=False)
+        super().__init__(
+            none_allowed=none_allowed, negative_allowed=False, float_allowed=False
+        )
 
 
 class Name(String):
@@ -140,7 +137,7 @@ class Name(String):
     """
 
     def __init__(self, none_allowed=True):
-        super(Name, self).__init__(none_allowed=none_allowed)
+        super().__init__(none_allowed=none_allowed)
 
 
 class Text(String):
@@ -152,7 +149,7 @@ class Text(String):
     """
 
     def __init__(self, none_allowed=True):
-        super(Text, self).__init__(none_allowed=none_allowed)
+        super().__init__(none_allowed=none_allowed)
 
 
 class Hash(String):
@@ -165,7 +162,7 @@ class Hash(String):
     """
 
     def __init__(self, none_allowed=True):
-        super(Hash, self).__init__(none_allowed=none_allowed)
+        super().__init__(none_allowed=none_allowed)
 
 
 class Choice(Validator):
@@ -179,5 +176,4 @@ class Choice(Validator):
 
     def validate(self, value):
         if value not in self.options:
-            raise ValueError(
-                f'Expected {value!r} to be one of {self.options!r}')
+            raise ValueError(f"Expected {value!r} to be one of {self.options!r}")
