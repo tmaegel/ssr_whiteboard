@@ -1,4 +1,5 @@
-version: '3'
+---
+version: "3"
 
 services:
   whiteboard:
@@ -10,4 +11,4 @@ services:
       - "127.0.0.1:8080:8080"
     volumes:
       - ./instance/:/home/worker/instance/
-    restart: always
+    restart: on-failure
